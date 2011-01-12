@@ -1,0 +1,14 @@
+name = Babayaga
+description = Babayaga theme.
+base theme = rubik
+core = 7.x
+engine = phptemplate
+
+regions[content] = Content
+regions[right] = Right
+regions[help] = Help
+regions[page_top] = Page top
+regions[page_bottom] = Page bottom
+
+stylesheets[screen][] = Babayaga.css
+
