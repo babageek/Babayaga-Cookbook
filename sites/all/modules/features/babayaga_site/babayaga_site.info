@@ -1,5 +1,5 @@
 core = "7.x"
-dependencies[] = "feature_blog"
+dependencies[] = "babayaga_recipe"
 dependencies[] = "strongarm"
 description = "Site feature."
 features[ctools][] = "strongarm:strongarm:1"

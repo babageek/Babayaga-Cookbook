@@ -1,0 +1,46 @@
+<?php
+
+// $Id: $
+
+/**
+ * @file 
+ * Install, update and uninstall functions for the Taxonomy Manager
+ */
+ 
+/**
+ * Implements hook_install().
+ */
+function taxonomy_manager_install() {
+  variable_set('taxonomy_override_selector', TRUE);
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function taxonomy_manager_uninstall() {
+  variable_set('taxonomy_override_selector', FALSE);
+}
+
+
+/**
+ * Implements of hook_schema().
+ */
+function taxonomy_manager_schema() {
+  $schema['taxonomy_manager_merge'] = array( 
+    'fields' => array( 
+      'main_tid' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
+      'merged_tid' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
+    ),
+    'primary key' => array('merged_tid'),
+  );
+  return $schema;
+}
+
+/**
+ * Implementation of hook_update_N().
+ *
+ * just run through the update process so that the menu and theme registry cache gets cleared
+ */
+function taxonomy_manager_update_6001() {
+  return array();
+}
