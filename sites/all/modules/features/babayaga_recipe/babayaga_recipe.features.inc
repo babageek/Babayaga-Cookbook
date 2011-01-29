@@ -85,3 +85,12 @@ function babayaga_recipe_node_info() {
   );
   return $items;
 }
+
+/**
+ * Implementation of hook_views_api().
+ */
+function babayaga_recipe_views_api() {
+  return array(
+    'api' => '3.0-alpha1',
+  );
+}

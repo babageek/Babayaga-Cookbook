@@ -1,5 +1,5 @@
 <?php
-// $Id: custom.inc,v 1.17 2011/01/05 22:57:26 merlinofchaos Exp $
+// $Id: custom.inc,v 1.18 2011/01/10 19:20:35 merlinofchaos Exp $
 
 /**
  * @file
@@ -243,7 +243,7 @@ function ctools_custom_content_type_edit_form($form, &$form_state) {
   $form_state['settings'] = $settings;
 
   if ($settings['custom_type'] == 'fixed') {
-    return; // no form for this case.
+    return $form; // no form for this case.
   }
 
   $form['admin_title'] = array(
@@ -303,7 +303,7 @@ function ctools_custom_content_type_edit_form($form, &$form_state) {
   }
 
   if (!user_access('administer custom content') || !module_exists('ctools_custom_content')) {
-    return;
+    return $form;
   }
 
   // Make the other form items dependent upon it.
