@@ -1,5 +1,4 @@
 <?php
-// $Id: user_view.inc,v 1.7 2011/01/06 00:06:18 merlinofchaos Exp $
 
 /**
  * @file

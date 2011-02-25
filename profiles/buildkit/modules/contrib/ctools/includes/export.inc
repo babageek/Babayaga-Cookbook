@@ -1,5 +1,4 @@
 <?php
-// $Id: export.inc,v 1.31 2010/12/31 23:50:25 merlinofchaos Exp $
 
 /**
  * @file
@@ -386,7 +385,10 @@ function ctools_export_load_object($table, $type = 'all', $args = array()) {
     }
   }
 
-  // @todo Load subrecords.
+  // Load subrecords.
+  if (isset($export['subrecords callback']) && function_exists($export['subrecords callback'])) {
+    $export['subrecords callback']($cache[$table]);
+  }
 
   if ($defaults = _ctools_export_get_defaults($table, $export)) {
 

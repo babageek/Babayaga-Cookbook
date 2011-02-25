@@ -1,5 +1,4 @@
 <?php
-// $Id: node_links.inc,v 1.6 2010/12/31 21:06:18 merlinofchaos Exp $
 
 /**
  * Plugins are described by creating a $plugin array which will be used

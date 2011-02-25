@@ -1,5 +1,4 @@
 <?php
-// $Id: stylizer.inc,v 1.4 2010/10/26 22:36:00 merlinofchaos Exp $
 
 /**
  * @file

@@ -1,5 +1,4 @@
 <?php
-// $Id: form.inc,v 1.3 2010/10/11 22:18:24 sdboyer Exp $
 
 /**
  * Plugins are described by creating a $plugin array which will be used

@@ -1,5 +1,4 @@
 <?php
-// $Id: vocabulary_terms.inc,v 1.7 2010/10/11 22:18:23 sdboyer Exp $
 
 if (module_exists('taxonomy')) {
   /**

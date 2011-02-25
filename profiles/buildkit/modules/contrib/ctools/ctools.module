@@ -1,5 +1,4 @@
 <?php
-// $Id: ctools.module,v 1.40 2011/01/05 20:06:57 merlinofchaos Exp $
 
 /**
  * @file
@@ -117,6 +116,17 @@ function ctools_include($file, $module = 'ctools', $dir = 'includes') {
 }
 
 /**
+ * Include .inc files in a form context.
+ *
+ * This is a variant of ctools_include that will save information in the
+ * the form_state so that cached forms will properly include things.
+ */
+function ctools_form_include(&$form_state, $file, $module = 'ctools', $dir = 'includes') {
+  $dir = '/' . ($dir ? $dir . '/' : '');
+  form_load_include($form_state, 'inc', $module, $dir . $file);
+}
+
+/**
  * Provide the proper path to an image as necessary.
  *
  * This helper function is used by ctools but can also be used in other
@@ -148,6 +158,28 @@ function ctools_image_path($image, $module = 'ctools', $dir = 'images') {
  */
 function ctools_add_css($file, $module = 'ctools', $dir = 'css') {
   drupal_add_css(drupal_get_path('module', $module) . "/$dir/$file.css");
+}
+
+/**
+ * Format a css file name for use with $form['#attached']['css'].
+ *
+ * This helper function is used by ctools but can also be used in other
+ * modules in the same way as explained in the comments of ctools_include.
+ *
+ * @code
+ *   $form['#attached']['css'] = array(ctools_attach_css('collapsible-div'));
+ *   $form['#attached']['css'][ctools_attach_css('collapsible-div')] = array('preprocess' => FALSE);
+ * @endcode
+ *
+ * @param $file
+ *   The base file name to be included.
+ * @param $module
+ *   Optional module containing the include.
+ * @param $dir
+ *   Optional subdirectory containing the include file.
+ */
+function ctools_attach_css($file, $module = 'ctools', $dir = 'css') {
+  return drupal_get_path('module', $module) . "/$dir/$file.css";
 }
 
 /**
@@ -741,3 +773,10 @@ function ctools_block_list_alter(&$blocks) {
   }
 }
 
+/**
+ * Implement hook_modules_enabled to clear static caches for detecting new plugins
+ */
+function ctools_modules_enabled($modules) {
+  ctools_include('plugins');
+  ctools_get_plugins_reset();
+}

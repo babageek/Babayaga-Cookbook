@@ -1,5 +1,4 @@
 <?php
-// $Id: node_form_attachments.inc,v 1.4 2010/10/11 22:18:23 sdboyer Exp $
 
 if (module_exists('upload')) {
   /**

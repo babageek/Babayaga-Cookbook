@@ -1,5 +1,4 @@
 <?php
-// $Id: contact.inc,v 1.4 2010/10/11 22:18:24 sdboyer Exp $
 
 if (module_exists('contact')) {
   /**

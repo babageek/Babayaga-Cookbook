@@ -1,5 +1,4 @@
 <?php
-// $Id: contact_user.inc,v 1.4 2010/01/21 05:59:29 sdboyer Exp $
 
 /**
  * Specialized implementation of hook_page_manager_task_tasks(). See api-task.html for

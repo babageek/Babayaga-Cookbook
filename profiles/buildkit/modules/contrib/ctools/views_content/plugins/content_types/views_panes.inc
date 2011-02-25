@@ -1,5 +1,4 @@
 <?php
-// $Id: views_panes.inc,v 1.24 2011/01/05 19:53:36 merlinofchaos Exp $
 
 /**
  * @file

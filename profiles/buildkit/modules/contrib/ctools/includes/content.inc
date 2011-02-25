@@ -1,5 +1,4 @@
 <?php
-// $Id: content.inc,v 1.21 2010/12/31 23:53:34 merlinofchaos Exp $
 
 /**
  * @file

@@ -1,4 +1,3 @@
-// $Id: modal.js,v 1.27 2010/12/31 22:27:02 merlinofchaos Exp $
 /**
  * @file
  *

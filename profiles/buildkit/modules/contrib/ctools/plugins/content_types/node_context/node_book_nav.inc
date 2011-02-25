@@ -1,5 +1,4 @@
 <?php
-// $Id: node_book_nav.inc,v 1.4 2010/10/11 22:18:22 sdboyer Exp $
 
 if (module_exists('book')) {
   /**

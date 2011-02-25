@@ -1,5 +1,4 @@
 <?php
-// $Id: node_comments.inc,v 1.9 2010/12/31 21:04:28 merlinofchaos Exp $
 
 if (module_exists('comment')) {
   /**

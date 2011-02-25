@@ -1,5 +1,4 @@
 <?php
-// $Id: modal.inc,v 1.13 2010/12/31 23:58:52 merlinofchaos Exp $
 
 /**
  * @file

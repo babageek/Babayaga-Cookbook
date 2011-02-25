@@ -1,5 +1,4 @@
 <?php
-// $Id: entity_field.inc,v 1.3 2011/01/05 22:57:26 merlinofchaos Exp $
 
 $plugin = array(
   'title' => t('Entity field'),

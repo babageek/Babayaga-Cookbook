@@ -1,5 +1,4 @@
 <?php
-// $Id: entity_from_schema.inc,v 1.1 2011/01/05 20:34:46 merlinofchaos Exp $
 
 /**
  * @file

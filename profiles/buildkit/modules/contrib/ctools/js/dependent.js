@@ -1,4 +1,3 @@
-// $Id: dependent.js,v 1.9 2011/01/01 00:19:17 merlinofchaos Exp $
 /**
  * @file
  *

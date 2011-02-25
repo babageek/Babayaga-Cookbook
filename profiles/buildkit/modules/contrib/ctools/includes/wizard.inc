@@ -1,5 +1,4 @@
 <?php
-// $Id: wizard.inc,v 1.20 2010/10/27 20:07:10 merlinofchaos Exp $
 
 /**
  * @file

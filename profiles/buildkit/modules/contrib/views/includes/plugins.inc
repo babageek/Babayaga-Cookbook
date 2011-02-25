@@ -1,10 +1,12 @@
 <?php
-// $Id: plugins.inc,v 1.156.4.15 2011/01/18 20:53:08 merlinofchaos Exp $
 /**
  * @file plugins.inc
  * Built in plugins for Views output handling.
  *
  */
+
+// @todo: Remove this once update.php can use the registry
+views_include('base');
 
 /**
  * Implements hook_views_plugins
@@ -418,6 +420,20 @@ function views_discover_plugins() {
  * Abstract base class to provide interface common to all plugins.
  */
 class views_plugin extends views_object {
+  /**
+   * The top object of a view.
+   * 
+   * @var view
+   */
+  var $view = NULL;
+  
+  /**
+   * The current used display plugin.
+   *
+   * @var views_plugin_display
+   */
+  var $display = NULL;
+
   /**
    * Init will be called after construct, when the plugin is attached to a
    * view and a display.

@@ -1,5 +1,4 @@
 <?php
-// $Id: nid.inc,v 1.10 2010/01/29 20:18:01 merlinofchaos Exp $
 
 /**
  * @file

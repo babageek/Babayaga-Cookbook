@@ -1,5 +1,4 @@
 <?php
-// $Id: stylizer.inc,v 1.3 2011/01/05 22:35:46 merlinofchaos Exp $
 /**
  * @file
  * Create customized CSS and images from palettes created by user input.

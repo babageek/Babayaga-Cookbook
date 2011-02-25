@@ -1,5 +1,4 @@
 <?php
-// $Id: views_plugin_display.inc,v 1.27.4.52 2011/01/20 20:09:03 merlinofchaos Exp $
 /**
  * @file
  * Contains the base display plugin.
@@ -25,6 +24,13 @@
  * @ingroup views_display_plugins
  */
 class views_plugin_display extends views_plugin {
+  /**
+   * The top object of a view.
+   * 
+   * @var view
+   */
+  var $view = NULL;
+
   var $handlers = array();
 
   function init(&$view, &$display, $options = NULL) {
@@ -694,6 +700,9 @@ class views_plugin_display extends views_plugin {
         $plugin->init($this->view, $this->display, $options);
       }
       else {
+        $display_id = $this->is_defaulted($option_name) ? $this->display->id : 'default';
+        $plugin->localization_keys = array($display_id, $type);
+
         if (!isset($this->base_field)) {
           $views_data = views_fetch_data($this->view->base_table);
           $this->view->base_field = $views_data['table']['base']['field'];
@@ -759,6 +768,11 @@ class views_plugin_display extends views_plugin {
 
         $handler = views_get_handler($info['table'], $info['field'], $handler_type, $override);
         if ($handler) {
+          // Special override for area types so they know where they come from.
+          if ($handler_type == 'area') {
+            $handler->handler_type = $type;
+          }
+
           $handler->init($this->view, $info);
           $this->handlers[$type][$id] = &$handler;
         }
@@ -1732,7 +1746,7 @@ class views_plugin_display extends views_plugin {
           $form['markup'] = array(
             '#prefix' => '<div class="form-item description">',
             '#suffix' => '</div>',
-            '#value' => t('You may also adjust the !settings for the currently selected style by clicking on the icon.', array('!settings' => $this->option_link(t('settings'), 'exposed_form_options'))),
+            '#markup' => t('You may also adjust the !settings for the currently selected style by clicking on the icon.', array('!settings' => $this->option_link(t('settings'), 'exposed_form_options'))),
           );
         }
         break;
@@ -1768,7 +1782,7 @@ class views_plugin_display extends views_plugin {
           $form['markup'] = array(
             '#prefix' => '<div class="form-item description">',
             '#suffix' => '</div>',
-            '#value' => t('You may also adjust the !settings for the currently selected pager by clicking on the icon.', array('!settings' => $this->option_link(t('settings'), 'pager_options'))),
+            '#markup' => t('You may also adjust the !settings for the currently selected pager by clicking on the icon.', array('!settings' => $this->option_link(t('settings'), 'pager_options'))),
           );
         }
 
@@ -2168,6 +2182,13 @@ class views_plugin_display extends views_plugin {
   function render_filters() { }
 
   /**
+   * Not all display plugins will suppert pager rendering.
+   */
+  function render_pager() {
+    return TRUE;
+  }
+
+  /**
    * Render the 'more' link
    */
   function render_more_link() {
@@ -2182,7 +2203,7 @@ class views_plugin_display extends views_plugin {
         $theme = views_theme_functions('views_more', $this->view, $this->display);
         $path = check_url(url($path, $url_options));
 
-        return theme($theme, array('more_url' => $path, 'link_text' => $this->use_more_text()));
+        return theme($theme, array('more_url' => $path, 'link_text' => check_plain($this->use_more_text())));
       }
     }
   }
@@ -2268,7 +2289,7 @@ class views_plugin_display extends views_plugin {
    */
   function pre_execute() {
     $this->view->set_use_ajax($this->use_ajax());
-    if ($this->use_more()) {
+    if ($this->use_more() && !$this->use_more_always()) {
       $this->view->get_total_rows = TRUE;
     }
     $this->view->init_handlers();

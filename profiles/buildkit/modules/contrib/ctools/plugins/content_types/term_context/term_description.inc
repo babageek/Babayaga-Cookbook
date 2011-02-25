@@ -1,5 +1,4 @@
 <?php
-// $Id: term_description.inc,v 1.4 2010/10/11 22:18:23 sdboyer Exp $
 
 /**
  * Plugins are described by creating a $plugin array which will be used

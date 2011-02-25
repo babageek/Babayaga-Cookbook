@@ -1,5 +1,4 @@
 <?php
-// $Id: ctools_export_ui.class.php,v 1.5 2011/01/05 22:35:46 merlinofchaos Exp $
 
 /**
  * Base class for export UI.
@@ -181,7 +180,8 @@ class ctools_export_ui {
       $form_state['input']['form_id'] = 'ctools_export_ui_list_form';
     }
 
-    $form = drupal_render(drupal_build_form('ctools_export_ui_list_form', $form_state));
+    $form = drupal_build_form('ctools_export_ui_list_form', $form_state);
+    $form = drupal_render($form);
 
     $output = $this->list_header($form_state) . $this->list_render($form_state) . $this->list_footer($form_state);
 
