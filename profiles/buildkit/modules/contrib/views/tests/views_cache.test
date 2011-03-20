@@ -1,4 +1,5 @@
 <?php
+// $Id: views_cache.test,v 1.1.4.3 2010/05/24 19:58:36 dereine Exp $
 /**
  * @file
  *   test cache system.
@@ -30,7 +31,7 @@ class ViewsCacheTest extends ViewsSqlTest {
     $view->base_table = 'views_test';
 
     // Set up the fields we need.
-    $display = $view->new_display('default', 'Master', 'default');
+    $display = $view->new_display('default', 'Defaults', 'default');
     $display->override_option('fields', array(
       'id' => array(
         'id' => 'id',

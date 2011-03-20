@@ -1,4 +1,5 @@
 <?php
+// $Id: theme.inc,v 1.84.4.43 2011/01/04 00:00:20 dereine Exp $
 
 /**
  * @file theme.inc
@@ -72,28 +73,41 @@ function template_preprocess_views_view(&$vars) {
   $vars['exposed']    = !empty($view->exposed_widgets) ? $view->exposed_widgets : '';
   $vars['more']       = $view->display_handler->render_more_link();
   $vars['feed_icon']  = !empty($view->feed_icon) ? $view->feed_icon : '';
-
-  $vars['pager']      = '';
-
-  // @todo: Figure out whether this belongs into views_ui_preprocess_views_view.
-  // Render title for the admin preview.
-  $vars['title'] = !empty($view->views_ui_context) ? filter_xss_admin($view->get_title()) : '';
-
-  if ($view->display_handler->render_pager()) {
-    $exposed_input = isset($view->exposed_data_raw) ? $view->exposed_data_raw : NULL;
-    $vars['pager']      = $view->query->render_pager($exposed_input);
-  }
+  $vars['pager']      = $view->query->render_pager();
 
   $vars['attachment_before'] = !empty($view->attachment_before) ? $view->attachment_before : '';
   $vars['attachment_after'] = !empty($view->attachment_after) ? $view->attachment_after : '';
 
-  // Add contextual links to the view. We need to attach them to the dummy
-  // $view_array variable, since contextual_preprocess() requires that they be
-  // attached to an array (not an object) in order to process them. For our
-  // purposes, it doesn't matter what we attach them to, since once they are
-  // processed by contextual_preprocess() they will appear in the $title_suffix
-  // variable (which we will then render in views-view.tpl.php).
-  views_add_contextual_links($vars['view_array'], 'view', $view, $view->current_display);
+  // if administrator, add some links. These used to be tabs, but this is better.
+  if (user_access('administer views') && module_exists('views_ui') && module_exists('contextual') && empty($view->hide_admin_links) && !variable_get('views_no_hover_links', FALSE)) {
+    $links = array(
+      'views-edit' => array(
+        'title' => t('Edit view'),
+        'attributes' => array('title' => t("Edit this view")),
+        'href' => "admin/structure/views/edit/$view->name",
+        'fragment' => 'views-tab-' . $view->current_display,
+        'query' => drupal_get_destination(),
+      ),
+    );
+    drupal_alter('views_admin_links', $links, $view);
+
+    $build = array(
+      '#prefix' => '<div class="contextual-links-wrapper">',
+      '#suffix' => '</div>',
+      '#theme' => 'links__contextual',
+      '#links' => $links,
+      '#attributes' => array('class' => array('contextual-links')),
+      '#attached' => array(
+        'library' => array(array('contextual', 'contextual-links')),
+      ),
+    );
+    $vars['classes_array'][] = 'contextual-links-region';
+    $vars['admin_links'] = drupal_render($build);
+  }
+  else {
+    $vars['admin_links'] = '';
+    $vars['admin_links_raw'] = array();
+  }
 
   // Attachments are always updated with the outer view, never by themselves,
   // so they do not have dom ids.
@@ -113,7 +127,7 @@ function template_preprocess_views_view(&$vars) {
   }
 
   // If using AJAX, send identifying data about this view.
-  if ($view->use_ajax && empty($view->is_attachment) && empty($view->live_preview)) {
+  if ($view->use_ajax && empty($view->is_attachment)) {
     $settings = array(
       'views' => array(
         'ajax_path' => url('views/ajax'),
@@ -217,7 +231,7 @@ function template_preprocess_views_view_fields(&$vars) {
           if ($class) {
             $class .= ' ';
           }
-          $class .= $classes;
+          $class .= ' ' . $classes;
         }
 
         $object->wrapper_prefix = '<' . $object->inline_html;
@@ -299,7 +313,7 @@ function template_preprocess_views_view_summary(&$vars) {
   if (!empty($view->exposed_raw_input)) {
     $url_options['query'] = $view->exposed_raw_input;
   }
-  $vars['classes_array'] = array();
+  $vars['classes'] = array();
   foreach ($vars['rows'] as $id => $row) {
     $vars['rows'][$id]->link = $argument->summary_name($row);
     $args = $view->args;
@@ -312,7 +326,7 @@ function template_preprocess_views_view_summary(&$vars) {
     $vars['rows'][$id]->url = url($view->get_url($args, $base_path), $url_options);
     $vars['rows'][$id]->count = intval($row->{$argument->count_alias});
     if ($vars['rows'][$id]->url == base_path() . $_GET['q'] || $vars['rows'][$id]->url == base_path() . drupal_get_path_alias($_GET['q'])) {
-      $vars['classes_array'][$id] = 'active';
+      $vars['classes'][$id] = 'active';
     }
   }
 }
@@ -324,7 +338,7 @@ function template_preprocess_views_view_summary(&$vars) {
 function template_preprocess_views_view_summary_unformatted(&$vars) {
   $view     = $vars['view'];
   $argument = $view->argument[$view->build_info['summary_level']];
-  $vars['row_classes'] = array();
+  $vars['classes'] = array();
 
   $url_options = array();
 
@@ -349,7 +363,7 @@ function template_preprocess_views_view_summary_unformatted(&$vars) {
     $vars['rows'][$id]->url = url($view->get_url($args, $base_path), $url_options);
     $vars['rows'][$id]->count = intval($row->{$argument->count_alias});
     if ($vars['rows'][$id]->url == base_path() . $_GET['q'] || $vars['rows'][$id]->url == base_path() . drupal_get_path_alias($_GET['q'])) {
-      $vars['row_classes'][$id] = 'active';
+      $vars['classes'][$id] = 'active';
     }
   }
 }
@@ -508,7 +522,7 @@ function template_preprocess_views_view_table(&$vars) {
     drupal_add_js('misc/tableheader.js');
     $vars['classes_array'][] = "sticky-enabled";
   }
-  $vars['classes_array'][] = 'cols-'. count($vars['header']);
+  $vars['classes_array'][] = 'cols-'. count($vars['rows']);
 
   if (!empty($handler->options['summary'])) {
     $vars['attributes_array'] = array('summary' => $handler->options['summary']);
@@ -612,7 +626,7 @@ function template_preprocess_views_view_grid(&$vars) {
     }
   }
   $vars['rows'] = $rows;
-  $vars['class'] = 'views-view-grid cols-' . $columns;
+
   if (!empty($handler->options['summary'])) {
     $vars['attributes_array'] = array('summary' => $handler->options['summary']);
   }
@@ -730,11 +744,7 @@ function template_preprocess_views_view_rss(&$vars) {
   $vars['items'] = $items;
   $vars['channel_elements'] = format_xml_elements($style->channel_elements);
 
-  // During live preview we don't want to output the header since the contents
-  // of the feed are being displayed inside a normal HTML page.
-  if (empty($vars['view']->live_preview)) {
-    drupal_add_http_header('Content-Type', 'application/rss+xml; charset=utf-8');
-  }
+  drupal_add_http_header('Content-Type', 'application/rss+xml; charset=utf-8');
 }
 
 /**
@@ -878,14 +888,6 @@ function theme_views_mini_pager($vars) {
       )
     );
   }
-}
-
-/**
- * Generic <div> container function.
- */
-function theme_views_container($variables) {
-  $element = $variables['element'];
-  return '<div' . drupal_attributes($element['#attributes']) . '>' . $element['#children'] . '</div>';
 }
 
 /**

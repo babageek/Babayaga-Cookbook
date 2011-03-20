@@ -1,4 +1,5 @@
 <?php
+// $Id: handlers.inc,v 1.119.4.22 2011/01/05 22:40:08 dereine Exp $
 /**
  * @file handlers.inc
  * Defines the various handler objects to help build and display views.
@@ -7,7 +8,7 @@
 /**
  * Instantiate and construct a new handler
  */
-function _views_create_handler($definition, $type = 'handler', $handler_type = NULL) {
+function _views_create_handler($definition, $type = 'handler') {
 //  debug('Instantiating handler ' . $definition['handler']);
   if (empty($definition['handler'])) {
     return;
@@ -31,15 +32,6 @@ function _views_create_handler($definition, $type = 'handler', $handler_type = N
    }
 
   $handler->set_definition($definition);
-  if ($type == 'handler') {
-    $handler->is_handler = TRUE;
-    $handler->handler_type = $handler_type;
-  }
-  else {
-    $handler->is_plugin = TRUE;
-    $handler->plugin_type = $type;
-  }
-
   // let the handler have something like a constructor.
   $handler->construct();
 
@@ -49,7 +41,7 @@ function _views_create_handler($definition, $type = 'handler', $handler_type = N
 /**
  * Prepare a handler's data by checking defaults and such.
  */
-function _views_prepare_handler($definition, $data, $field, $type) {
+function _views_prepare_handler($definition, $data, $field) {
   foreach (array('group', 'title', 'title short', 'help', 'real field') as $key) {
     if (!isset($definition[$key])) {
       // First check the field level
@@ -63,7 +55,7 @@ function _views_prepare_handler($definition, $data, $field, $type) {
     }
   }
 
-  return _views_create_handler($definition, 'handler', $type);
+  return _views_create_handler($definition);
 }
 
 /**
@@ -131,20 +123,6 @@ function views_get_table_join($table, $base_table) {
  */
 class views_handler extends views_object {
   /**
-   * The top object of a view.
-   *
-   * @var view
-   */
-  var $view = NULL;
-
-  /**
-   * Where the $query object will reside:
-   *
-   * @var views_plugin_query
-   */
-  var $query = NULL;
-
-  /**
    * init the handler with necessary data.
    * @param $view
    *   The $view object this handler is attached to.
@@ -154,26 +132,6 @@ class views_handler extends views_object {
    */
   function init(&$view, &$options) {
     $this->view = &$view;
-    $display_id = $this->view->current_display;
-    // Check to see if this handler type is defaulted. Note that
-    // we have to do a lookup because the type is singular but the
-    // option is stored as the plural.
-    $types = views_object_types();
-    $plural = $this->handler_type;
-    if (isset($types[$this->handler_type]['plural'])) {
-      $plural = $types[$this->handler_type]['plural'];
-    }
-    if ($this->view->display_handler->is_defaulted($plural)) {
-      $display_id = 'default';
-    }
-
-    $this->localization_keys = array(
-      $display_id,
-      $this->handler_type,
-      $options['table'],
-      $options['field']
-    );
-
     $this->unpack_options($this->options, $options);
 
     // This exist on most handlers, but not all. So they are still optional.
@@ -253,74 +211,16 @@ class views_handler extends views_object {
   }
 
   /**
-   * Get the value that's supposed to be rendered.
-   *
-   * @param $values
-   *   An object containing all retrieved values.
-   * @param $field
-   *   Optional name of the field where the value is stored.
-   */
-  function get_value($values, $field = NULL) {
-    $alias = isset($field) ? $this->aliases[$field] : $this->field_alias;
-    if (isset($values->{$alias})) {
-      return $values->{$alias};
-    }
-  }
-
-  /**
-   * Sanitize the value for output.
-   *
-   * @param $value
-   *   The value being rendered.
-   * @param $type
-   *   The type of sanitization needed. If not provided, check_plain() is used.
-   */
-  function sanitize_value($value, $type = NULL) {
-    switch ($type) {
-      case 'xss':
-        $value = filter_xss($value);
-        break;
-      case 'url':
-        $value = check_url($value);
-        break;
-      default:
-        $value = check_plain($value);
-        break;
-    }
-    return $value;
-  }
-
-  /**
    * Validate the options form.
    */
   function options_validate(&$form, &$form_state) { }
 
-  /**
-   * Build the options form.
-   */
   function options_form(&$form, &$form_state) {
-    // Some form elements belong in a fieldset for presentation, but can't
-    // be moved into one because of the form_state['values'] hierarchy. Those
-    // elements can add a #fieldset => 'fieldset_name' property, and they'll
-    // be moved to their fieldset during pre_render.
-    $form['#pre_render'][] = 'views_ui_pre_render_add_fieldset_markup';
-
     $form['ui_name'] = array(
       '#type' => 'textfield',
-      '#title' => t('Administrative title'),
+      '#title' => t('Administrative Title'),
       '#description' => t('This title will be displayed on the views edit page instead of the default one. This might be useful if you have the same item twice.'),
       '#default_value' => $this->options['ui_name'],
-      '#fieldset' => 'more',
-    );
-
-    // This form is long and messy enough that the "Administrative title" option
-    // belongs in a "more options" fieldset at the bottom of the form.
-    $form['more'] = array(
-      '#type' => 'fieldset',
-      '#title' => t('More'),
-      '#collapsible' => TRUE,
-      '#collapsed' => TRUE,
-      '#weight' => 50,
     );
   }
 
@@ -428,9 +328,39 @@ class views_handler extends views_object {
   function exposed_submit(&$form, &$form_state) { }
 
   /**
-   * Form for exposed handler options.
+   * Overridable form for exposed handler options.
+   *
+   * If overridden, it is best to call the parent or re-implement
+   * the stuff here.
+   *
+   * Many handlers will need to override this in order to provide options
+   * that are nicely tailored to the given filter.
    */
-  function expose_form(&$form, &$form_state) { }
+  function expose_form(&$form, &$form_state) {
+    $form['expose']['start_left'] = array(
+      '#markup' => '<div class="views-left-50">',
+    );
+
+    $this->expose_form_left($form, $form_state);
+
+    $form['expose']['end_left'] = array(
+      '#markup' => '</div>',
+    );
+
+    $form['expose']['start_checkboxes'] = array(
+      '#markup' => '<div class="form-checkboxes views-left-40 clearfix">',
+    );
+
+    $this->expose_form_right($form, $form_state);
+
+    $form['expose']['end_checkboxes'] = array(
+      '#markup' => '</div>',
+    );
+  }
+
+  function expose_form_left(&$form, &$form_state) { }
+
+  function expose_form_right(&$form, &$form_state){ }
 
   /**
    * Validate the options form.
@@ -443,10 +373,34 @@ class views_handler extends views_object {
    */
   function expose_submit($form, &$form_state) { }
 
-  /**
+    /**
    * Shortcut to display the expose/hide button.
    */
-  function show_expose_button(&$form, &$form_state) { }
+  function show_expose_button(&$form, &$form_state) {
+    $form['expose_button'] = array(
+      '#prefix' => '<div class="views-expose clearfix">',
+      '#suffix' => '</div>',
+    );
+    if (empty($this->options['exposed'])) {
+      $form['expose_button']['button'] = array(
+        '#type' => 'submit',
+        '#value' => t('Expose'),
+        '#submit' => array('views_ui_config_item_form_expose'),
+      );
+      $form['expose_button']['markup'] = array(
+        '#markup' => '<div class="description">' . t('This item is currently not exposed. If you <strong>expose</strong> it, users will be able to change the filter as they view it.') . '</div>',
+      );
+    }
+    else {
+      $form['expose_button']['button'] = array(
+        '#type' => 'submit',
+        '#value' => t('Hide'),
+        '#submit' => array('views_ui_config_item_form_expose'),
+      );
+      $form['expose_button']['markup'] = array(
+        '#markup' => '<div class="description">' . t('This item is currently exposed. If you <strong>hide</strong> it, users will not be able to change the filter as they view it.') . '</div>',      );
+    }
+  }
 
   /**
    * Shortcut to display the exposed options form.
@@ -456,6 +410,10 @@ class views_handler extends views_object {
       return;
     }
 
+    $form['expose'] = array(
+      '#prefix' => '<div class="views-expose-options clearfix">',
+      '#suffix' => '</div>',
+    );
     $this->expose_form($form, $form_state);
 
     // When we click the expose button, we add new gadgets to the form but they
@@ -638,7 +596,7 @@ class views_many_to_one_helper {
     $this->handler = &$handler;
   }
 
-  static function option_definition(&$options) {
+  function option_definition(&$options) {
     $options['reduce_duplicates'] = array('default' => FALSE);
   }
 
@@ -871,13 +829,8 @@ class views_many_to_one_helper {
     $options = $this->handler->options;
     $operator = $this->handler->operator;
     $formula = !empty($this->formula);
-    $value = $this->handler->value;
     if (empty($options['group'])) {
       $options['group'] = 0;
-    }
-    else {
-      $value = $this->handler->value;
-      $operator = 'IN';
     }
 
     $add_condition = TRUE;
@@ -898,23 +851,21 @@ class views_many_to_one_helper {
       $add_condition = FALSE;
     }
 
-    if (!$add_condition) {
-      if ($formula) {
-        $placeholder = $this->placeholder();
-        if ($operator == 'IN') {
-          $operator = "$operator IN($placeholder)";
-        }
-        else {
-          $operator = "$operator $placeholder";
-        }
-        $placeholders = array(
-          $placeholder => $value,
-        ) + $this->placeholders;
-        $this->handler->query->add_where_expression($options['group'], "$field $operator", $placeholders);
+    if ($formula) {
+      $placeholder = $this->placeholder();
+      if ($operator == 'IN') {
+        $operator = "$operator IN($placeholder)";
       }
       else {
-        $this->handler->query->add_where($options['group'], $field, $value, $operator);
+        $operator = "$operator $placeholder";
       }
+      $placeholders = array(
+        $placeholder => $value,
+      ) + $this->placeholders;
+      $this->handler->query->add_where_expression($options['group'], "$field $operator", $placeholders);
+    }
+    else {
+      $this->handler->query->add_where($options['group'], $field, $value, $operator);
     }
 
     if ($add_condition) {
@@ -935,58 +886,6 @@ class views_many_to_one_helper {
  *
  * @param $str
  *   The string to parse.
- * @param $handler
- *   The handler object to use as a base.
- *
- * @return $handler
- *   The new handler object.
- */
-function views_break_phrase_string($str, &$handler) {
-  if (!$handler) {
-    $handler = new stdClass();
-  }
-
-  // Set up defaults:
-  if (!isset($handler->value)) {
-    $handler->value = array();
-  }
-
-  if (!isset($handler->operator)) {
-    $handler->operator = 'or';
-  }
-
-  if ($str == '') {
-    return $handler;
-  }
-
-  if (preg_match('/^(\w+[+ ])+\w+$/', $str)) {
-    // The '+' character in a query string may be parsed as ' '.
-    $handler->operator = 'or';
-    $handler->value = preg_split('/[+ ]/', $str);
-  }
-  else if (preg_match('/^(\w+,)*\w+$/', $str)) {
-    $handler->operator = 'and';
-    $handler->value = explode(',', $str);
-  }
-
-  // Keep an 'error' value if invalid strings were given.
-  if (!empty($str) && (empty($handler->value) || !is_array($handler->value))) {
-    $handler->value = array(-1);
-    return $handler;
-  }
-
-  // Doubly ensure that all values are strings only.
-  foreach ($handler->value as $id => $value) {
-    $handler->value[$id] = (string) $value;
-  }
-
-  return $handler;
-}
-/*
- * Break x,y,z and x+y+z into an array. Numeric only.
- *
- * @param $str
- *   The string to parse.
  * @param $filter
  *   The filter object to use as a base. If not specified one will
  *   be created.
@@ -994,47 +893,47 @@ function views_break_phrase_string($str, &$handler) {
  * @return $filter
  *   The new filter object.
  */
-function views_break_phrase($str, $handler = NULL) {
-  if (!$handler) {
-    $handler = new stdClass();
+function views_break_phrase($str, $filter = NULL) {
+  if (!$filter) {
+    $filter = new stdClass();
   }
 
   // Set up defaults:
 
-  if (!isset($handler->value)) {
-    $handler->value = array();
+  if (!isset($filter->value)) {
+    $filter->value = array();
   }
 
-  if (!isset($handler->operator)) {
-    $handler->operator = 'or';
+  if (!isset($filter->operator)) {
+    $filter->operator = 'or';
   }
 
   if (empty($str)) {
-    return $handler;
+    return $filter;
   }
 
   if (preg_match('/^([0-9]+[+ ])+[0-9]+$/', $str)) {
     // The '+' character in a query string may be parsed as ' '.
-    $handler->operator = 'or';
-    $handler->value = preg_split('/[+ ]/', $str);
+    $filter->operator = 'or';
+    $filter->value = preg_split('/[+ ]/', $str);
   }
   elseif (preg_match('/^([0-9]+,)*[0-9]+$/', $str)) {
-    $handler->operator = 'and';
-    $handler->value = explode(',', $str);
+    $filter->operator = 'and';
+    $filter->value = explode(',', $str);
   }
 
   // Keep an 'error' value if invalid strings were given.
-  if (!empty($str) && (empty($handler->value) || !is_array($handler->value))) {
-    $handler->value = array(-1);
-    return $handler;
+  if (!empty($str) && (empty($filter->value) || !is_array($filter->value))) {
+    $filter->value = array(-1);
+    return $filter;
   }
 
   // Doubly ensure that all values are numeric only.
-  foreach ($handler->value as $id => $value) {
-    $handler->value[$id] = intval($value);
+  foreach ($filter->value as $id => $value) {
+    $filter->value[$id] = intval($value);
   }
 
-  return $handler;
+  return $filter;
 }
 
 // --------------------------------------------------------------------------
@@ -1430,3 +1329,52 @@ class views_join {
 /**
  * @}
  */
+
+// Declare API compatibility on behalf of core modules:
+
+/**
+ * Implements hook_views_api().
+ *
+ * This one is used as the base to reduce errors when updating.
+ */
+function views_views_api() {
+  return array(
+    // in your modules do *not* use views_api_version()!!!
+    'api' => views_api_version(),
+    'path' => drupal_get_path('module', 'views') . '/modules',
+  );
+}
+
+function aggregator_views_api() { return views_views_api(); }
+
+function book_views_api() { return views_views_api(); }
+
+function comment_views_api() { return views_views_api(); }
+
+function locale_views_api() { return views_views_api(); }
+
+function field_views_api() { return views_views_api(); }
+
+function filter_views_api() { return views_views_api(); }
+
+function node_views_api() { return views_views_api(); }
+
+function poll_views_api() { return views_views_api(); }
+
+function profile_views_api() { return views_views_api(); }
+
+function search_views_api() { return views_views_api(); }
+
+function statistics_views_api() { return views_views_api(); }
+
+function system_views_api() { return views_views_api(); }
+
+function taxonomy_views_api() { return views_views_api(); }
+
+function translation_views_api() { return views_views_api(); }
+
+function upload_views_api() { return views_views_api(); }
+
+function user_views_api() { return views_views_api(); }
+
+function contact_views_api() { return views_views_api(); }

@@ -1,4 +1,5 @@
 <?php
+// $Id: taxonomy.views.inc,v 1.57.4.18 2010/12/04 07:46:13 dereine Exp $
 /**
  * @file
  *
@@ -20,7 +21,6 @@ function taxonomy_views_data() {
   // ----------------------------------------------------------------------
   // taxonomy_vocabulary table
 
-  $data['vocabulary']['moved to'] = 'taxonomy_vocabulary';
   $data['taxonomy_vocabulary']['table']['group']  = t('Taxonomy');
 
   $data['taxonomy_vocabulary']['table']['join'] = array(
@@ -77,7 +77,6 @@ function taxonomy_views_data() {
   // ----------------------------------------------------------------------
  // taxonomy_term_data table
 
-  $data['term_data']['moved to'] = 'taxonomy_term_data';
   $data['taxonomy_term_data']['table']['group']  = t('Taxonomy');
   $data['taxonomy_term_data']['table']['base'] = array(
     'field' => 'tid',
@@ -164,9 +163,6 @@ function taxonomy_views_data() {
     'sort' => array(
       'handler' => 'views_handler_sort',
     ),
-    'filter' => array(
-      'handler' => 'views_handler_filter_string',
-    ),
   );
 
   // Term description
@@ -202,7 +198,6 @@ function taxonomy_views_data() {
   // ----------------------------------------------------------------------
   // taxonomy_index table
 
-  $data['term_node']['moved to'] = 'taxonomy_index';
   $data['taxonomy_index']['table']['group']  = t('Taxonomy');
 
   $data['taxonomy_index']['table']['join'] = array(
@@ -223,8 +218,8 @@ function taxonomy_views_data() {
   );
 
   $data['taxonomy_index']['nid'] = array(
-    'title' => t('Content'),
-    'help' => t('Get all content tagged with a term.'),
+    'title' => t('Node'),
+    'help' => t('Get all nodes tagged with a term.'),
     'relationship' => array(
       'handler' => 'views_handler_relationship',
       'base' => 'node',
@@ -267,7 +262,6 @@ function taxonomy_views_data() {
 
   $data['taxonomy_term_hierarchy']['table']['group']  = t('Taxonomy');
 
-  $data['term_hierarchy']['moved to'] = 'taxonomy_term_hierarchy';
   $data['taxonomy_term_hierarchy']['table']['join'] = array(
     'taxonomy_term_hierarchy' => array(
       // links to self through left.parent = right.tid (going down in depth)
@@ -302,12 +296,11 @@ function taxonomy_views_data() {
   );
 
   // ----------------------------------------------------------------------
-  // taxonomy_term_synonym table
+  // term_synonym table
 
-  $data['term_synonym']['moved to'] = 'taxonomy_term_synonym';
-  $data['taxonomy_term_synonym']['table']['group']  = t('Taxonomy');
+  $data['term_synonym']['table']['group']  = t('Taxonomy');
 
-  $data['taxonomy_term_synonym']['table']['join'] = array(
+  $data['term_synonym']['table']['join'] = array(
     'taxonomy_term_data' => array(
       // links directly to taxonomy_term_data via tid
       'left_field' => 'tid',
@@ -320,7 +313,7 @@ function taxonomy_views_data() {
     ),
   );
 
-  $data['taxonomy_term_synonym']['name'] = array(
+  $data['term_synonym']['name'] = array(
     'title' => t('Term synonym'),
     'help' => t('Term synonyms may be used to find terms by alternate names.'),
     'argument' => array(
@@ -364,7 +357,7 @@ function taxonomy_views_data_alter(&$data) {
   $data['node']['term_node_tid_depth_modifier'] = array(
     'group' => t('Taxonomy'),
     'title' => t('Term ID depth modifier'),
-    'help' => t('Allows the "depth" for Taxonomy: Term ID (with depth) to be modified via an additional contextual filter value.'),
+    'help' => t('Allows the "depth" for Taxonomy: Term ID (with depth) to be modified via an additional argument.'),
     'argument' => array(
       'handler' => 'views_handler_argument_term_node_tid_depth_modifier',
     ),
@@ -436,7 +429,7 @@ function views_taxonomy_set_breadcrumb(&$breadcrumb, &$argument) {
       continue;
     }
     if ($argument->options['use_taxonomy_term_path']) {
-      $path = taxonomy_term_uri($parent);
+      $path = taxonomy_term_path($parent);
     }
     else {
       $args[$argument->position] = $parent->tid;

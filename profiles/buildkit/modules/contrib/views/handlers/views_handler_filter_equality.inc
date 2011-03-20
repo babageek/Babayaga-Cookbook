@@ -1,10 +1,11 @@
 <?php
+// $Id: views_handler_filter_equality.inc,v 1.2 2008/09/10 01:08:06 merlinofchaos Exp $
 /**
  * Simple filter to handle equal to / not equal to filters
  */
 class views_handler_filter_equality extends views_handler_filter {
   // exposed filter options
-  var $always_multiple = TRUE;
+  var $no_single = TRUE;
 
   /**
    * Provide simple equality operator
@@ -35,3 +36,4 @@ class views_handler_filter_equality extends views_handler_filter {
     }
   }
 }
+

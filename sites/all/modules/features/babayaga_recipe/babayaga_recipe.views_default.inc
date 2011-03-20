@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * babayaga_recipe.views_default.inc
+ */
 
 /**
  * Implementation of hook_views_default_views().
@@ -25,20 +29,8 @@ function babayaga_recipe_views_default_views() {
   $handler->display->display_options['exposed_form']['type'] = 'basic';
   $handler->display->display_options['pager']['type'] = 'full';
   $handler->display->display_options['style_plugin'] = 'default';
-  $handler->display->display_options['row_plugin'] = 'panels_fields';
-  $handler->display->display_options['row_options']['inline'] = array(
-    'entity_id_2' => 'entity_id_2',
-    'entity_id_3' => 'entity_id_3',
-  );
-  $handler->display->display_options['row_options']['separator'] = '-';
+  $handler->display->display_options['row_plugin'] = 'fields';
   $handler->display->display_options['row_options']['hide_empty'] = 0;
-  $handler->display->display_options['row_options']['regions'] = array(
-    'title' => 'right',
-    'entity_id' => 'left',
-    'entity_id_1' => 'right',
-    'entity_id_2' => 'right',
-    'entity_id_3' => 'right',
-  );
   /* Field: Node: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
@@ -148,20 +140,8 @@ function babayaga_recipe_views_default_views() {
   $handler->display->display_options['style_plugin'] = 'default';
   $handler->display->display_options['defaults']['style_options'] = FALSE;
   $handler->display->display_options['defaults']['row_plugin'] = FALSE;
-  $handler->display->display_options['row_plugin'] = 'panels_fields';
-  $handler->display->display_options['row_options']['inline'] = array(
-    'entity_id_2' => 'entity_id_2',
-    'entity_id_3' => 'entity_id_3',
-  );
-  $handler->display->display_options['row_options']['separator'] = '-';
+  $handler->display->display_options['row_plugin'] = 'fields';
   $handler->display->display_options['row_options']['hide_empty'] = 0;
-  $handler->display->display_options['row_options']['regions'] = array(
-    'title' => 'right',
-    'entity_id' => 'left',
-    'entity_id_1' => 'right',
-    'entity_id_2' => 'right',
-    'entity_id_3' => 'right',
-  );
   $handler->display->display_options['defaults']['row_options'] = FALSE;
   $handler->display->display_options['path'] = 'recipes';
   $handler->display->display_options['menu']['type'] = 'normal';

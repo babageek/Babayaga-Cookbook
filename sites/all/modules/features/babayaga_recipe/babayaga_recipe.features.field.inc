@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * babayaga_recipe.features.field.inc
+ */
 
 /**
  * Implementation of hook_field_default_fields().
@@ -13,7 +17,7 @@ function babayaga_recipe_field_default_fields() {
       'cardinality' => '1',
       'deleted' => '0',
       'entity_types' => array(
-        '0' => 'node',
+        0 => 'node',
       ),
       'field_name' => 'body',
       'foreign keys' => array(
@@ -26,7 +30,7 @@ function babayaga_recipe_field_default_fields() {
       ),
       'indexes' => array(
         'format' => array(
-          '0' => 'format',
+          0 => 'format',
         ),
       ),
       'module' => 'text',
@@ -97,7 +101,7 @@ function babayaga_recipe_field_default_fields() {
       ),
       'indexes' => array(
         'fid' => array(
-          '0' => 'fid',
+          0 => 'fid',
         ),
       ),
       'module' => 'image',
@@ -175,13 +179,13 @@ function babayaga_recipe_field_default_fields() {
       ),
       'indexes' => array(
         'tid' => array(
-          '0' => 'tid',
+          0 => 'tid',
         ),
       ),
       'module' => 'taxonomy',
       'settings' => array(
         'allowed_values' => array(
-          '0' => array(
+          0 => array(
             'parent' => '0',
             'vocabulary' => 'ingredients',
           ),
@@ -237,7 +241,7 @@ function babayaga_recipe_field_default_fields() {
       'cardinality' => '1',
       'deleted' => '0',
       'entity_types' => array(
-        '0' => 'node',
+        0 => 'node',
       ),
       'field_name' => 'body',
       'foreign keys' => array(
@@ -250,7 +254,7 @@ function babayaga_recipe_field_default_fields() {
       ),
       'indexes' => array(
         'format' => array(
-          '0' => 'format',
+          0 => 'format',
         ),
       ),
       'module' => 'text',
@@ -314,7 +318,7 @@ function babayaga_recipe_field_default_fields() {
       'foreign keys' => array(),
       'indexes' => array(
         'value' => array(
-          '0' => 'value',
+          0 => 'value',
         ),
       ),
       'module' => 'list',
@@ -384,7 +388,7 @@ function babayaga_recipe_field_default_fields() {
       ),
       'indexes' => array(
         'format' => array(
-          '0' => 'format',
+          0 => 'format',
         ),
       ),
       'module' => 'text',
@@ -450,13 +454,13 @@ function babayaga_recipe_field_default_fields() {
       ),
       'indexes' => array(
         'tid' => array(
-          '0' => 'tid',
+          0 => 'tid',
         ),
       ),
       'module' => 'taxonomy',
       'settings' => array(
         'allowed_values' => array(
-          '0' => array(
+          0 => array(
             'parent' => '0',
             'vocabulary' => 'ingredients',
           ),
@@ -523,7 +527,7 @@ function babayaga_recipe_field_default_fields() {
       ),
       'indexes' => array(
         'format' => array(
-          '0' => 'format',
+          0 => 'format',
         ),
       ),
       'module' => 'text',
@@ -589,7 +593,7 @@ function babayaga_recipe_field_default_fields() {
       ),
       'indexes' => array(
         'fid' => array(
-          '0' => 'fid',
+          0 => 'fid',
         ),
       ),
       'module' => 'image',
@@ -667,7 +671,7 @@ function babayaga_recipe_field_default_fields() {
       ),
       'indexes' => array(
         'format' => array(
-          '0' => 'format',
+          0 => 'format',
         ),
       ),
       'module' => 'text',
@@ -777,6 +781,18 @@ function babayaga_recipe_field_default_fields() {
       ),
     ),
   );
+
+  // Translatables
+  // Included for use with string extractors like potx.
+  t('Body');
+  t('Duration');
+  t('Ingredients');
+  t('Ingredients Terms');
+  t('Notes');
+  t('Pictures');
+  t('Preparation time');
+  t('Subtitle');
+  t('Term');
 
   return $fields;
 }

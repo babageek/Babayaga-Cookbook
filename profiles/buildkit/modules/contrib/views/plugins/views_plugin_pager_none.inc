@@ -1,4 +1,5 @@
 <?php
+// $Id: views_plugin_pager_none.inc,v 1.1.4.3 2010/11/06 17:56:10 dereine Exp $
 
 /**
  * Plugin for views without pagers.

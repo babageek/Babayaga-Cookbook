@@ -1,4 +1,5 @@
 <?php
+// $Id: views_plugin_localization_core.inc,v 1.1.4.2 2010/12/01 20:05:06 dereine Exp $
 
 /**
  * @file
@@ -22,7 +23,7 @@ class views_plugin_localization_core extends views_plugin_localization {
    *   view name, display_id, and a property, e.g., 'header'.
    */
   function translate_string($string, $keys = array()) {
-    return t($string);
+    return t($string); 
   }
 
   /**
@@ -45,9 +46,7 @@ class views_plugin_localization_core extends views_plugin_localization {
       $languages = language_list();
       $cached_language = $language;
       unset($languages['en']);
-      if (!empty($languages)) {
-        $language = current($languages);
-      }
+      $language = current($languages);
     }
 
     t($string);

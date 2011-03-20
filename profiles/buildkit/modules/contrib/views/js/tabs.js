@@ -1,3 +1,5 @@
+// $Id: tabs.js,v 1.4.4.4 2010/03/20 23:16:37 dereine Exp $
+
 /**
  * @file tabs.js
  * jQuery UI Tabs (Tabs 3)

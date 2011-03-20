@@ -1,4 +1,5 @@
 <?php
+// $Id: views.views.inc,v 1.7.4.4 2010/11/05 21:55:20 dereine Exp $
 /**
  * @file
  * Provide views data and handlers that aren't tied to any other module.
@@ -29,7 +30,7 @@ function views_views_data() {
 
   $data['views']['null'] = array(
     'title' => t('Null'),
-    'help' => t('Allow a contextual filter value to be ignored. The query will not be altered by this contextual filter value. Can be used when contextual filter values come from the URL, and a part of the URL needs to be ignored.'),
+    'help' => t('Allow an argument to be ignored. The query will not be altered by this argument.'),
     'argument' => array(
       'handler' => 'views_handler_argument_null',
     ),
@@ -56,14 +57,6 @@ function views_views_data() {
     'help' => t('Provide markup text for the area.'),
     'area' => array(
       'handler' => 'views_handler_area_text',
-    ),
-  );
-
-  $data['views']['view'] = array(
-    'title' => t('View area'),
-    'help' => t('Insert a view inside an area.'),
-    'area' => array(
-      'handler' => 'views_handler_area_view',
     ),
   );
 

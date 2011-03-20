@@ -1,4 +1,5 @@
 <?php
+// $Id: views_handler_field_boolean.inc,v 1.3.4.3 2010/08/26 09:41:55 dereine Exp $
 
 /**
  * A handler to provide proper displays for booleans.
@@ -38,6 +39,7 @@ class views_handler_field_boolean extends views_handler_field {
   }
 
   function options_form(&$form, &$form_state) {
+    parent::options_form($form, $form_state);
     foreach ($this->formats as $key => $item) {
       $options[$key] = implode('/', $item);
     }
@@ -54,11 +56,10 @@ class views_handler_field_boolean extends views_handler_field {
       '#description' => t('If checked, true will be displayed as false.'),
       '#default_value' => $this->options['not'],
     );
-    parent::options_form($form, $form_state);
   }
 
   function render($values) {
-    $value = $this->get_value($values);
+    $value = $values->{$this->field_alias};
     if (!empty($this->options['not'])) {
       $value = !$value;
     }

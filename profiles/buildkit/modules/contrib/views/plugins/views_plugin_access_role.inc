@@ -1,4 +1,5 @@
 <?php
+// $Id: views_plugin_access_role.inc,v 1.2.6.3 2010/03/10 21:03:19 merlinofchaos Exp $
 
 /**
  * Access plugin that provides role-based access control.
@@ -22,8 +23,8 @@ class views_plugin_access_role extends views_plugin_access {
     }
     else {
       $rids = views_ui_get_roles();
-      $rid = reset($this->options['role']);
-      return check_plain($rids[$rid]);
+      $rid = array_shift($this->options['role']);
+      return $rids[$rid];
     }
   }
 
@@ -40,7 +41,7 @@ class views_plugin_access_role extends views_plugin_access {
       '#type' => 'checkboxes',
       '#title' => t('Role'),
       '#default_value' => $this->options['role'],
-      '#options' => array_map('check_plain', views_ui_get_roles()),
+      '#options' => views_ui_get_roles(),
       '#description' => t('Only the checked roles will be able to access this display. Note that users with "access all views" can see any view, regardless of role.'),
     );
   }
@@ -56,3 +57,6 @@ class views_plugin_access_role extends views_plugin_access {
     $form_state['values']['access_options']['role'] = array_filter($form_state['values']['access_options']['role']);
   }
 }
+
+
+

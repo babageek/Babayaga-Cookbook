@@ -1,4 +1,5 @@
 <?php
+// $Id: views_plugin_argument_validate_taxonomy_term.inc,v 1.6.4.8 2010/12/14 22:32:11 dereine Exp $
 /**
  * @file
  * Contains the 'taxonomy term' argument validator plugin.
@@ -50,7 +51,7 @@ class views_plugin_argument_validate_taxonomy_term extends views_plugin_argument
 
     $form['type'] = array(
       '#type' => 'select',
-      '#title' => t('Filter value type'),
+      '#title' => t('Argument type'),
       '#options' => array(
         'tid' => t('Term ID'),
         'tids' => t('Term IDs separated by , or +'),
@@ -58,12 +59,12 @@ class views_plugin_argument_validate_taxonomy_term extends views_plugin_argument
         'convert' => t('Term name converted to Term ID'),
       ),
       '#default_value' => $this->options['type'],
-      '#description' => t('Select the form of this filter value; if using term name, it is generally more efficient to convert it to a term ID and use Taxonomy: Term ID rather than Taxonomy: Term Name" as the filter.'),
+      '#description' => t('Select the form of this argument; if using term name, it is generally more efficient to convert it to a term ID and use Taxonomy: Term ID rather than Taxonomy: Term Name" as an argument.'),
     );
 
     $form['transform'] = array(
       '#type' => 'checkbox',
-      '#title' => t('Transform dashes in URL to spaces in term name filter values'),
+      '#title' => t('Transform dashes in URL to spaces in term name arguments'),
       '#default_value' => $this->options['transform'],
     );
   }
@@ -177,8 +178,8 @@ class views_plugin_argument_validate_taxonomy_term extends views_plugin_argument
         if ($term && (empty($vocabularies) || !empty($vocabularies[$term->machine_name]))) {
           if ($type == 'convert') {
             $this->argument->argument = $term->tid;
+            $this->argument->validated_title = check_plain($term->name);
           }
-          $this->argument->validated_title = check_plain($term->name);
           return TRUE;
         }
         return FALSE;

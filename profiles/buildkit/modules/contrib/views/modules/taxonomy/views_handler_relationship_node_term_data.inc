@@ -1,4 +1,5 @@
 <?php
+// $Id: views_handler_relationship_node_term_data.inc,v 1.3.4.3 2010/10/07 19:40:02 dereine Exp $
 /**
  * @file
  * Views' relationship handlers.
@@ -25,7 +26,12 @@ class views_handler_relationship_node_term_data extends views_handler_relationsh
     return $options;
   }
 
+  /**
+   * Default options form that provides the label widget that all fields
+   * should have.
+   */
   function options_form(&$form, &$form_state) {
+    parent::options_form($form, $form_state);
     $vocabularies = taxonomy_get_vocabularies();
     $options = array();
     foreach ($vocabularies as $voc) {
@@ -39,7 +45,6 @@ class views_handler_relationship_node_term_data extends views_handler_relationsh
       '#default_value' => $this->options['vocabularies'],
       '#description' => t('Choose which vocabularies you wish to relate. Remember that every term found will create a new record, so this relationship is best used on just one vocabulary that has only one term per node.'),
     );
-    parent::options_form($form, $form_state);
   }
 
   /**

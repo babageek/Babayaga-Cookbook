@@ -1,0 +1,19 @@
+diff --git a/features.module b/features.module
+index 908a58c..f56a09c 100644
+--- a/features.module
++++ b/features.module
+@@ -326,13 +326,7 @@ function features_include_defaults($components = NULL, $reset = FALSE) {
+   foreach ($components as $component) {
+     if (isset($include_components[$component]) && (!isset($included[$component]) || $reset)) {
+       $info = $include_components[$component];
+-      // Inclusion of defaults for Views.
+-      if ($component === 'views') {
+-        views_include('view');
+-        views_include_default_views();
+-      }
+-      // Inclusion of defaults for CTools.
+-      else if (isset($info['api'], $info['module'], $info['current_version'])) {
++      if (isset($info['api'], $info['module'], $info['current_version'])) {
+         ctools_include('plugins');
+         ctools_plugin_api_include($info['module'], $info['api'], $info['current_version'], $info['current_version']);
+       }

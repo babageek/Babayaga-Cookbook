@@ -1,4 +1,5 @@
 <?php
+// $Id: views_plugin_display_block.inc,v 1.5.4.3 2010/08/04 05:54:08 dereine Exp $
 /**
  * @file
  * Contains the block display plugin.
@@ -63,10 +64,6 @@ class views_plugin_display_block extends views_plugin_display {
 
     $categories['block'] = array(
       'title' => t('Block settings'),
-      'column' => 'second',
-      'build' => array(
-        '#weight' => -10,
-      ),
     );
 
     $block_description = strip_tags($this->get_option('block_description'));
@@ -80,7 +77,7 @@ class views_plugin_display_block extends views_plugin_display {
 
     $options['block_description'] = array(
       'category' => 'block',
-      'title' => t('Block name'),
+      'title' => t('Admin'),
       'value' => $block_description,
     );
 
@@ -91,8 +88,8 @@ class views_plugin_display_block extends views_plugin_display {
 
     $types = $this->block_caching_modes();
     $options['block_caching'] = array(
-      'category' => 'other',
-      'title' => t('Block caching'),
+      'category' => 'block',
+      'title' => t('Caching'),
       'value' => $types[$this->get_cache_type()],
     );
   }

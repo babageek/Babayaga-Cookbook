@@ -1,4 +1,5 @@
 <?php
+// $Id: views_plugin_style_summary_jump_menu.inc,v 1.1.6.6 2010/12/14 00:47:26 merlinofchaos Exp $
 /**
  * @file
  * Contains the default summary style plugin, which displays items in an HTML list.
@@ -24,10 +25,9 @@ class views_plugin_style_summary_jump_menu extends views_plugin_style {
   }
 
   function query() {
-    // Copy the offset option.
     $pager = array(
       'type' => 'none',
-      'options' => $this->display->handler->options['pager']['options'],
+      'options' => array(),
     );
     $this->display->handler->set_option('pager', $pager);
   }
@@ -72,9 +72,9 @@ class views_plugin_style_summary_jump_menu extends views_plugin_style {
 
     $form['default_value'] = array(
       '#type' => 'checkbox',
-      '#title' => t('Select the current contextual filter value.'),
+      '#title' => t('Select the current argument.'),
       '#default_value' => !empty($this->options['default_value']),
-      '#description' => t('If checked, the current contextual filter value will be displayed as the default option in the jump menu, if applicable.'),
+      '#description' => t('If checked, the current argument setting will be displayed as the default option in the jump menu, if applicable.'),
     );
   }
 
@@ -115,8 +115,7 @@ class views_plugin_style_summary_jump_menu extends views_plugin_style {
       'default_value' => $default_value,
     );
 
-    $form = drupal_get_form('ctools_jump_menu', $options, $settings);
-    return drupal_render($form);
+    return drupal_get_form('ctools_jump_menu', $options, $settings);
   }
 }
 

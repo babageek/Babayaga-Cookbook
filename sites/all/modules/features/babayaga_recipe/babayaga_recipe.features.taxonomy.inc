@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * babayaga_recipe.features.taxonomy.inc
+ */
 
 /**
  * Implementation of hook_taxonomy_default_vocabularies().

@@ -1,5 +1,4 @@
 <?php
-// $Id: panels_renderer_standard.class.php,v 1.6 2011/01/24 19:47:27 merlinofchaos Exp $
 
 /**
  * The standard render pipeline for a Panels display object.

@@ -1,4 +1,5 @@
 <?php
+// $Id: views_plugin_style.inc,v 1.8.4.10 2010/12/10 08:12:31 dereine Exp $
 
 /**
  * @defgroup views_style_plugins Views' style plugins
@@ -105,11 +106,7 @@ class views_plugin_style extends views_plugin {
       $class = $this->tokenize_value($class, $row_index);
     }
 
-    $classes = explode(' ', $class);
-    foreach ($classes as &$class) {
-      $class = drupal_clean_css_identifier($class);
-    }
-    return implode(' ', $classes);
+    return drupal_clean_css_identifier($class);
   }
 
   /**

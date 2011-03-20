@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * babayaga_recipe.strongarm.inc
+ */
 
 /**
  * Implementation of hook_strongarm().
