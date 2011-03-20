@@ -1,3 +1,4 @@
+// $Id: panels.js,v 1.3 2010/01/21 07:11:41 sdboyer Exp $
 
 (function ($) {
   Drupal.Panels = {};

@@ -1,4 +1,5 @@
 <?php
+// $Id: display-edit.inc,v 1.10 2010/10/11 22:56:01 sdboyer Exp $
 
 /*
  * @file

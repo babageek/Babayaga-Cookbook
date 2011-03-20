@@ -1,4 +1,5 @@
 <?php
+// $Id: panel_context.inc,v 1.5 2010/11/05 21:33:15 merlinofchaos Exp $
 
 /**
  * @file

@@ -1,4 +1,5 @@
 <?php
+// $Id: landing_page.inc,v 1.4 2011/01/10 20:39:49 merlinofchaos Exp $
 /**
  * @file
  * A page creation wizard to quickly create simple landing pages.

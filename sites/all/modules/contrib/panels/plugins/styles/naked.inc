@@ -1,4 +1,5 @@
 <?php
+// $Id: naked.inc,v 1.5 2010/11/06 19:29:46 merlinofchaos Exp $
 
 /**
  * @file

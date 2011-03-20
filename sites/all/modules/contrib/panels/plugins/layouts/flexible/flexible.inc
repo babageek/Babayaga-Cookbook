@@ -1,4 +1,5 @@
 <?php
+// $Id: flexible.inc,v 1.7 2011/01/08 21:12:50 merlinofchaos Exp $
 
 /**
  * Implementation of hook_panels_layouts()

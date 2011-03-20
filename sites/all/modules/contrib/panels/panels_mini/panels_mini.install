@@ -1,4 +1,5 @@
 <?php
+// $Id: panels_mini.install,v 1.9 2011/01/07 22:12:56 merlinofchaos Exp $
 
 /**
  * Implementation of hook_schema().
@@ -116,7 +117,7 @@ function panels_mini_uninstall() {
 
   if ($deltas) {
     // Delete all configured blocks.
-    db_delete('block')
+    db_delete('blocks')
       ->condition('module', 'panels_mini')
       ->condition('delta', $deltas)
       ->execute();

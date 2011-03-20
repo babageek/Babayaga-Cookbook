@@ -1,4 +1,5 @@
 <?php
+// $Id: panels-dashboard.tpl.php,v 1.4 2010/10/19 21:13:05 merlinofchaos Exp $
 ?>
 <div class="panels-dashboard">
   <div class="dashboard-left clear-block">

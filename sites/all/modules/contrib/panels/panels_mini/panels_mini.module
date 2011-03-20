@@ -1,4 +1,5 @@
 <?php
+// $Id: panels_mini.module,v 1.8 2010/10/11 22:56:02 sdboyer Exp $
 
 /**
  * @file panels_mini.module
@@ -260,8 +261,9 @@ function panels_mini_delete($mini) {
     ->execute();
 
   if ($mini->type != t('Overridden')) {
-    // Also remove from block table as long as there isn't a default that may appear.
-    db_delete('block')
+    // Also remove from blocks table as long as there isn't a default that may appear.
+    db_query("DELETE FROM {blocks} WHERE module = 'panels_mini' AND delta = '%s'", $mini->name);
+    db_delete('blocks')
       ->condition('delta', $mini->name)
       ->condition('module', 'panels_mini')
       ->execute();

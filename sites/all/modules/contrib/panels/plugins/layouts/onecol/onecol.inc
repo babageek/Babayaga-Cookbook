@@ -1,4 +1,5 @@
 <?php
+// $Id: onecol.inc,v 1.4 2010/10/11 22:56:01 sdboyer Exp $
 
 /**
  * implementation of hook_panels_layouts()

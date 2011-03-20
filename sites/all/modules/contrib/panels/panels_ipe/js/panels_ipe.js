@@ -1,3 +1,4 @@
+// $Id: panels_ipe.js,v 1.6 2010/10/19 18:50:24 merlinofchaos Exp $
 
 // Ensure the $ alias is owned by jQuery.
 (function($) {

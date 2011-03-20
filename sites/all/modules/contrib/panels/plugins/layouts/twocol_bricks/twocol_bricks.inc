@@ -1,4 +1,5 @@
 <?php
+// $Id: twocol_bricks.inc,v 1.4 2010/10/11 22:56:02 sdboyer Exp $
 
 /**
  * @file

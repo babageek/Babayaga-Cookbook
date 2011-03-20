@@ -1,4 +1,5 @@
 <?php
+// $Id: pane-plain-box.tpl.php,v 1.2 2010/09/07 09:42:12 sdboyer Exp $
 /**
  * @file
  *

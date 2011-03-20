@@ -1,4 +1,5 @@
 <?php
+// $Id: panels_renderer_editor.class.php,v 1.5 2010/10/29 19:05:15 merlinofchaos Exp $
 
 /**
  * @file
