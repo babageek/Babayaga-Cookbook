@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * babayaga_site.strongarm.inc
+ */
 
 /**
  * Implementation of hook_strongarm().

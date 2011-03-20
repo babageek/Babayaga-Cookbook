@@ -4,11 +4,11 @@
 
   <?php if ($page['help']) print render($page['help']) ?>
 
-  <div id='content' class='page-content position left size-70'>
+  <div id='content' class='page-content position left size-60'>
     <?php if (!empty($page['content'])) print render($page['content']) ?>
   </div>
 
-  <div id='content' class='page-content position left size-30'>
+  <div id='content' class='page-content position left size-40'>
     <?php if (!empty($page['right'])) print render($page['right']) ?>
   </div>
 

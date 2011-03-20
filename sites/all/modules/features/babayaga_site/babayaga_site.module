@@ -1,3 +1,18 @@
 <?php
 
 include_once('babayaga_site.features.inc');
+
+/**
+ * Implementation of hook_menu_alter()
+ */
+function babayaga_site_menu_alter(&$items) {
+    $items['node']['page callback'] = 'babayaga_site_node_page_default';
+}
+
+/**
+ * Implementation of page callback.
+ * @see: babayaga_site_menu_alter()
+ */
+function babayaga_site_node_page_default() {
+  return array();
+}
