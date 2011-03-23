@@ -32,6 +32,12 @@ function babayaga_site_context_default_contexts() {
           'region' => 'content',
           'weight' => '-10',
         ),
+        'views-recipes-block_1' => array(
+          'module' => 'views',
+          'delta' => 'recipes-block_1',
+          'region' => 'right',
+          'weight' => '-10',
+        ),
       ),
       'layout' => 'front',
     ),

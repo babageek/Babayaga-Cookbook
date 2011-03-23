@@ -5,6 +5,12 @@
   <?php endif; ?>
 </div></div>
 
+<?php if (isset($main_menu)) : ?>
+<div id='navigation'><div class='limiter clearfix'>
+  <?php print theme('links', array('links' => $main_menu, 'attributes' => array('class' => 'links main-menu'))) ?>
+</div></div>
+<?php endif; ?>
+
 <div id='page-title'><div class='limiter clearfix'>
   <div class='tabs clearfix'>
     <?php if ($primary_local_tasks): ?>
