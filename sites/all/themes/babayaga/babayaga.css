@@ -27,6 +27,14 @@
 /**
  * Rubik overrides ----------------------------------------------------
  */
+
+ body,
+ input,
+ textarea,
+ select {
+  font-family: "Helvetica Neue","Helvetica","Arial",Verdana,sans-serif;
+}
+
 .limiter {
   width: 960px;
   margin: 0px auto;
@@ -86,4 +94,19 @@ table.views-view-grid {
   border-color: transparent;
   border-width: 0px;
   border-style: solid;
+}
+
+
+/**
+ * Babayaga CSS -------------------------------------------------------
+ */
+
+.item-list h3,
+.block .block-title {
+  display: block;
+  font-size: 18px;
+  margin: 0px;
+  padding: 4px 9px 5px;
+  color: #777;
+  background: transparent;
 }

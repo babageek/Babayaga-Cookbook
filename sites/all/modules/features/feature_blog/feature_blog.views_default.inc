@@ -23,6 +23,7 @@ function feature_blog_views_default_views() {
 
   /* Display: Defaults */
   $handler = $view->new_display('default', 'Defaults', 'default');
+  $handler->display->display_options['title'] = 'Latest blog posts';
   $handler->display->display_options['access']['type'] = 'none';
   $handler->display->display_options['cache']['type'] = 'none';
   $handler->display->display_options['query']['type'] = 'views_query';
@@ -69,6 +70,7 @@ function feature_blog_views_default_views() {
   $handler = $view->new_display('block', 'Block: List of posts', 'block_1');
   $translatables['blog'] = array(
     t('Defaults'),
+    t('Latest blog posts'),
     t('more'),
     t('Apply'),
     t('Reset'),
