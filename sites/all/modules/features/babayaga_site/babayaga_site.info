@@ -1,7 +1,7 @@
 core = "7.x"
 dependencies[] = "babayaga_recipe"
 dependencies[] = "context"
-dependencies[] = "context_layout"
+dependencies[] = "context_layouts"
 dependencies[] = "features"
 dependencies[] = "menu"
 dependencies[] = "strongarm"

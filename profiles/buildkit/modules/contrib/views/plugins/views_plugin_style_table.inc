@@ -1,5 +1,4 @@
 <?php
-// $Id: views_plugin_style_table.inc,v 1.7.4.12 2010/12/10 08:19:15 dereine Exp $
 /**
  * @file
  * Contains the table style plugin.
@@ -138,7 +137,7 @@ class views_plugin_style_table extends views_plugin_style {
     $handlers = $this->display->handler->get_handlers('field');
     if (empty($handlers)) {
       $form['error_markup'] = array(
-        '#markup' => '<div class="error form-item description">' . t('You need at least one field before you can configure your table settings') . '</div>',
+        '#markup' => '<div class="error messages">' . t('You need at least one field before you can configure your table settings') . '</div>',
       );
       return;
     }
@@ -204,14 +203,12 @@ class views_plugin_style_table extends views_plugin_style {
         $form['info'][$field]['sortable'] = array(
           '#type' => 'checkbox',
           '#default_value' => !empty($this->options['info'][$field]['sortable']),
-          '#process' => array('form_process_checkbox', 'ctools_dependent_process'),
           '#dependency' => array($id => array($field)),
         );
         $form['info'][$field]['default_sort_order'] = array(
           '#type' => 'select',
           '#options' => array('asc' => t('Ascending'), 'desc' => t('Descending')),
           '#default_value' => !empty($this->options['info'][$field]['default_sort_order']) ? $this->options['info'][$field]['default_sort_order'] : 'asc',
-          '#process' => array('ctools_dependent_process'),
           '#dependency_count' => 2,
           '#dependency' => array($id => array($field), 'edit-style-options-info-' . $safe . '-sortable' => array(1)),
         );
@@ -225,7 +222,6 @@ class views_plugin_style_table extends views_plugin_style {
           // because 'radio' doesn't fully support '#id' =(
           '#attributes' => array('id' => $radio_id),
           '#default_value' => $default,
-          '#process' => array('ctools_dependent_process'),
           '#dependency' => array($id => array($field)),
         );
       }
@@ -238,14 +234,12 @@ class views_plugin_style_table extends views_plugin_style {
           'views-align-center' => t('Center'),
           'views-align-right' => t('Right'),
           ),
-        '#process' => array('form_process_select', 'ctools_dependent_process'),
         '#dependency' => array($id => array($field)),
       );
       $form['info'][$field]['separator'] = array(
         '#type' => 'textfield',
         '#size' => 10,
         '#default_value' => isset($this->options['info'][$field]['separator']) ? $this->options['info'][$field]['separator'] : '',
-        '#process' => array('ctools_dependent_process'),
         '#dependency' => array($id => array($field)),
       );
 

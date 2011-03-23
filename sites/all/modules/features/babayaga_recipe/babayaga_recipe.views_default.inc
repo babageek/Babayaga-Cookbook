@@ -32,7 +32,7 @@ function babayaga_recipe_views_default_views() {
   $handler->display->display_options['style_plugin'] = 'default';
   $handler->display->display_options['row_plugin'] = 'fields';
   $handler->display->display_options['row_options']['hide_empty'] = 0;
-  /* Field: Node: Title */
+  /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
   $handler->display->display_options['fields']['title']['field'] = 'title';
@@ -50,7 +50,7 @@ function babayaga_recipe_views_default_views() {
   $handler->display->display_options['fields']['title']['hide_empty'] = 0;
   $handler->display->display_options['fields']['title']['empty_zero'] = 0;
   $handler->display->display_options['fields']['title']['link_to_node'] = 1;
-  /* Field: Fields: field_recipe_pictures */
+  /* Field: Fields: Pictures */
   $handler->display->display_options['fields']['entity_id']['id'] = 'entity_id';
   $handler->display->display_options['fields']['entity_id']['table'] = 'field_data_field_recipe_pictures';
   $handler->display->display_options['fields']['entity_id']['field'] = 'entity_id';
@@ -70,9 +70,9 @@ function babayaga_recipe_views_default_views() {
   $handler->display->display_options['fields']['entity_id']['click_sort_column'] = 'fid';
   $handler->display->display_options['fields']['entity_id']['settings'] = array(
     'image_style' => 'recipe-m',
-    'image_link' => '',
+    'image_link' => 'content',
   );
-  /* Field: Fields: field_recipe_subtitle */
+  /* Field: Fields: Subtitle */
   $handler->display->display_options['fields']['entity_id_1']['id'] = 'entity_id_1';
   $handler->display->display_options['fields']['entity_id_1']['table'] = 'field_data_field_recipe_subtitle';
   $handler->display->display_options['fields']['entity_id_1']['field'] = 'entity_id';
@@ -89,7 +89,7 @@ function babayaga_recipe_views_default_views() {
   $handler->display->display_options['fields']['entity_id_1']['element_default_classes'] = 1;
   $handler->display->display_options['fields']['entity_id_1']['hide_empty'] = 0;
   $handler->display->display_options['fields']['entity_id_1']['empty_zero'] = 0;
-  /* Field: Fields: field_recipe_duration */
+  /* Field: Fields: Duration */
   $handler->display->display_options['fields']['entity_id_2']['id'] = 'entity_id_2';
   $handler->display->display_options['fields']['entity_id_2']['table'] = 'field_data_field_recipe_duration';
   $handler->display->display_options['fields']['entity_id_2']['field'] = 'entity_id';
@@ -106,7 +106,7 @@ function babayaga_recipe_views_default_views() {
   $handler->display->display_options['fields']['entity_id_2']['element_default_classes'] = 1;
   $handler->display->display_options['fields']['entity_id_2']['hide_empty'] = 0;
   $handler->display->display_options['fields']['entity_id_2']['empty_zero'] = 0;
-  /* Field: Fields: field_recipe_time */
+  /* Field: Fields: Preparation time */
   $handler->display->display_options['fields']['entity_id_3']['id'] = 'entity_id_3';
   $handler->display->display_options['fields']['entity_id_3']['table'] = 'field_data_field_recipe_time';
   $handler->display->display_options['fields']['entity_id_3']['field'] = 'entity_id';
@@ -127,22 +127,22 @@ function babayaga_recipe_views_default_views() {
     'thousand_separator' => ' ',
     'prefix_suffix' => 1,
   );
-  /* Sort criterion: Node: Sticky */
+  /* Sort criterion: Content: Sticky */
   $handler->display->display_options['sorts']['sticky']['id'] = 'sticky';
   $handler->display->display_options['sorts']['sticky']['table'] = 'node';
   $handler->display->display_options['sorts']['sticky']['field'] = 'sticky';
-  /* Sort criterion: Node revision: Created date */
+  /* Sort criterion: Content revision: Created date */
   $handler->display->display_options['sorts']['timestamp']['id'] = 'timestamp';
   $handler->display->display_options['sorts']['timestamp']['table'] = 'node_revision';
   $handler->display->display_options['sorts']['timestamp']['field'] = 'timestamp';
-  /* Filter: Node: Type */
+  /* Filter criterion: Content: Type */
   $handler->display->display_options['filters']['type']['id'] = 'type';
   $handler->display->display_options['filters']['type']['table'] = 'node';
   $handler->display->display_options['filters']['type']['field'] = 'type';
   $handler->display->display_options['filters']['type']['value'] = array(
     'recipe' => 'recipe',
   );
-  /* Filter: Node: Published */
+  /* Filter criterion: Content: Published */
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'node';
   $handler->display->display_options['filters']['status']['field'] = 'status';
@@ -170,7 +170,7 @@ function babayaga_recipe_views_default_views() {
   $handler->display->display_options['pager']['options']['items_per_page'] = '1';
   $handler->display->display_options['pager']['options']['offset'] = '0';
   $handler->display->display_options['defaults']['fields'] = FALSE;
-  /* Field: Node: Title */
+  /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
   $handler->display->display_options['fields']['title']['field'] = 'title';
@@ -190,7 +190,7 @@ function babayaga_recipe_views_default_views() {
   $handler->display->display_options['fields']['title']['hide_empty'] = 0;
   $handler->display->display_options['fields']['title']['empty_zero'] = 0;
   $handler->display->display_options['fields']['title']['link_to_node'] = 1;
-  /* Field: Fields: field_recipe_pictures */
+  /* Field: Fields: Pictures */
   $handler->display->display_options['fields']['entity_id']['id'] = 'entity_id';
   $handler->display->display_options['fields']['entity_id']['table'] = 'field_data_field_recipe_pictures';
   $handler->display->display_options['fields']['entity_id']['field'] = 'entity_id';
@@ -198,7 +198,10 @@ function babayaga_recipe_views_default_views() {
   $handler->display->display_options['fields']['entity_id']['alter']['alter_text'] = 0;
   $handler->display->display_options['fields']['entity_id']['alter']['make_link'] = 0;
   $handler->display->display_options['fields']['entity_id']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['entity_id']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['entity_id']['alter']['replace_spaces'] = 0;
   $handler->display->display_options['fields']['entity_id']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['entity_id']['alter']['nl2br'] = 0;
   $handler->display->display_options['fields']['entity_id']['alter']['word_boundary'] = 1;
   $handler->display->display_options['fields']['entity_id']['alter']['ellipsis'] = 1;
   $handler->display->display_options['fields']['entity_id']['alter']['strip_tags'] = 0;
@@ -213,7 +216,13 @@ function babayaga_recipe_views_default_views() {
     'image_style' => 'recipe-m',
     'image_link' => '',
   );
-  /* Field: Fields: field_recipe_subtitle */
+  $handler->display->display_options['fields']['entity_id']['group_rows'] = 1;
+  $handler->display->display_options['fields']['entity_id']['delta_limit'] = '1';
+  $handler->display->display_options['fields']['entity_id']['delta_offset'] = '0';
+  $handler->display->display_options['fields']['entity_id']['delta_reversed'] = 0;
+  $handler->display->display_options['fields']['entity_id']['separator'] = '';
+  $handler->display->display_options['fields']['entity_id']['field_api_classes'] = 0;
+  /* Field: Fields: Subtitle */
   $handler->display->display_options['fields']['entity_id_1']['id'] = 'entity_id_1';
   $handler->display->display_options['fields']['entity_id_1']['table'] = 'field_data_field_recipe_subtitle';
   $handler->display->display_options['fields']['entity_id_1']['field'] = 'entity_id';
@@ -248,7 +257,7 @@ function babayaga_recipe_views_default_views() {
   $handler->display->display_options['row_options']['hide_empty'] = 0;
   $handler->display->display_options['defaults']['row_options'] = FALSE;
   $handler->display->display_options['defaults']['fields'] = FALSE;
-  /* Field: Fields: field_recipe_pictures */
+  /* Field: Fields: Pictures */
   $handler->display->display_options['fields']['entity_id']['id'] = 'entity_id';
   $handler->display->display_options['fields']['entity_id']['table'] = 'field_data_field_recipe_pictures';
   $handler->display->display_options['fields']['entity_id']['field'] = 'entity_id';
@@ -256,7 +265,10 @@ function babayaga_recipe_views_default_views() {
   $handler->display->display_options['fields']['entity_id']['alter']['alter_text'] = 0;
   $handler->display->display_options['fields']['entity_id']['alter']['make_link'] = 0;
   $handler->display->display_options['fields']['entity_id']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['entity_id']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['entity_id']['alter']['replace_spaces'] = 0;
   $handler->display->display_options['fields']['entity_id']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['entity_id']['alter']['nl2br'] = 0;
   $handler->display->display_options['fields']['entity_id']['alter']['word_boundary'] = 1;
   $handler->display->display_options['fields']['entity_id']['alter']['ellipsis'] = 1;
   $handler->display->display_options['fields']['entity_id']['alter']['strip_tags'] = 0;
@@ -268,10 +280,16 @@ function babayaga_recipe_views_default_views() {
   $handler->display->display_options['fields']['entity_id']['empty_zero'] = 0;
   $handler->display->display_options['fields']['entity_id']['click_sort_column'] = 'fid';
   $handler->display->display_options['fields']['entity_id']['settings'] = array(
-    'image_style' => 'recipe-s',
+    'image_style' => 'recipe-m',
     'image_link' => 'content',
   );
-  /* Field: Node: Title */
+  $handler->display->display_options['fields']['entity_id']['group_rows'] = 1;
+  $handler->display->display_options['fields']['entity_id']['delta_limit'] = '1';
+  $handler->display->display_options['fields']['entity_id']['delta_offset'] = '0';
+  $handler->display->display_options['fields']['entity_id']['delta_reversed'] = 0;
+  $handler->display->display_options['fields']['entity_id']['separator'] = '';
+  $handler->display->display_options['fields']['entity_id']['field_api_classes'] = 0;
+  /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
   $handler->display->display_options['fields']['title']['field'] = 'title';
@@ -291,19 +309,32 @@ function babayaga_recipe_views_default_views() {
   $handler->display->display_options['fields']['title']['hide_empty'] = 0;
   $handler->display->display_options['fields']['title']['empty_zero'] = 0;
   $handler->display->display_options['fields']['title']['link_to_node'] = 1;
-  $handler->display->display_options['attachment_position'] = 'after';
+  $handler->display->display_options['defaults']['filters'] = FALSE;
+  /* Filter criterion: Content: Type */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'node';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['value'] = array(
+    'recipe' => 'recipe',
+  );
+  /* Filter criterion: Content: Published */
+  $handler->display->display_options['filters']['status']['id'] = 'status';
+  $handler->display->display_options['filters']['status']['table'] = 'node';
+  $handler->display->display_options['filters']['status']['field'] = 'status';
+  $handler->display->display_options['filters']['status']['value'] = '1';
   $handler->display->display_options['displays'] = array(
     'block_1' => 'block_1',
     'default' => 0,
     'page_1' => 0,
   );
+  $handler->display->display_options['attachment_position'] = 'after';
   $translatables['recipes'] = array(
     t('Defaults'),
     t('Latest recipes'),
     t('more'),
     t('Apply'),
     t('Reset'),
-    t('Sort By'),
+    t('Sort by'),
     t('Asc'),
     t('Desc'),
     t('Items per page'),
