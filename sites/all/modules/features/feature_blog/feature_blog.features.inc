@@ -35,7 +35,7 @@ function feature_blog_image_default_styles() {
         'data' => array(
           'width' => '560',
           'height' => '',
-          'upscale' => 0,
+          'upscale' => 1,
         ),
         'weight' => '1',
       ),

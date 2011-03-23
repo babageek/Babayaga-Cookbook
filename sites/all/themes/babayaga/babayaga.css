@@ -23,3 +23,9 @@
 .size-10 { width: 9.99% }
 .size-5 { width: 4.99% }
 .position .inner { padding: 10px; }
+
+
+.limiter {
+  width: 960px;
+  margin: 0px auto;
+}

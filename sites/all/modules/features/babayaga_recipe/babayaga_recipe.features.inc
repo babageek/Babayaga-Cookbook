@@ -41,6 +41,27 @@ function babayaga_recipe_image_default_styles() {
     ),
   );
 
+  // Exported image style: recipe-portrait
+  $styles['recipe-portrait'] = array(
+    'name' => 'recipe-portrait',
+    'effects' => array(
+      4 => array(
+        'label' => 'Scale and crop',
+        'help' => 'Scale and crop will maintain the aspect-ratio of the original image, then crop the larger dimension. This is most useful for creating perfectly square thumbnails without stretching the image.',
+        'effect callback' => 'image_scale_and_crop_effect',
+        'form callback' => 'image_resize_form',
+        'summary theme' => 'image_resize_summary',
+        'module' => 'image',
+        'name' => 'image_scale_and_crop',
+        'data' => array(
+          'width' => '300',
+          'height' => '185',
+        ),
+        'weight' => '1',
+      ),
+    ),
+  );
+
   // Exported image style: recipe-s
   $styles['recipe-s'] = array(
     'name' => 'recipe-s',
