@@ -33,7 +33,7 @@ function feature_blog_image_default_styles() {
         'module' => 'image',
         'name' => 'image_scale',
         'data' => array(
-          'width' => '560',
+          'width' => '540',
           'height' => '',
           'upscale' => 1,
         ),

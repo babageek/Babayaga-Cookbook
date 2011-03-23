@@ -24,8 +24,66 @@
 .size-5 { width: 4.99% }
 .position .inner { padding: 10px; }
 
-
+/**
+ * Rubik overrides ----------------------------------------------------
+ */
 .limiter {
   width: 960px;
   margin: 0px auto;
+}
+
+.help-page,
+div.comment,
+div.node {
+  border-style: solid;
+  border-width: 0px;
+  border-color: transparent;
+  background-color: transparent;
+  background-image: none;
+  margin: 0px 0px 10px;
+}
+
+.block,
+.item-list,
+.help-items ul,
+.form-item,
+.confirmation ul,
+.admin-list,
+.node-type-list,
+.admin-panel {
+  background: transparent;
+  margin: 0px 0px 10px;
+  border-width: 0px;
+  border-style: solid;
+  border-color: #DDD;
+}
+
+.block .block-content,
+.container-inline .fieldset-content,
+.fieldset-content {
+  padding: 10px 9px 9px;
+  background: transparent;
+}
+
+
+/**
+ * Modules overrides ----------------------------------------------------
+ */
+table.views-view-grid td,
+table.views-view-grid th {
+  vertical-align: top;
+  border-width: 0px 0px;
+  border-style: solid;
+  border-color: transparent;
+  padding: 5px;
+}
+
+table.views-view-grid {
+  width: 100%;
+  margin: 10px 0;
+  background-color: transparent;
+  border-collapse: collapse;
+  border-color: transparent;
+  border-width: 0px;
+  border-style: solid;
 }
