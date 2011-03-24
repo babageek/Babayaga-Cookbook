@@ -28,7 +28,7 @@ function babayaga_site_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'colorbox_image_style';
-  $strongarm->value = 'medium';
+  $strongarm->value = 'blog-l';
   $export['colorbox_image_style'] = $strongarm;
 
   $strongarm = new stdClass;
@@ -98,7 +98,7 @@ function babayaga_site_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'colorbox_opacity';
-  $strongarm->value = '0.90';
+  $strongarm->value = '0.50';
   $export['colorbox_opacity'] = $strongarm;
 
   $strongarm = new stdClass;
@@ -151,7 +151,7 @@ node/*/edit';
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'colorbox_style';
-  $strongarm->value = 'stockholmsyndrome';
+  $strongarm->value = 'default';
   $export['colorbox_style'] = $strongarm;
 
   $strongarm = new stdClass;
