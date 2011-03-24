@@ -1,4 +1,3 @@
-// $Id: colorbox_default_style.js,v 1.3.2.1 2010/12/02 09:14:23 frjo Exp $
 (function ($) {
 
 Drupal.behaviors.initColorboxDefaultStyle = {

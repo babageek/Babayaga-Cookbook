@@ -96,6 +96,15 @@ table.views-view-grid {
   border-style: solid;
 }
 
+table.dsq-global-toolbar-container {
+  width: 100%;
+  margin: 0px 0px 10px;
+  background-color: white;
+  border-collapse: collapse;
+  border-color: transparent;
+  border-width: 0px;
+}
+
 
 /**
  * Babayaga CSS -------------------------------------------------------
