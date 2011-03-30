@@ -17,6 +17,14 @@ function feature_blog_context_default_contexts() {
   $context->description = '';
   $context->tag = 'List of nodes';
   $context->conditions = array(
+    'node' => array(
+      'values' => array(
+        'blog' => 'blog',
+      ),
+      'options' => array(
+        'node_form' => '0',
+      ),
+    ),
     'views' => array(
       'values' => array(
         'blog:page_1' => 'blog:page_1',
