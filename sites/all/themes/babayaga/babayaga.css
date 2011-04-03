@@ -116,11 +116,14 @@ table.dsq-global-toolbar-container {
   padding: 35px 0px;
 }
 #navigation ul.links li a {
-  font-family: "EB Garamond", Georgia, serif;
-  color: #4D4D4D;
+  font-family: "Garamond 3 LT Std", "EB Garamond", Georgia, serif;
+  color: #222;
   font-size: 27px;
   padding: 15px 30px;
-  border-right: 1px solid #EBEBEB;
+  border-right: 1px solid #ccc;
+}
+#navigation ul.links li.last a {
+  border-right: 0;
 }
 
 body.front #logo {
@@ -135,7 +138,7 @@ body.front #logo {
 
 h2.block-title,
 h2.node-title {
-  font-family: "EB Garamond", Georgia, serif;
+  font-family: "Garamond 3 LT Std", "EB Garamond", Georgia, serif;
 }
 
 h2.node-title a,
@@ -155,4 +158,18 @@ h2.node-title a:hover {
 
 .addthis_toolbox.addthis_default_style a {
 /*  float: right;*/
+}
+
+.node-blog .node-date {
+  text-align: right;
+  font-weight: bold;
+  color: #A13562;
+
+}
+.node-blog .node-links {
+  text-align: right;
+  padding: 0 0 5px 0;
+}
+.node-links a {
+  color: #9E6A83;
 }

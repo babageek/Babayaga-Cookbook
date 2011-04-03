@@ -31,8 +31,8 @@ function babayaga_addthis(&$node) {
   $out .= '<div class="addthis_toolbox addthis_default_style "';
   $out .= '      addthis:url="'. $url .'"';
   $out .= '      addthis:title="'. addslashes($node->title).'">';
-  $out .= '<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>';
   $out .= '<a class="addthis_button_tweet"></a>';
+  $out .= '<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>';
 //  $out .= '<a class="addthis_counter addthis_pill_style"></a>';
   $out .= '</div>';
   $out .= '<script type="text/javascript">var addthis_config = {"data_track_clickback":true};</script>';
