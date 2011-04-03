@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * @file
@@ -15,4 +14,30 @@ function google_fonts_install() {
  */
 function google_fonts_uninstall() {
   variable_del('google_fonts_enabled_fonts');
+  variable_del('google_fonts_css_contents');
+}
+
+/**
+ * Change the google_fonts array of enabled fonts to the new format
+ */
+function google_fonts_update_7100() {
+  $ret = array();
+  
+  $all_fonts = _google_fonts_available_fonts();
+  $enabled_fonts = variable_get('google_fonts_enabled_fonts', array());
+  $enabled = array();
+  foreach($all_fonts as $font) {
+    foreach($font->variants as $variant) {
+      $formatted_variant = ($variant == 'bolditalic') ? 'bold italic' : $variant;
+      $key = ($variant == 'regular') ? $font->family : $font->family . ' ' . $variant;
+      if (!empty($enabled_fonts[$key])) {
+        $array_key = _google_fonts_family_array_key_encode($font->family, $variant);
+        $enabled[$array_key] = $array_key;
+      }
+    }
+  }
+  // Overwrite the old format with the new format
+  variable_set('google_fonts_enabled_fonts', $enabled);
+  
+  return $ret;
 }

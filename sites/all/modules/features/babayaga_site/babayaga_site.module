@@ -3,6 +3,12 @@
 include_once('babayaga_site.features.inc');
 
 /**
+ * Implementation of hook_init()
+ */
+function babayaga_site_init() {
+}
+
+/**
  * Implementation of hook_menu_alter()
  */
 function babayaga_site_menu_alter(&$items) {
