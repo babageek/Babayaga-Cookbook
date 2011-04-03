@@ -9,6 +9,7 @@ regions[right] = Right
 regions[help] = Help
 regions[footer] = "Footer"
 
+stylesheets[screen][] = style.css
 stylesheets[screen][] = babayaga.css
 
 ; Layout: Default

@@ -1,0 +1,57 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * The Google Fonts UI module will give you an interface to add CSS dynamically.
+ *
+ * With this module, you can add the needed CSS lines using the Drupal interface.
+ * This enables people without CSS knowledge (or without access to it) 
+ * to use Google Fonts on their website.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function google_fonts_ui_menu() {
+  $items = array();
+
+  $items['admin/config/system/google_fonts/rules'] = array(
+    'title' => 'Add rules',
+    'description' => 'Add CSS rules to apply these fonts without altering your stylesheets.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('google_fonts_ui_admin_settings_form'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'google_fonts_ui.admin.inc',
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 10,
+  );
+  
+  return $items;
+}
+
+/** 
+ * Implements hook_init() to load the Google Fonts UI css file.
+ */
+function google_fonts_ui_init() {
+  drupal_add_css(_google_fonts_cache(variable_get("google_fonts_ui_css_contents")), array('type' => 'file', 'every_page' => TRUE, 'group' => CSS_THEME));
+}
+
+/**
+ * Create the CSS file and store it locally.
+ */
+function _google_fonts_cache($file_contents, $reset = FALSE) {
+  
+  $directory = file_build_uri('google_fonts');
+  $file_destination = $directory . '/google_fonts.css';
+  
+  if (!file_exists($file_destination) || $reset) {
+    // Check that the files directory is writable
+    if (file_prepare_directory($directory, FILE_CREATE_DIRECTORY)) {
+      return file_unmanaged_save_data($file_contents, $file_destination, FILE_EXISTS_REPLACE);
+    }
+  }
+  else {
+    return $file_destination;
+  }
+}

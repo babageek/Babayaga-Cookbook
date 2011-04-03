@@ -1,15 +1,18 @@
-<div id='branding'><div class='limiter clearfix'>
-  <div class='breadcrumb clearfix'><?php print $breadcrumb ?></div>
-  <?php if (!$overlay && isset($secondary_menu)) : ?>
-    <?php print theme('links', array('links' => $secondary_menu, 'attributes' => array('class' => 'links secondary-menu'))) ?>
+
+
+
+<div id='header'><div class='limiter clearfix'>
+  <?php if ($logo): ?>
+    <a href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home" id="logo">
+      <img src="<?php print $logo; ?>" alt="<?php print t('Home'); ?>" />
+    </a>
+  <?php endif; ?>
+  <?php if (isset($main_menu)) : ?>
+    <div id='navigation'>
+      <?php print theme('links', array('links' => $main_menu, 'attributes' => array('class' => 'links main-menu'))) ?>
+    </div>
   <?php endif; ?>
 </div></div>
-
-<?php if (isset($main_menu)) : ?>
-<div id='navigation'><div class='limiter clearfix'>
-  <?php print theme('links', array('links' => $main_menu, 'attributes' => array('class' => 'links main-menu'))) ?>
-</div></div>
-<?php endif; ?>
 
 <div id='page-title'><div class='limiter clearfix'>
   <div class='tabs clearfix'>
