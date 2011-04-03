@@ -74,6 +74,7 @@ function feature_blog_views_default_views() {
 
   /* Display: Block: List of posts */
   $handler = $view->new_display('block', 'Block: List of posts', 'block_1');
+  $handler->display->display_options['defaults']['title'] = FALSE;
 
   /* Display: Block: Post archive */
   $handler = $view->new_display('block', 'Block: Post archive', 'block_2');

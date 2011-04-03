@@ -125,3 +125,18 @@ body.front #logo {
   border: 1px solid #CCC;
   background: #FFF;
 }
+
+h2.block-title,
+h2.node-title {
+  font-family: "EB Garamond", Georgia, serif;
+}
+
+h2.node-title {
+  color: #4D4D4D;
+  font-size: 27px;
+}
+.block .block-title {
+  color: #4D4D4D;
+  font-size: 24px;
+  font-style: normal;
+}
