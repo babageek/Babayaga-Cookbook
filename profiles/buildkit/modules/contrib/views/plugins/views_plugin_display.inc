@@ -279,19 +279,22 @@ class views_plugin_display extends views_plugin {
   function defaultable_sections($section = NULL) {
     $sections = array(
       'access' => array('access'),
+      'access_options' => array('access_options'),
       'cache' => array('cache'),
+      'cache_options' => array('cache_options'),
       'title' => array('title'),
-      'enabled' => array('enabled'),
       'css_class' => array('css_class'),
       'use_ajax' => array('use_ajax'),
       'hide_attachment_summary' => array('hide_attachment_summary'),
+      'group_by' => array('group_by'),
       'query' => array('query'),
       'items_per_page' => array('items_per_page', 'offset', 'use_pager', 'pager_element'),
       'pager' => array('pager'),
+      'pager_options' => array('pager_options'),
       'use_more' => array('use_more', 'use_more_always', 'use_more_text'),
       'link_display' => array('link_display'),
-      'exposed_block' => array('exposed_block'),
       'exposed_form' => array('exposed_form'),
+      'exposed_form_options' => array('exposed_form_options'),
 
       // Force these to cascade properly.
       'style_plugin' => array('style_plugin', 'style_options', 'row_plugin', 'row_options'),
@@ -334,7 +337,7 @@ class views_plugin_display extends views_plugin {
           'cache' => TRUE,
           'query' => TRUE,
           'title' => TRUE,
-          'display_comment' => TRUE,
+          'display_comment' => FALSE,
           'enabled' => TRUE,
           'css_class' => TRUE,
 
@@ -348,7 +351,6 @@ class views_plugin_display extends views_plugin {
           'use_more' => TRUE,
           'use_more_always' => TRUE,
           'use_more_text' => TRUE,
-          'exposed_block' => TRUE,
           'exposed_form' => TRUE,
 
           'link_display' => TRUE,
@@ -417,7 +419,7 @@ class views_plugin_display extends views_plugin {
       ),
       'use_more_always' => array(
         'default' => FALSE,
-        'bool' => TRUE,
+        'bool' => FALSE,
       ),
       'use_more_text' => array(
         'default' => 'more',
@@ -740,7 +742,15 @@ class views_plugin_display extends views_plugin {
       $this->handlers[$type] = array();
       $types = views_object_types();
       $plural = $types[$type]['plural'];
+
       foreach ($this->get_option($plural) as $id => $info) {
+        // If this is during form submission and there are temporary options
+        // which can only appear if the view is in the edit cache, use those
+        // options instead. This is used for AJAX multi-step stuff.
+        if (isset($_POST['form_id']) && isset($this->view->temporary_options[$type][$id])) {
+          $info = $this->view->temporary_options[$type][$id];
+        }
+
         if ($info['id'] != $id) {
           $info['id'] = $id;
         }
@@ -1119,12 +1129,14 @@ class views_plugin_display extends views_plugin {
       }
     }
 
-    $options['exposed_block'] = array(
-      'category' => 'exposed',
-      'title' => t('Exposed form in block'),
-      'value' => $this->get_option('exposed_block') ? t('Yes') : t('No'),
-      'desc' => t('Allow the exposed form to appear in a block instead of the view.'),
-    );
+    if ($this->has_path()) {
+      $options['exposed_block'] = array(
+        'category' => 'exposed',
+        'title' => t('Exposed form in block'),
+        'value' => $this->get_option('exposed_block') ? t('Yes') : t('No'),
+        'desc' => t('Allow the exposed form to appear in a block instead of the view.'),
+      );
+    }
 
     $exposed_form_plugin = $this->get_plugin('exposed_form');
     if (!$exposed_form_plugin) {
@@ -1274,9 +1286,9 @@ class views_plugin_display extends views_plugin {
         );
         $form['use_more_always'] = array(
           '#type' => 'checkbox',
-          '#title' => t('Always display more link'),
+          '#title' => t('Do not display more link unless there is more content'),
           '#description' => t("This will display the more link even if there are no more items to display."),
-          '#default_value' => $this->get_option('use_more_always'),
+          '#default_value' => !$this->get_option('use_more_always'),
         );
         $form['use_more_text'] = array(
           '#type' => 'textfield',
@@ -2012,7 +2024,7 @@ class views_plugin_display extends views_plugin {
         break;
       case 'use_more':
         $this->set_option($section, intval($form_state['values'][$section]));
-        $this->set_option('use_more_always', intval($form_state['values']['use_more_always']));
+        $this->set_option('use_more_always', !intval($form_state['values']['use_more_always']));
         $this->set_option('use_more_text', $form_state['values']['use_more_text']);
       case 'distinct':
         $this->set_option($section, $form_state['values'][$section]);
@@ -2175,7 +2187,7 @@ class views_plugin_display extends views_plugin {
    * Render the 'more' link
    */
   function render_more_link() {
-    if ($this->use_more() && ($this->use_more_always() || $this->view->query->pager->has_more_records())) {
+    if ($this->use_more() && ($this->use_more_always() || (!empty($this->view->query->pager) && $this->view->query->pager->has_more_records()))) {
       $path = $this->get_path();
       if ($path) {
         $path = $this->view->get_url(NULL, $path);
@@ -2380,6 +2392,10 @@ class views_plugin_display extends views_plugin {
    * Provide the block system with any exposed widget blocks for this display.
    */
   function get_special_blocks() {
+    if (!$this->has_path()) {
+      return;
+    }
+
     $delta = '-exp-' . $this->view->name . '-' . $this->display->id;
     $desc = t('Exposed form: @view-@display_id', array('@view' => $this->view->name, '@display_id' => $this->display->id));
 
@@ -2401,7 +2417,8 @@ class views_plugin_display extends views_plugin {
         return;
       }
       $this->view->init_handlers();
-      if ($this->uses_exposed()) {
+
+      if ($this->uses_exposed() && $this->get_option('exposed_block')) {
         $exposed_form = $this->get_plugin('exposed_form');
         return array(
           'content' => $exposed_form->render_exposed_form(TRUE),

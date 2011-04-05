@@ -1,4 +1,3 @@
-// $Id: active_tags.js,v 1.1.2.29.2.1.2.4 2011/01/13 22:49:53 dragonwize Exp $
 
 /**
  * @file
@@ -9,7 +8,7 @@
 
 var activeTags = {};
 
-activeTags.parseCsv = function (sep, string) {
+activeTags.parseCsv = function (string, sep) {
   for (var result = string.split(sep = sep || ","), x = result.length - 1, tl; x >= 0; x--) {
     if (result[x].replace(/"\s+$/, '"').charAt(result[x].length - 1) == '"') {
       if ((tl = result[x].replace(/^\s+"/, '"')).length > 1 && tl.charAt(0) == '"') {
@@ -44,8 +43,14 @@ activeTags.addTermOnSubmit = function () {
   $('.at-add-btn').click();
 };
 
+activeTags.addTerms = function (context, terms) {
+  terms = activeTags.parseCsv(terms);
+  for (i in terms) {
+    activeTags.addTerm(context, terms[i]);
+  }
+};
+
 activeTags.addTerm = function (context, term) {
-  //alert(term);
   // Hide the autocomplete drop down.
   $('#autocomplete').each(function () {
     this.owner.hidePopup();
@@ -98,23 +103,7 @@ activeTags.updateFormValue = function (termList) {
 Drupal.theme.prototype.activeTagsTermRemove = function (term) {
   return '<div class="at-term at-term-remove"><span class="at-term-text">' + term + '</span><span class="at-term-action-remove">x</span></div> ';
 };
-/*
-Drupal.behaviors.activeTagsAutocomplete = function (context) {
-  $('li:not(.activeTagsAutocomplete-processed)', context)
-    .addClass('activeTagsAutocomplete-processed')
-    .each(function () {
-      var li = this;
-      $(li).focus(function () {
-        $('#autocomplete').each(function () {
-          this.owner.input.value = $(li).text();
-        });
-      }).mousedown(function () {
-        $('input.add-tag').click();
-        $('input.add-tag').prev().val('');
-      });
-  });
-}
-*/
+
 
 Drupal.behaviors.activeTagsOnEnter = {
   attach: function (context, settings) {
@@ -150,7 +139,13 @@ Drupal.behaviors.activeTagsAdd = {
       .each(function () {
         $(this).click(function (e) {
           var tag = $(this).parent().find('.at-term-entry').val().replace(/["]/g, '');
-          activeTags.addTerm(this, tag);
+          if (Drupal.settings.activeTags.mode === 'csv') {
+            activeTags.addTerms(this, tag);
+          }
+          else {
+            // Default to single tag entry mode.
+            activeTags.addTerm(this, tag);
+          }
           return false;
         });
       });

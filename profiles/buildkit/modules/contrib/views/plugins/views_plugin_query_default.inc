@@ -179,6 +179,9 @@ class views_plugin_query_default extends views_plugin_query {
     $options['field_language'] = array(
       'default' => '***CURRENT_LANGUAGE***',
     );
+    $options['field_language_add_to_query'] = array(
+      'default' => 1,
+    );
 
     return $options;
   }
@@ -189,7 +192,7 @@ class views_plugin_query_default extends views_plugin_query {
   function options_form(&$form, &$form_state) {
     $form['disable_sql_rewrite'] = array(
       '#title' => t('Disable SQL rewriting'),
-      '#description' => t('Disabling SQL rewriting will disable node_access checks as well as other modules that implement hook_db_rewrite_sql().'),
+      '#description' => t('Disabling SQL rewriting will disable node_access checks as well as other modules that implement hook_query_alter().'),
       '#type' => 'checkbox',
       '#default_value' => !empty($this->options['disable_sql_rewrite']),
       '#prefix' =>  '<div class="messages warning">' . t('WARNING: Disabling SQL rewriting means that node access security is disabled. This may allow users to see data they should not be able to see if your view is misconfigured. Please use this option only if you understand and accept this security risk.') . '</div>',
@@ -225,7 +228,7 @@ class views_plugin_query_default extends views_plugin_query {
       $languages = array(
         '***CURRENT_LANGUAGE***' => t("Current user's language"),
         '***DEFAULT_LANGUAGE***' => t("Default site language"),
-        LANGUAGE_NONE => t('No language')
+        LANGUAGE_NONE => t('Language neutral'),
       );
       $languages = array_merge($languages, locale_language_list());
 
@@ -235,6 +238,11 @@ class views_plugin_query_default extends views_plugin_query {
         '#description' => t('All fields which support translations will be displayed in the selected language.'),
         '#options' => $languages,
         '#default_value' => $this->options['field_language'],
+      );
+      $form['field_language_add_to_query'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('When needed, add the field language condition to the query.'),
+        '#default_value' => $this->options['field_language_add_to_query'],
       );
     }
   }
@@ -1024,18 +1032,20 @@ class views_plugin_query_default extends views_plugin_query {
     $has_condition = FALSE;
     $main_group = $this->group_operator == 'OR' ? db_or() : db_and();
     foreach ($this->$where as $group => $info) {
-      $sub_group = $info['type'] == 'OR' ? db_or() : db_and();
-      foreach ($info['conditions'] as $key => $clause) {
-        if ($clause['operator'] == 'formula') {
-          $has_condition = TRUE;
-          $sub_group->where($clause['field'], $clause['value']);
+      if (!empty($info['conditions'])) {
+        $sub_group = $info['type'] == 'OR' ? db_or() : db_and();
+        foreach ($info['conditions'] as $key => $clause) {
+          if ($clause['operator'] == 'formula') {
+            $has_condition = TRUE;
+            $sub_group->where($clause['field'], $clause['value']);
+          }
+          else {
+            $has_condition = TRUE;
+            $sub_group->condition($clause['field'], $clause['value'], $clause['operator']);
+          }
         }
-        else {
-          $has_condition = TRUE;
-          $sub_group->condition($clause['field'], $clause['value'], $clause['operator']);
-        }
+        $main_group->condition($sub_group);
       }
-      $main_group->condition($sub_group);
     }
     if ($has_condition) {
       return $main_group;
@@ -1122,6 +1132,7 @@ class views_plugin_query_default extends views_plugin_query {
     if (empty($this->no_distinct) && $this->distinct && !empty($this->fields)) {
       $base_field_alias = $this->add_field($this->base_table, $this->base_field);
       $this->add_groupby($base_field_alias);
+      $distinct = TRUE;
     }
 
     /**
@@ -1160,6 +1171,10 @@ class views_plugin_query_default extends views_plugin_query {
     // Go ahead and build the query.
     // db_select doesn't support to specify the key, so use getConnection directly.
     $query = Database::getConnection($target, $key)->select($this->base_table, $this->base_table, $options)->addTag('views');
+
+    if (!empty($distinct)) {
+      $query->distinct();
+    }
 
     $joins = $where = $having = $orderby = $groupby = '';
     $fields = $distinct = array();
@@ -1367,6 +1382,16 @@ class views_plugin_query_default extends views_plugin_query {
           'sort' => 'views_handler_sort_group_by_numeric',
         ),
       ),
+      'count_distinct' => array(
+        'title' => t('Count DISTINCT'),
+        'method' => 'views_query_default_aggregation_method_distinct',
+        'handler' => array(
+          'argument' => 'views_handler_argument_group_by_numeric',
+          'field' => 'views_handler_field_group_by_numeric',
+          'filter' => 'views_handler_filter_group_by_numeric',
+          'sort' => 'views_handler_sort_group_by_numeric',
+        ),
+      ),
       'sum' => array(
         'title' => t('Sum'),
         'method' => 'views_query_default_aggregation_method_simple',
@@ -1413,4 +1438,9 @@ class views_plugin_query_default extends views_plugin_query {
 
 function views_query_default_aggregation_method_simple($group_type, $field) {
   return strtoupper($group_type) . '(' . $field . ')';
+}
+
+function views_query_default_aggregation_method_distinct($group_type, $field) {
+  $group_type = str_replace('_distinct', '', $group_type);
+  return strtoupper($group_type) . '(DISTINCT ' . $field . ')';
 }

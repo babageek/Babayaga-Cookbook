@@ -308,7 +308,7 @@ class view extends views_db_object {
     if (empty($this->display[$display_id])) {
       $display_id = 'default';
       if (empty($this->display[$display_id])) {
-        debug(t('set_display() called with invalid display id @display.', array('@display' => $display_id)));
+        vpr('set_display() called with invalid display id @display.', array('@display' => $display_id));
         return FALSE;
       }
     }
@@ -1181,8 +1181,7 @@ class view extends views_db_object {
     }
 
     $pieces = array();
-    $arguments = isset($arguments) ? $arguments : $this->display_handler->get_option('arguments');
-    $argument_keys = isset($arguments) ? array_keys($arguments) : array();
+    $argument_keys = isset($this->argument) ? array_keys($this->argument) : array();
     $id = current($argument_keys);
     foreach (explode('/', $path) as $piece) {
       if ($piece != '%') {
@@ -1191,8 +1190,8 @@ class view extends views_db_object {
       else {
         if (empty($args)) {
           // Try to never put % in a url; use the wildcard instead.
-          if ($id && !empty($arguments[$id]['wildcard'])) {
-            $pieces[] = $arguments[$id]['wildcard'];
+          if ($id && !empty($this->argument[$id]->options['exception']['value'])) {
+            $pieces[] = $this->argument[$id]->options['exception']['value'];
           }
           else {
             $pieces[] = '*'; // gotta put something if there just isn't one.
@@ -1935,7 +1934,7 @@ class views_db_object {
     if (empty($id)) {
       $id = $this->generate_display_id($type);
       if ($id !== 'default') {
-        preg_match("/[0-9]/", $id, $count);
+        preg_match("/[0-9]+/", $id, $count);
         $count = $count[0];
       }
       else {
@@ -1987,6 +1986,30 @@ class views_db_object {
   }
 
   /**
+   * Generates a unique ID for an item.
+   *
+   * These items are typically fields, filters, sort criteria, or arguments.
+   *
+   * @param $requested_id
+   *   The requested ID for the item.
+   * @param $existing_items
+   *   An array of existing items, keyed by their IDs.
+   *
+   * @return
+   *   A unique ID. This will be equal to $requested_id if no item with that ID
+   *   already exists. Otherwise, it will be appended with an integer to make
+   *   it unique, e.g. "{$requested_id}_1", "{$requested_id}_2", etc.
+   */
+  public static function generate_item_id($requested_id, $existing_items) {
+    $count = 0;
+    $id = $requested_id;
+    while (!empty($existing_items[$id])) {
+      $id = $requested_id . '_' . ++$count;
+    }
+    return $id;
+  }
+
+  /**
    * Create a new display and a display handler for it.
    * @param $type
    *   The plugin type from the views plugin data. Defaults to 'page'.
@@ -2032,11 +2055,7 @@ class views_db_object {
     $fields = $this->display[$display_id]->handler->get_option($types[$type]['plural']);
 
     if (empty($id)) {
-      $count = 0;
-      $id = $field;
-      while (!empty($fields[$id])) {
-        $id = $field . '_' . ++$count;
-      }
+      $id = $this->generate_item_id($field, $fields);
     }
 
     $new_item = array(

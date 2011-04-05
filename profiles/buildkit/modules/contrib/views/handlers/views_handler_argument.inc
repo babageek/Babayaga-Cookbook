@@ -95,10 +95,12 @@ class views_handler_argument extends views_handler {
     }
 
     if (!empty($options['validate_type']) && !isset($options['validate']['type'])) {
-      $options['validate']['type'] = $options['validate_type'];
+      $this->options['validate']['type'] = $options['validate_type'];
+      $this->options['specify_validation'] = 1;
     }
     if (!empty($options['validate_fail']) && !isset($options['validate']['fail'])) {
-      $options['validate']['fail'] = $options['validate_fail'];
+      $this->options['validate']['fail'] = $options['validate_fail'];
+      $this->options['specify_validation'] = 1;
     }
   }
 
@@ -457,7 +459,7 @@ class views_handler_argument extends views_handler {
         'default only' => TRUE, // this can only be used for missing argument, not validation failure
       ),
       'not found' => array(
-        'title' => t('Show "Page not found"'),
+        'title' => t('Hide view'),
         'method' => 'default_not_found',
         'hard fail' => TRUE, // This is a hard fail condition
       ),
@@ -474,6 +476,10 @@ class views_handler_argument extends views_handler {
         'breadcrumb' => TRUE, // generate a breadcrumb to here
       ),
     );
+
+    if ($this->view->display_handler->has_path()) {
+      $defaults['not found']['title'] = t('Show "Page not found"');
+    }
 
     if ($which) {
       if (!empty($defaults[$which])) {
@@ -769,7 +775,7 @@ class views_handler_argument extends views_handler {
     if (isset($this->name_table)) {
       // if the alias is different then we're probably added, not ensured,
       // so look up the join and add it instead.
-      if ($this->table_alias != $this->table) {
+      if ($this->table_alias != $this->name_table) {
         $j = views_get_table_join($this->name_table, $this->table);
         if ($j) {
           $join = clone $j;
@@ -966,7 +972,7 @@ class views_handler_argument extends views_handler {
   /**
    * Get the value of this argument.
    */
-  function get_value($values, $field = NULL) {
+  function get_value() {
     // If we already processed this argument, we're done.
     if (isset($this->argument)) {
       return $this->argument;

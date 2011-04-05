@@ -7,7 +7,7 @@
 /**
  * @defgroup views_comment_module comment.module handlers
  *
- * Includes the tables 'comments' and 'node_comment_statistics'
+ * Includes the tables 'comment' and 'node_comment_statistics'
  * @{
  */
 
@@ -17,6 +17,8 @@
 
 function comment_views_data() {
   $data['comments']['moved to'] = 'comment';
+  $data['comments']['comment']['moved to'] = array('field_data_comment_body', 'comment_body');
+  $data['comments']['comment']['field']['moved to'] = array('field_data_comment_body', 'comment_body');
   // Define the base group of this table. Fields that don't
   // have a group defined will go into this field by default.
   $data['comment']['table']['group']  = t('Comment');
@@ -172,7 +174,7 @@ function comment_views_data() {
   $data['comments']['timestamp']['moved to'] = array('comment', 'changed');
   // changed (when comment was last updated)
   $data['comment']['changed'] = array(
-    'title' => t('Post date'),
+    'title' => t('Updated date'),
     'help' => t('Date and time of when the comment was last updated.'),
     'field' => array(
       'handler' => 'views_handler_field_date',

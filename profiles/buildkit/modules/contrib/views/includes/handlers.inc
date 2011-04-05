@@ -99,6 +99,7 @@ function views_get_table_join($table, $base_table) {
 
     return $handler;
   }
+
   // DEBUG -- identify missing handlers
   vpr("Missing join: $table $base_table");
 }
@@ -158,6 +159,16 @@ class views_handler extends views_object {
     // Check to see if this handler type is defaulted. Note that
     // we have to do a lookup because the type is singular but the
     // option is stored as the plural.
+
+    // If the 'moved to' keyword moved our handler, let's fix that now.
+    if (isset($this->actual_table)) {
+      $options['table'] = $this->actual_table;
+    }
+
+    if (isset($this->actual_field)) {
+      $options['field'] = $this->actual_field;
+    }
+
     $types = views_object_types();
     $plural = $this->handler_type;
     if (isset($types[$this->handler_type]['plural'])) {
@@ -253,21 +264,6 @@ class views_handler extends views_object {
   }
 
   /**
-   * Get the value that's supposed to be rendered.
-   *
-   * @param $values
-   *   An object containing all retrieved values.
-   * @param $field
-   *   Optional name of the field where the value is stored.
-   */
-  function get_value($values, $field = NULL) {
-    $alias = isset($field) ? $this->aliases[$field] : $this->field_alias;
-    if (isset($values->{$alias})) {
-      return $values->{$alias};
-    }
-  }
-
-  /**
    * Sanitize the value for output.
    *
    * @param $value
@@ -320,7 +316,7 @@ class views_handler extends views_object {
       '#title' => t('More'),
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
-      '#weight' => 50,
+      '#weight' => 150,
     );
   }
 
@@ -366,7 +362,7 @@ class views_handler extends views_object {
   function groupby_form_submit(&$form, &$form_state) {
     $item =& $form_state['handler']->options;
 
-    $item['group_type'] = $form_state['values']['group_type'];
+    $item['group_type'] = $form_state['values']['options']['group_type'];
   }
 
   /**
@@ -538,7 +534,10 @@ class views_handler extends views_object {
    */
   function ensure_my_table() {
     if (!isset($this->table_alias)) {
-      if (!method_exists($this->query, 'ensure_table')) { vpr_trace(); exit; }
+      if (!method_exists($this->query, 'ensure_table')) {
+        vpr(t('Ensure my table called but query has no ensure_table method.'));
+        return;
+      }
       $this->table_alias = $this->query->ensure_table($this->table, $this->relationship);
     }
     return $this->table_alias;
@@ -648,6 +647,7 @@ class views_many_to_one_helper {
       '#title' => t('Reduce duplicates'),
       '#description' => t('This filter can cause items that have more than one of the selected options to appear as duplicate results. If this filter causes duplicate results to occur, this checkbox can reduce those duplicates; however, the more terms it has to search for, the less performant the query will be, so use this with caution. Shouldn\'t be set on single-value fields, as it may cause values to disappear from display, if used on an incompatible field.'),
       '#default_value' => !empty($this->handler->options['reduce_duplicates']),
+      '#weight' => 4,
     );
   }
 
@@ -1089,11 +1089,9 @@ function views_date_sql_field($field, $field_type = 'int', $set_offset = NULL) {
   $db_type = db_driver();
   $offset = $set_offset !== NULL ? $set_offset : views_get_timezone();
   if (isset($offset) && !is_numeric($offset)) {
-    $tz = date_default_timezone_get();
-    $current = time('Z');
-    date_default_timezone_set($offset);
-    $offset_seconds = $current - time('Z');
-    date_default_timezone_set($tz);
+    $dtz = new DateTimeZone($offset);
+    $dt = new DateTime("now", $dtz);
+    $offset_seconds = $dtz->getOffset($dt);	
   }
 
   switch ($db_type) {
