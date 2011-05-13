@@ -164,12 +164,16 @@ function field_views_field_default_views_data($field) {
       'help' =>  t('Appears in: @bundles', array('@bundles' => implode(', ', $bundles_names))),
     );
 
+    $keys = array_keys($field['columns']);
+    $real_field = reset($keys);
     $data[$table][$column]['field'] = array(
 //      'field' => $column,
       'table' => $table,
       'handler' => 'views_handler_field_field',
       'click sortable' => TRUE,
       'field_name' => $field['field_name'],
+      // Provide a real field for group by.
+      'real field' => $column . '_' . $real_field,
       'additional fields' => $add_fields,
       'entity_tables' => $entity_tables,
       // Default the element type to div, let the UI change it if necessary.
@@ -206,14 +210,14 @@ function field_views_field_default_views_data($field) {
     }
 
 
-    if (count($field['columns']) == 1 && $column == 'value') {
+    if (count($field['columns']) == 1 || $column == 'value') {
       $title = t('@label (!name)', array('@label' => $label, '!name' => $field['field_name']));
       // CCK used the first 10 characters of $label. Probably doesn't matter.
-      $title_short = $field['field_name'];
+      $title_short = $label;
     }
     else {
-      $title = t('@label (!name) - !column', array('@label' => $label, '!name' => $field['field_name'], '!column' => $column));
-      $title_short = t('@label - !column', array('@label' => $field['field_name'], '!column' => $column));
+      $title = t('@label (!name:!column)', array('@label' => $label, '!name' => $field['field_name'], '!column' => $column));
+      $title_short = t('@label:!column', array('@label' => $label, '!column' => $column));
     }
 
     foreach ($tables as $type => $table) {
@@ -263,8 +267,8 @@ function field_views_field_default_views_data($field) {
 
       // Expose additional delta column for multiple value fields.
       if ($field['cardinality'] > 1 || $field['cardinality'] == FIELD_CARDINALITY_UNLIMITED) {
-        $title_delta = t('@label (!name) - delta', array('@label' => $label, '!name' => $field['field_name']));
-        $title_short_delta = t('!name - delta', array('!name' => $field['field_name']));
+        $title_delta = t('@label (!name:delta)', array('@label' => $label, '!name' => $field['field_name']));
+        $title_short_delta = t('@label:delta', array('@label' => $label));
 
         $data[$table]['delta'] = array(
           'group' => $group,

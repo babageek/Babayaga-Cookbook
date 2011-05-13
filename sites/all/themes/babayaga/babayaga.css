@@ -90,6 +90,9 @@ table.dsq-global-toolbar-container {
   border-width: 0px;
 }
 
+.views-display-top .secondary {
+  position: relative;
+}
 
 /**
  * Babayaga CSS -------------------------------------------------------

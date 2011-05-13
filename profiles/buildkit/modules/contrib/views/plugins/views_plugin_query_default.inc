@@ -1323,21 +1323,22 @@ class views_plugin_query_default extends views_plugin_query {
 
       $start = microtime(TRUE);
 
-      if ($this->pager->use_count_query() || !empty($view->get_total_rows)) {
-        $this->pager->execute_count_query($count_query);
-      }
-
-      // Let the pager modify the query to add limits.
-      $this->pager->pre_execute($query);
-
-      if (!empty($this->limit) || !empty($this->offset)) {
-        // We can't have an offset without a limit, so provide a very large limit instead.
-        $limit  = intval(!empty($this->limit) ? $this->limit : 999999);
-        $offset = intval(!empty($this->offset) ? $this->offset : 0);
-        $query->range($offset, $limit);
-      }
 
       try {
+        if ($this->pager->use_count_query() || !empty($view->get_total_rows)) {
+          $this->pager->execute_count_query($count_query);
+        }
+
+        // Let the pager modify the query to add limits.
+        $this->pager->pre_execute($query);
+
+        if (!empty($this->limit) || !empty($this->offset)) {
+          // We can't have an offset without a limit, so provide a very large limit instead.
+          $limit  = intval(!empty($this->limit) ? $this->limit : 999999);
+          $offset = intval(!empty($this->offset) ? $this->offset : 0);
+          $query->range($offset, $limit);
+        }
+
         $result = $query->execute();
 
         $view->result = array();
@@ -1353,7 +1354,13 @@ class views_plugin_query_default extends views_plugin_query {
       }
       catch (Exception $e) {
         $view->result = array();
-        debug('Exception: ' . $e->getMessage());
+        if (!empty($view->live_preview)) {
+          drupal_set_message(time());
+          drupal_set_message($e->getMessage(), 'error');
+        }
+        else {
+          debug('Exception: ' . $e->getMessage());
+        }
       }
 
     }
@@ -1377,7 +1384,7 @@ class views_plugin_query_default extends views_plugin_query {
         'method' => 'views_query_default_aggregation_method_simple',
         'handler' => array(
           'argument' => 'views_handler_argument_group_by_numeric',
-          'field' => 'views_handler_field_group_by_numeric',
+          'field' => 'views_handler_field_numeric',
           'filter' => 'views_handler_filter_group_by_numeric',
           'sort' => 'views_handler_sort_group_by_numeric',
         ),
@@ -1387,7 +1394,7 @@ class views_plugin_query_default extends views_plugin_query {
         'method' => 'views_query_default_aggregation_method_distinct',
         'handler' => array(
           'argument' => 'views_handler_argument_group_by_numeric',
-          'field' => 'views_handler_field_group_by_numeric',
+          'field' => 'views_handler_field_numeric',
           'filter' => 'views_handler_filter_group_by_numeric',
           'sort' => 'views_handler_sort_group_by_numeric',
         ),
@@ -1397,7 +1404,6 @@ class views_plugin_query_default extends views_plugin_query {
         'method' => 'views_query_default_aggregation_method_simple',
         'handler' => array(
           'argument' => 'views_handler_argument_group_by_numeric',
-          'field' => 'views_handler_field_group_by_numeric',
           'filter' => 'views_handler_filter_group_by_numeric',
           'sort' => 'views_handler_sort_group_by_numeric',
         ),
@@ -1407,7 +1413,6 @@ class views_plugin_query_default extends views_plugin_query {
         'method' => 'views_query_default_aggregation_method_simple',
         'handler' => array(
           'argument' => 'views_handler_argument_group_by_numeric',
-          'field' => 'views_handler_field_group_by_numeric',
           'filter' => 'views_handler_filter_group_by_numeric',
           'sort' => 'views_handler_sort_group_by_numeric',
         ),
@@ -1417,7 +1422,6 @@ class views_plugin_query_default extends views_plugin_query {
         'method' => 'views_query_default_aggregation_method_simple',
         'handler' => array(
           'argument' => 'views_handler_argument_group_by_numeric',
-          'field' => 'views_handler_field_group_by_numeric',
           'filter' => 'views_handler_filter_group_by_numeric',
           'sort' => 'views_handler_sort_group_by_numeric',
         ),
@@ -1427,7 +1431,6 @@ class views_plugin_query_default extends views_plugin_query {
         'method' => 'views_query_default_aggregation_method_simple',
         'handler' => array(
           'argument' => 'views_handler_argument_group_by_numeric',
-          'field' => 'views_handler_field_group_by_numeric',
           'filter' => 'views_handler_filter_group_by_numeric',
           'sort' => 'views_handler_sort_group_by_numeric',
         ),

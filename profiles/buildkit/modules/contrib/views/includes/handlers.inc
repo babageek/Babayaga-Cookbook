@@ -492,6 +492,15 @@ class views_handler extends views_object {
   function pre_query() { }
 
   /**
+   * Run after the view is executed, before the result is cached.
+   *
+   * This gives all the handlers some time to modify values. This is primarily
+   * used so that handlers that pull up secondary data can put it in the
+   * $values so that the raw data can be utilized externally.
+   */
+  function post_execute(&$values) { }
+
+  /**
    * Provides a unique placeholders for handlers.
    */
   function placeholder() {
@@ -875,11 +884,9 @@ class views_many_to_one_helper {
     if (empty($options['group'])) {
       $options['group'] = 0;
     }
-    else {
-      $value = $this->handler->value;
-      $operator = 'IN';
-    }
 
+    // add_condition determines whether a single expression is enough(FALSE) or the
+    // conditions should be added via an db_or()/db_and() (TRUE).
     $add_condition = TRUE;
     if ($operator == 'not') {
       $value = NULL;
@@ -887,12 +894,11 @@ class views_many_to_one_helper {
       $add_condition = FALSE;
     }
     elseif ($operator == 'or' && empty($options['reduce_duplicates'])) {
-      if (count($this->handler->value) > 1) {
-        $value = $this->handler->value;
+      if (count($value) > 1) {
         $operator = 'IN';
       }
       else {
-        $value = is_array($this->handler->value) ? array_pop($this->handler->value) : $this->handler->value;
+        $value = is_array($value) ? array_pop($value) : $value;
         $operator = '=';
       }
       $add_condition = FALSE;
@@ -931,17 +937,20 @@ class views_many_to_one_helper {
 }
 
 /*
- * Break x,y,z and x+y+z into an array. Numeric only.
+ * Break x,y,z and x+y+z into an array. Works for strings.
  *
  * @param $str
  *   The string to parse.
- * @param $handler
- *   The handler object to use as a base.
+ * @param $object
+ *   The object to use as a base. If not specified one will
+ *   be created.
  *
- * @return $handler
- *   The new handler object.
+ * @return $object
+ *   An object containing
+ *   - operator: Either 'and' or 'or'
+ *   - value: An array of numeric values.
  */
-function views_break_phrase_string($str, &$handler) {
+function views_break_phrase_string($str, &$handler = NULL) {
   if (!$handler) {
     $handler = new stdClass();
   }
@@ -987,14 +996,14 @@ function views_break_phrase_string($str, &$handler) {
  *
  * @param $str
  *   The string to parse.
- * @param $filter
- *   The filter object to use as a base. If not specified one will
+ * @param $handler
+ *   The handler object to use as a base. If not specified one will
  *   be created.
  *
- * @return $filter
- *   The new filter object.
+ * @return $handler
+ *   The new handler object.
  */
-function views_break_phrase($str, $handler = NULL) {
+function views_break_phrase($str, &$handler = NULL) {
   if (!$handler) {
     $handler = new stdClass();
   }
@@ -1091,7 +1100,7 @@ function views_date_sql_field($field, $field_type = 'int', $set_offset = NULL) {
   if (isset($offset) && !is_numeric($offset)) {
     $dtz = new DateTimeZone($offset);
     $dt = new DateTime("now", $dtz);
-    $offset_seconds = $dtz->getOffset($dt);	
+    $offset_seconds = $dtz->getOffset($dt);
   }
 
   switch ($db_type) {
@@ -1299,7 +1308,8 @@ function views_date_sql_extract($extract_type, $field, $field_type = 'int', $set
  *   - left_table: The table we join to
  *   - left_field: The field we join to
  *   - type: either LEFT (default) or INNER
- *   - extra: Either a string that's directly added, or an array of items:
+ *   - extra: An array of extra conditions on the join. Each condition is
+ *     either a string that's directly added, or an array of items:
  *   - - table: if not set, current table; if NULL, no table. This field can't
  *       be set in the cached definition because it can't know aliases; this field
  *       can only be used by realtime joins.
