@@ -43,12 +43,17 @@ function feature_blog_views_default_views() {
   $handler->display->display_options['sorts']['sticky']['table'] = 'node';
   $handler->display->display_options['sorts']['sticky']['field'] = 'sticky';
   $handler->display->display_options['sorts']['sticky']['order'] = 'DESC';
-  /* Contextual filter: Content: Created month */
-  $handler->display->display_options['arguments']['created_month']['id'] = 'created_month';
-  $handler->display->display_options['arguments']['created_month']['table'] = 'node';
-  $handler->display->display_options['arguments']['created_month']['field'] = 'created_month';
-  $handler->display->display_options['arguments']['created_month']['default_argument_type'] = 'fixed';
-  $handler->display->display_options['arguments']['created_month']['summary']['format'] = 'default_summary';
+  /* Contextual filter: Content: Created year + month */
+  $handler->display->display_options['arguments']['created_year_month']['id'] = 'created_year_month';
+  $handler->display->display_options['arguments']['created_year_month']['table'] = 'node';
+  $handler->display->display_options['arguments']['created_year_month']['field'] = 'created_year_month';
+  $handler->display->display_options['arguments']['created_year_month']['title_enable'] = 1;
+  $handler->display->display_options['arguments']['created_year_month']['title'] = 'Posts published in %1';
+  $handler->display->display_options['arguments']['created_year_month']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['created_year_month']['default_argument_skip_url'] = 0;
+  $handler->display->display_options['arguments']['created_year_month']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['created_year_month']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['created_year_month']['summary_options']['items_per_page'] = '25';
   /* Filter criterion: Content: Type */
   $handler->display->display_options['filters']['type']['id'] = 'type';
   $handler->display->display_options['filters']['type']['table'] = 'node';
@@ -107,6 +112,7 @@ function feature_blog_views_default_views() {
     t('- All -'),
     t('Offset'),
     t('All'),
+    t('Posts published in %1'),
     t('Page: List of posts'),
     t('Blog'),
     t('Block: List of posts'),
