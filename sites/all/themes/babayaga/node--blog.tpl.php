@@ -15,11 +15,13 @@
       <?php print render($links) ?>
     </div>
   <?php endif; ?>
+
   <?php if (!empty($addthis)): ?>
     <div class='<?php print $hook ?>-addthis clearfix'>
       <?php print render($addthis) ?>
     </div>
   <?php endif; ?>
+
 
   <?php if ($layout && (!empty($submitted) || !empty($links))): ?>
     </div></div>

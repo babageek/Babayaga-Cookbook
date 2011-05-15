@@ -51,6 +51,12 @@ body.tao {
   border-color: #DDD;
 }
 
+.help-page, 
+div.comment, 
+div.node {
+  margin-bottom: 35px;
+}
+
 .block .block-content,
 .container-inline .fieldset-content,
 .fieldset-content {
@@ -92,6 +98,44 @@ table.dsq-global-toolbar-container {
 
 .views-display-top .secondary {
   position: relative;
+}
+
+.views-summary-unformatted {
+  
+}
+.views-summary-unformatted a {
+ display: block;
+ padding: 5px;
+ background: #eee;
+ margin-bottom: 5px;
+ font-weight: bold;
+ text-decoration: none;
+ color: #555;
+}
+.views-summary-unformatted a.active,
+.views-summary-unformatted a:hover {
+  background-color: #A13562;
+  color: white;
+}
+.views-summary-unformatted a,
+.views-summary-unformatted a span {
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+}
+.views-summary-unformatted a span.link {
+  font-size: 12px;
+  padding-left: 5px;
+}
+.views-summary-unformatted a span.count {
+ font-weight: normal;
+ display: block;
+ width: 20px;
+ text-align: center;
+ font-size: 10px;
+ background: #fff;
+ color: #555;
+ float: right;
 }
 
 /**
@@ -162,12 +206,10 @@ h2.node-title a:hover {
 .addthis_toolbox.addthis_default_style a {
 /*  float: right;*/
 }
-
 .node-blog .node-date {
   text-align: right;
   font-weight: bold;
   color: #A13562;
-
 }
 .node-blog .node-links {
   text-align: right;
@@ -176,3 +218,11 @@ h2.node-title a:hover {
 .node-links a {
   color: #9E6A83;
 }
+.node-blog .node-title {
+  margin-bottom: 0;
+}
+.field-name-field-blog-subtitle {
+  color: #A13562;
+  margin-bottom: 20px;
+}
+
