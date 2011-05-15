@@ -1,0 +1,12 @@
+diff --git a/active_tags.module b/active_tags.module
+index ce37a26..600d74a 100644
+--- a/active_tags.module
++++ b/active_tags.module
+@@ -68,6 +68,7 @@ function active_tags_field_widget_form(&$form, &$form_state, $field, $instance,
+   );
+ 
+   drupal_add_css(drupal_get_path('module', 'active_tags') . '/active_tags.css');
++  $settings['mode'] = isset($settings['mode']) ? $settings['mode'] : 'single';
+   drupal_add_js(array('activeTags' => array('mode' => $settings['mode'])), 'setting');
+   drupal_add_js(drupal_get_path('module', 'active_tags') . '/active_tags.js');
+ 

@@ -68,6 +68,7 @@ function active_tags_field_widget_form(&$form, &$form_state, $field, $instance, 
   );
 
   drupal_add_css(drupal_get_path('module', 'active_tags') . '/active_tags.css');
+  $settings['mode'] = isset($settings['mode']) ? $settings['mode'] : 'single';
   drupal_add_js(array('activeTags' => array('mode' => $settings['mode'])), 'setting');
   drupal_add_js(drupal_get_path('module', 'active_tags') . '/active_tags.js');
 
