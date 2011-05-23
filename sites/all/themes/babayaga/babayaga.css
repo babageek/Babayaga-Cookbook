@@ -27,15 +27,17 @@
 .position .inner-left { padding-right: 10px; }
 .position .inner-right { padding-left: 10px; }
 
-body.tao {
+html {
   background: url("images/bg-top.png") top repeat-x;
-  padding-top: 5px;
+  padding-top: 12px;
+}
+body.tao {
+  background: url("images/bg-body.png");
 }
 
 #header {
   margin-bottom: 25px;
 }
-
 .block,
 .item-list,
 .help-items ul,
@@ -141,7 +143,11 @@ table.dsq-global-toolbar-container {
 /**
  * Babayaga CSS -------------------------------------------------------
  */
-
+ .block-inner {
+   padding: 15px;
+ }
+ 
+ 
 .item-list h3,
 .block .block-title {
   display: block;
@@ -155,9 +161,9 @@ table.dsq-global-toolbar-container {
 #logo {
   display: block;
   float: left;
+  margin-top: -9px;
 }
 #navigation {
-  padding-top: 20px;
 }
 #navigation ul.links li {
   padding: 35px 0px;
@@ -165,8 +171,8 @@ table.dsq-global-toolbar-container {
 #navigation ul.links li a {
   font-family: "Garamond 3 LT Std", "EB Garamond", Georgia, serif;
   color: #222;
-  font-size: 27px;
-  padding: 15px 30px;
+  font-size: 22px;
+  padding: 10px 30px;
   border-right: 1px solid #ccc;
 }
 #navigation ul.links li.last a {
@@ -177,6 +183,7 @@ body.front #logo {
   padding-left: 140px;
 }
 
+.field-content.picture img,
 .node img {
   padding: 3px;
   border: 1px solid #CCC;
@@ -206,6 +213,9 @@ h2.node-title a:hover {
 .addthis_toolbox.addthis_default_style a {
 /*  float: right;*/
 }
+.addthis_toolbox {
+  margin-top: 25px;
+}
 .node-blog .node-date {
   text-align: right;
   font-weight: bold;
@@ -226,3 +236,14 @@ h2.node-title a:hover {
   margin-bottom: 20px;
 }
 
+
+#block-views-recipes-block-1 h3,
+#block-views-recipes-block-1 h2,
+#block-views-recipes-block-1 h1,
+#block-views-recipes-block-1 {
+  background-color: #A13562;
+  color: #fff;
+}
+#block-views-recipes-block-1 a {
+  color: #fff;
+}
