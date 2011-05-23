@@ -32,7 +32,7 @@ html {
   padding-top: 12px;
 }
 body.tao {
-  background: url("images/bg-body.png");
+  background: url("images/bg-body.png") scroll;
 }
 
 #header {
@@ -172,12 +172,15 @@ table.dsq-global-toolbar-container {
   font-family: "Garamond 3 LT Std", "EB Garamond", Georgia, serif;
   color: #222;
   font-size: 22px;
-  padding: 10px 30px;
-  border-right: 1px solid #ccc;
+  background: transparent url("images/sprites.png") 0 0 no-repeat;
+/*  border-right: 1px solid #ccc;*/
+  padding: 10px 25px;
+  padding-left: 40px;
 }
-#navigation ul.links li.last a {
-  border-right: 0;
-}
+#navigation ul.links li.first a {
+  background-image: none;
+  padding-left: 30px;
+} 
 
 body.front #logo {
   padding-left: 140px;
@@ -225,6 +228,12 @@ h2.node-title a:hover {
   text-align: right;
   padding: 0 0 5px 0;
 }
+
+.node-blog.node-teaser {
+  background: transparent url("images/hr.png") center 100% no-repeat;
+  padding-bottom: 55px;
+}
+
 .node-links a {
   color: #9E6A83;
 }
