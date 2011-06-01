@@ -27,12 +27,12 @@
 .position .inner-left { padding-right: 10px; }
 .position .inner-right { padding-left: 10px; }
 
-html {
-  background: url("images/bg-top.png") top repeat-x;
-  padding-top: 12px;
+#wrapper-one {
+  background: url("images/bg.jpg") scroll;
+  border-top: 10px solid #7D294C;
 }
-body.tao {
-  background: url("images/bg-body.png") scroll;
+#wrapper-two {
+  background: url("images/bg-top.jpg") top repeat-x;  
 }
 
 #header {
@@ -158,11 +158,6 @@ table.dsq-global-toolbar-container {
   background: transparent;
 }
 
-#logo {
-  display: block;
-  float: left;
-  margin-top: -9px;
-}
 #navigation {
 }
 #navigation ul.links li {
@@ -182,8 +177,8 @@ table.dsq-global-toolbar-container {
   padding-left: 30px;
 } 
 
-body.front #logo {
-  padding-left: 140px;
+#logo {
+  display: block;
 }
 
 .field-content.picture img,
@@ -191,6 +186,14 @@ body.front #logo {
   padding: 3px;
   border: 1px solid #CCC;
   background: #FFF;
+}
+
+.block {
+  border: 1px dashed #998675;
+}
+#content .block,
+#footer .block {
+  border: 0;
 }
 
 h2.block-title,
@@ -246,13 +249,3 @@ h2.node-title a:hover {
 }
 
 
-#block-views-recipes-block-1 h3,
-#block-views-recipes-block-1 h2,
-#block-views-recipes-block-1 h1,
-#block-views-recipes-block-1 {
-  background-color: #A13562;
-  color: #fff;
-}
-#block-views-recipes-block-1 a {
-  color: #fff;
-}

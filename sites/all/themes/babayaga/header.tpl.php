@@ -1,6 +1,6 @@
 
 
-
+<div id='wrapper-one'><div id='wrapper-two'>
 <div id='header'><div class='limiter clearfix'>
   <?php if ($logo): ?>
     <a href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home" id="logo">

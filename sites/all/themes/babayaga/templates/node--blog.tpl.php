@@ -1,8 +1,5 @@
 <?php if (!empty($pre_object)) print render($pre_object) ?>
 <div class='<?php print $classes ?> clearfix' <?php print ($attributes) ?>>
-  <?php if ($layout && (!empty($submitted) || !empty($links))): ?>
-    <div class='position left size-20'><div class='inner-left column-wrapper'>
-  <?php endif; ?>
 
   <?php if (!empty($date)): ?>
     <div class='<?php print $hook ?>-date clearfix'>
@@ -16,13 +13,6 @@
     </div>
   <?php endif; ?>
 
-  <?php if ($layout && (!empty($submitted) || !empty($links))): ?>
-    </div></div>
-  <?php endif; ?>
-
-  <?php if ($layout): ?>
-    <div class='position left size-80'><div class='inner-right column-wrapper'>
-  <?php endif; ?>
 
   <?php if (!empty($title_prefix)) print render($title_prefix); ?>
 
@@ -47,9 +37,6 @@
     </div>
   <?php endif; ?>
 
-  <?php if ($layout): ?>
-    </div></div>
-  <?php endif; ?>
 </div>
 
 <?php if (!empty($post_object)) print render($post_object) ?>

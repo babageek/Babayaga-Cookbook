@@ -1,3 +1,4 @@
+</div></div>
 <div id='footer' class='clearfix'>
   <?php if ($feed_icons): ?>
     <div class='feed-icons clearfix'>
