@@ -1,15 +1,17 @@
 
 
 <div id='wrapper-one'><div id='wrapper-two'>
-<div id='header'><div class='limiter clearfix'>
   <?php if ($logo): ?>
     <a href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home" id="logo">
       <img src="<?php print $logo; ?>" alt="<?php print t('Home'); ?>" />
     </a>
-  <?php endif; ?>
+  <?php endif; ?>    
+<div id='header'><div class='limiter clearfix'>
   <?php if (isset($main_menu)) : ?>
     <div id='navigation'>
-      <?php print theme('links', array('links' => $main_menu, 'attributes' => array('class' => 'links main-menu'))) ?>
+      <div id='navigation-container' class="clearfix"><div class="navigation-container-left clearfix"><div class="navigation-container-right clearfix">
+        <?php print theme('links', array('links' => $main_menu, 'attributes' => array('class' => 'links main-menu'))) ?>
+      </div></div></div>
     </div>
   <?php endif; ?>
 </div></div>

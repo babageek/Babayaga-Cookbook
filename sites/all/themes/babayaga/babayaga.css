@@ -33,7 +33,15 @@
 }
 #wrapper-two {
   background: url("images/bg-top.jpg") top repeat-x;  
+  position: relative;
 }
+#logo {
+  display: block;
+  position: absolute;
+  top: 45px;
+  left: 0;
+}
+
 
 #header {
   margin-bottom: 25px;
@@ -159,27 +167,41 @@ table.dsq-global-toolbar-container {
 }
 
 #navigation {
+  text-align: center;
+  padding-top: 95px;
+  background: transparent url("images/spoon.png") center 30px no-repeat;
+}
+#navigation-container {
+  margin: 0 auto;
+  width: 600px;
+}
+.navigation-container-left {
+  background: transparent url("images/sprites.png") no-repeat;
+  padding-left: 40px;
+  background-position: 0 -155px;
+}
+.navigation-container-right {
+  background: transparent url("images/sprites.png") no-repeat;
+  background-position: 100% -80px;
+  padding-right: 40px;
 }
 #navigation ul.links li {
-  padding: 35px 0px;
+  padding: 20px 0px;
 }
 #navigation ul.links li a {
   font-family: "Garamond 3 LT Std", "EB Garamond", Georgia, serif;
   color: #222;
-  font-size: 22px;
-  background: transparent url("images/sprites.png") 0 0 no-repeat;
+  font-size: 24px;
+  background: transparent url("images/sprites.png") 0 3px no-repeat;
 /*  border-right: 1px solid #ccc;*/
-  padding: 10px 25px;
-  padding-left: 40px;
+  padding: 10px 15px;
+  padding-left: 25px;
 }
 #navigation ul.links li.first a {
   background-image: none;
   padding-left: 30px;
 } 
 
-#logo {
-  display: block;
-}
 
 .field-content.picture img,
 .node img {
