@@ -9,9 +9,9 @@
 <div id='header'><div class='limiter clearfix'>
   <?php if (isset($main_menu)) : ?>
     <div id='navigation'>
-      <div id='navigation-container' class="clearfix"><div class="navigation-container-left clearfix"><div class="navigation-container-right clearfix">
+      <div id='navigation-container' class="clearfix">
         <?php print theme('links', array('links' => $main_menu, 'attributes' => array('class' => 'links main-menu'))) ?>
-      </div></div></div>
+      </div>
     </div>
   <?php endif; ?>
 </div></div>

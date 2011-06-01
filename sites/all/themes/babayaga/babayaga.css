@@ -171,20 +171,43 @@ table.dsq-global-toolbar-container {
   padding-top: 95px;
   background: transparent url("images/spoon.png") center 30px no-repeat;
 }
+
 #navigation-container {
-  margin: 0 auto;
-  width: 600px;
+  margin-top: 10px;
+  float:left;
+  width:100%;
+  overflow:hidden;
+  position:relative;
 }
-.navigation-container-left {
+ul.main-menu {
+  clear:left;
+  float:left;  
+  margin:0;
+  padding:0;
+  position:relative;
+  left:50%;
+  text-align:center;   
+}
+ul.main-menu  li {
+  display:block;
+  float:left;
+  margin:0;
+  padding:0;
+  position:relative;
+  right:50%;
+}
+
+#navigation ul.links li.first {
   background: transparent url("images/sprites.png") no-repeat;
-  padding-left: 40px;
   background-position: 0 -155px;
+  padding-left: 35px;
 }
-.navigation-container-right {
+#navigation ul.links li.last {
   background: transparent url("images/sprites.png") no-repeat;
   background-position: 100% -80px;
-  padding-right: 40px;
+  padding-right: 50px;
 }
+
 #navigation ul.links li {
   padding: 20px 0px;
 }
