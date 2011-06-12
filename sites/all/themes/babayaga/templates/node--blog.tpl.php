@@ -1,19 +1,16 @@
 <?php if (!empty($pre_object)) print render($pre_object) ?>
 <div class='<?php print $classes ?> clearfix' <?php print ($attributes) ?>>
 
-  <?php if (!empty($date)): ?>
-    <div class='<?php print $hook ?>-date clearfix'>
-      <?php print $date ?>
-    </div>
-  <?php endif; ?>
+  <div class="headings">
+    <?php if (!empty($date)): ?>
+      <span class='<?php print $hook ?>-date clearfix'><?php print $date ?></span>
+    <?php endif; ?>
 
-  <?php if (!empty($links)): ?>
-    <div class='<?php print $hook ?>-links clearfix'>
-      <?php print render($links) ?>
-    </div>
-  <?php endif; ?>
-
-
+    <?php if (!empty($links)): ?>
+      <span class='<?php print $hook ?>-links clearfix'><?php print render($links) ?></span>
+    <?php endif; ?>
+  </div>
+  
   <?php if (!empty($title_prefix)) print render($title_prefix); ?>
 
   <?php if (!empty($title) && !$page): ?>

@@ -97,8 +97,9 @@ function feature_blog_views_default_views() {
   $handler->display->display_options['arguments']['created_year_month']['default_argument_skip_url'] = 0;
   $handler->display->display_options['arguments']['created_year_month']['summary']['sort_order'] = 'desc';
   $handler->display->display_options['arguments']['created_year_month']['summary']['number_of_records'] = '0';
-  $handler->display->display_options['arguments']['created_year_month']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['created_year_month']['summary']['format'] = 'unformatted_summary';
   $handler->display->display_options['arguments']['created_year_month']['summary_options']['items_per_page'] = '25';
+  $handler->display->display_options['arguments']['created_year_month']['summary_options']['inline'] = 0;
   $translatables['blog'] = array(
     t('Defaults'),
     t('Latest blog posts'),

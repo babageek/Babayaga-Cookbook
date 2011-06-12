@@ -169,7 +169,7 @@ table.dsq-global-toolbar-container {
 #navigation {
   text-align: center;
   padding-top: 95px;
-  background: transparent url("images/spoon.png") center 30px no-repeat;
+  background: transparent url("images/spoon.jpg") center 22px no-repeat;
 }
 
 #navigation-container {
@@ -240,10 +240,21 @@ ul.main-menu  li {
 #footer .block {
   border: 0;
 }
+#footer {
+  background-color: #7D294C;
+  padding: 35px;
+}
 
 h2.block-title,
 h2.node-title {
   font-family: "Garamond 3 LT Std", "EB Garamond", Georgia, serif;
+}
+.prose p {
+  font-family: Georgia, serif;
+  font-size: 15px;
+  line-height: 25px;
+  color: #555;
+  text-align: justify;
 }
 
 h2.node-title a,
@@ -268,13 +279,12 @@ h2.node-title a:hover {
   margin-top: 25px;
 }
 .node-blog .node-date {
-  text-align: right;
   font-weight: bold;
-  color: #A13562;
+  display: inline;
 }
 .node-blog .node-links {
-  text-align: right;
   padding: 0 0 5px 0;
+  display: inline;
 }
 
 .node-blog.node-teaser {
@@ -293,4 +303,7 @@ h2.node-title a:hover {
   margin-bottom: 20px;
 }
 
-
+.headings {
+  color: #A13562;
+  margin-bottom: 10px;
+}
