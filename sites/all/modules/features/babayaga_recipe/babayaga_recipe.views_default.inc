@@ -368,8 +368,14 @@ function babayaga_recipe_views_default_views() {
   $handler->display->display_options['arguments']['nid']['id'] = 'nid';
   $handler->display->display_options['arguments']['nid']['table'] = 'node';
   $handler->display->display_options['arguments']['nid']['field'] = 'nid';
-  $handler->display->display_options['arguments']['nid']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['nid']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['nid']['default_argument_type'] = 'node';
+  $handler->display->display_options['arguments']['nid']['default_argument_skip_url'] = 0;
+  $handler->display->display_options['arguments']['nid']['summary']['number_of_records'] = '0';
   $handler->display->display_options['arguments']['nid']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['nid']['summary_options']['items_per_page'] = '25';
+  $handler->display->display_options['arguments']['nid']['break_phrase'] = 0;
+  $handler->display->display_options['arguments']['nid']['not'] = 0;
 
   /* Display: Cookware */
   $handler = $view->new_display('block', 'Cookware', 'block_3');
@@ -404,8 +410,65 @@ function babayaga_recipe_views_default_views() {
   $handler->display->display_options['arguments']['nid']['id'] = 'nid';
   $handler->display->display_options['arguments']['nid']['table'] = 'node';
   $handler->display->display_options['arguments']['nid']['field'] = 'nid';
-  $handler->display->display_options['arguments']['nid']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['nid']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['nid']['default_argument_type'] = 'node';
+  $handler->display->display_options['arguments']['nid']['default_argument_skip_url'] = 0;
+  $handler->display->display_options['arguments']['nid']['summary']['number_of_records'] = '0';
   $handler->display->display_options['arguments']['nid']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['nid']['summary_options']['items_per_page'] = '25';
+  $handler->display->display_options['arguments']['nid']['break_phrase'] = 0;
+  $handler->display->display_options['arguments']['nid']['not'] = 0;
+
+  /* Display: Picture */
+  $handler = $view->new_display('block', 'Picture', 'block_4');
+  $handler->display->display_options['defaults']['title'] = FALSE;
+  $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: Content: Pictures */
+  $handler->display->display_options['fields']['field_recipe_pictures']['id'] = 'field_recipe_pictures';
+  $handler->display->display_options['fields']['field_recipe_pictures']['table'] = 'field_data_field_recipe_pictures';
+  $handler->display->display_options['fields']['field_recipe_pictures']['field'] = 'field_recipe_pictures';
+  $handler->display->display_options['fields']['field_recipe_pictures']['label'] = '';
+  $handler->display->display_options['fields']['field_recipe_pictures']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['field_recipe_pictures']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['field_recipe_pictures']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['field_recipe_pictures']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['field_recipe_pictures']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['field_recipe_pictures']['alter']['trim_whitespace'] = 0;
+  $handler->display->display_options['fields']['field_recipe_pictures']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['field_recipe_pictures']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['field_recipe_pictures']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['field_recipe_pictures']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['field_recipe_pictures']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['field_recipe_pictures']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['field_recipe_pictures']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_recipe_pictures']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['field_recipe_pictures']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['field_recipe_pictures']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['field_recipe_pictures']['click_sort_column'] = 'fid';
+  $handler->display->display_options['fields']['field_recipe_pictures']['type'] = 'colorbox';
+  $handler->display->display_options['fields']['field_recipe_pictures']['settings'] = array(
+    'colorbox_node_style' => 'recipe-portrait',
+    'colorbox_image_style' => 'recipe-portrait',
+  );
+  $handler->display->display_options['fields']['field_recipe_pictures']['group_rows'] = 1;
+  $handler->display->display_options['fields']['field_recipe_pictures']['delta_limit'] = '1';
+  $handler->display->display_options['fields']['field_recipe_pictures']['delta_offset'] = '0';
+  $handler->display->display_options['fields']['field_recipe_pictures']['delta_reversed'] = 0;
+  $handler->display->display_options['fields']['field_recipe_pictures']['field_api_classes'] = 0;
+  $handler->display->display_options['defaults']['sorts'] = FALSE;
+  $handler->display->display_options['defaults']['arguments'] = FALSE;
+  /* Contextual filter: Content: Nid */
+  $handler->display->display_options['arguments']['nid']['id'] = 'nid';
+  $handler->display->display_options['arguments']['nid']['table'] = 'node';
+  $handler->display->display_options['arguments']['nid']['field'] = 'nid';
+  $handler->display->display_options['arguments']['nid']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['nid']['default_argument_type'] = 'node';
+  $handler->display->display_options['arguments']['nid']['default_argument_skip_url'] = 0;
+  $handler->display->display_options['arguments']['nid']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['nid']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['nid']['summary_options']['items_per_page'] = '25';
+  $handler->display->display_options['arguments']['nid']['break_phrase'] = 0;
+  $handler->display->display_options['arguments']['nid']['not'] = 0;
   $translatables['recipes'] = array(
     t('Defaults'),
     t('Latest recipes'),
@@ -424,6 +487,7 @@ function babayaga_recipe_views_default_views() {
     t('Attachment: List of recipes'),
     t('Ingredients'),
     t('Cookware'),
+    t('Picture'),
   );
 
   $views[$view->name] = $view;
