@@ -135,6 +135,12 @@ function babayaga_recipe_views_default_views() {
   $handler->display->display_options['sorts']['timestamp']['id'] = 'timestamp';
   $handler->display->display_options['sorts']['timestamp']['table'] = 'node_revision';
   $handler->display->display_options['sorts']['timestamp']['field'] = 'timestamp';
+  /* Contextual filter: Content: Nid */
+  $handler->display->display_options['arguments']['nid']['id'] = 'nid';
+  $handler->display->display_options['arguments']['nid']['table'] = 'node';
+  $handler->display->display_options['arguments']['nid']['field'] = 'nid';
+  $handler->display->display_options['arguments']['nid']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['nid']['summary']['format'] = 'default_summary';
   /* Filter criterion: Content: Type */
   $handler->display->display_options['filters']['type']['id'] = 'type';
   $handler->display->display_options['filters']['type']['table'] = 'node';
@@ -328,6 +334,78 @@ function babayaga_recipe_views_default_views() {
     'page_1' => 0,
   );
   $handler->display->display_options['attachment_position'] = 'after';
+
+  /* Display: Ingredients */
+  $handler = $view->new_display('block', 'Ingredients', 'block_2');
+  $handler->display->display_options['defaults']['title'] = FALSE;
+  $handler->display->display_options['title'] = 'Ingredients';
+  $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: Content: Ingredients */
+  $handler->display->display_options['fields']['field_recipe_ingredients']['id'] = 'field_recipe_ingredients';
+  $handler->display->display_options['fields']['field_recipe_ingredients']['table'] = 'field_data_field_recipe_ingredients';
+  $handler->display->display_options['fields']['field_recipe_ingredients']['field'] = 'field_recipe_ingredients';
+  $handler->display->display_options['fields']['field_recipe_ingredients']['label'] = '';
+  $handler->display->display_options['fields']['field_recipe_ingredients']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['field_recipe_ingredients']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['field_recipe_ingredients']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['field_recipe_ingredients']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['field_recipe_ingredients']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['field_recipe_ingredients']['alter']['trim_whitespace'] = 0;
+  $handler->display->display_options['fields']['field_recipe_ingredients']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['field_recipe_ingredients']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['field_recipe_ingredients']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['field_recipe_ingredients']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['field_recipe_ingredients']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['field_recipe_ingredients']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['field_recipe_ingredients']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_recipe_ingredients']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['field_recipe_ingredients']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['field_recipe_ingredients']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['field_recipe_ingredients']['field_api_classes'] = 0;
+  $handler->display->display_options['defaults']['sorts'] = FALSE;
+  $handler->display->display_options['defaults']['arguments'] = FALSE;
+  /* Contextual filter: Content: Nid */
+  $handler->display->display_options['arguments']['nid']['id'] = 'nid';
+  $handler->display->display_options['arguments']['nid']['table'] = 'node';
+  $handler->display->display_options['arguments']['nid']['field'] = 'nid';
+  $handler->display->display_options['arguments']['nid']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['nid']['summary']['format'] = 'default_summary';
+
+  /* Display: Cookware */
+  $handler = $view->new_display('block', 'Cookware', 'block_3');
+  $handler->display->display_options['defaults']['title'] = FALSE;
+  $handler->display->display_options['title'] = 'Cookware';
+  $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: Content: Cookware */
+  $handler->display->display_options['fields']['field_recipe_cookware']['id'] = 'field_recipe_cookware';
+  $handler->display->display_options['fields']['field_recipe_cookware']['table'] = 'field_data_field_recipe_cookware';
+  $handler->display->display_options['fields']['field_recipe_cookware']['field'] = 'field_recipe_cookware';
+  $handler->display->display_options['fields']['field_recipe_cookware']['label'] = '';
+  $handler->display->display_options['fields']['field_recipe_cookware']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['field_recipe_cookware']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['field_recipe_cookware']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['field_recipe_cookware']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['field_recipe_cookware']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['field_recipe_cookware']['alter']['trim_whitespace'] = 0;
+  $handler->display->display_options['fields']['field_recipe_cookware']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['field_recipe_cookware']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['field_recipe_cookware']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['field_recipe_cookware']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['field_recipe_cookware']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['field_recipe_cookware']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['field_recipe_cookware']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_recipe_cookware']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['field_recipe_cookware']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['field_recipe_cookware']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['field_recipe_cookware']['field_api_classes'] = 0;
+  $handler->display->display_options['defaults']['sorts'] = FALSE;
+  $handler->display->display_options['defaults']['arguments'] = FALSE;
+  /* Contextual filter: Content: Nid */
+  $handler->display->display_options['arguments']['nid']['id'] = 'nid';
+  $handler->display->display_options['arguments']['nid']['table'] = 'node';
+  $handler->display->display_options['arguments']['nid']['field'] = 'nid';
+  $handler->display->display_options['arguments']['nid']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['nid']['summary']['format'] = 'default_summary';
   $translatables['recipes'] = array(
     t('Defaults'),
     t('Latest recipes'),
@@ -340,9 +418,12 @@ function babayaga_recipe_views_default_views() {
     t('Items per page'),
     t('- All -'),
     t('Offset'),
+    t('All'),
     t('Recipe list'),
     t('Block Front page'),
     t('Attachment: List of recipes'),
+    t('Ingredients'),
+    t('Cookware'),
   );
 
   $views[$view->name] = $view;
