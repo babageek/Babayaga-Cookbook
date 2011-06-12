@@ -12,6 +12,8 @@ regions[footer] = "Footer"
 stylesheets[screen][] = style.css
 stylesheets[screen][] = babayaga.css
 
+scripts[] = babayaga.js
+
 ; Layout: Default
 layouts[default][name] = "Default"
 layouts[default][description] = "Simple two column page."

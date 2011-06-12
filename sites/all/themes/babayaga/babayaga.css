@@ -27,6 +27,9 @@
 .position .inner-left { padding-right: 10px; }
 .position .inner-right { padding-left: 10px; }
 
+#page {
+  min-height: 350px;
+}
 #wrapper-one {
   background: url("images/bg.jpg") scroll;
   border-top: 10px solid #7D294C;
@@ -234,7 +237,6 @@ ul.main-menu  li {
 }
 
 .block {
-  border: 1px dashed #998675;
 }
 #content .block,
 #footer .block {
