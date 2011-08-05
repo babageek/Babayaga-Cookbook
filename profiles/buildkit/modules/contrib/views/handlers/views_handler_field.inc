@@ -361,7 +361,6 @@ class views_handler_field extends views_handler {
         'prefix' => array('default' => '', 'translatable' => TRUE),
         'suffix' => array('default' => '', 'translatable' => TRUE),
         'target' => array('default' => '', 'translatable' => TRUE),
-        'trim' => array('default' => FALSE),
         'nl2br' => array('default' => FALSE),
         'max_length' => array('default' => ''),
         'word_boundary' => array('default' => TRUE),
@@ -387,6 +386,7 @@ class views_handler_field extends views_handler {
     $options['empty'] = array('default' => '', 'translatable' => TRUE);
     $options['hide_empty'] = array('default' => FALSE);
     $options['empty_zero'] = array('default' => FALSE);
+    $options['hide_alter_empty'] = array('default' => FALSE);
 
     return $options;
   }
@@ -548,7 +548,7 @@ class views_handler_field extends views_handler {
 
     $form['element_wrapper_type_enable'] = array(
       '#type' => 'checkbox',
-      '#title' => t('Customize field and label HTML'),
+      '#title' => t('Customize field and label wrapper HTML'),
       '#default_value' => !empty($this->options['element_wrapper_type']) || (string) $this->options['element_wrapper_type'] == '0' || !empty($this->options['element_wrapper_class']) || (string) $this->options['element_wrapper_class'] == '0',
       '#fieldset' => 'style_settings',
     );
@@ -557,7 +557,7 @@ class views_handler_field extends views_handler {
       '#options' => $this->get_elements(FALSE),
       '#type' => 'select',
       '#default_value' => $this->options['element_wrapper_type'],
-      '#description' => t('Choose the HTML element to wrap around this field and label, e.g. H1, H2, etc.'),
+      '#description' => t('Choose the HTML element to wrap around this field and label, e.g. H1, H2, etc. This may not be used if the field and label are not rendered together, such as with a table.'),
       '#dependency' => array(
         'edit-options-element-wrapper-type-enable' => array(1),
       ),
@@ -877,7 +877,15 @@ If you would like to have the characters %5B and %5D please use the html entity 
       '#type' => 'checkbox',
       '#title' => t('Hide if empty'),
       '#default_value' => $this->options['hide_empty'],
-      '#description' => t('Enable to hide this field if it is empty. Note that the field label may still be displayed. Check style or row style settings to hide labels for empty fields.'),
+      '#description' => t('Enable to hide this field if it is empty. Note that the field label or rewritten output may still be displayed. To hide labels, check the style or row style settings for empty fields. To hide rewritten content, check the Hide rewriting if empty checkbox.'),
+      '#fieldset' => 'empty_field_behavior',
+    );
+
+    $form['hide_alter_empty'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Hide rewriting if empty'),
+      '#default_value' => $this->options['hide_alter_empty'],
+      '#description' => t('Do not display rewritten content if this field is empty.'),
       '#fieldset' => 'empty_field_behavior',
     );
   }
@@ -989,7 +997,7 @@ If you would like to have the characters %5B and %5D please use the html entity 
       $value = $this->render_altered($alter, $tokens);
     }
 
-    if ($this->options['hide_empty'] && empty($value) && ($value !== 0 || $this->options['empty_zero'])) {
+    if ((($this->options['hide_empty'] && empty($value)) || ($this->options['hide_alter_empty'] && empty($this->original_value))) && ($value !== 0 || $this->options['empty_zero'])) {
       return '';
     }
 

@@ -176,6 +176,10 @@ class views_plugin_query_default extends views_plugin_query {
       'default' => FALSE,
       'bool' => TRUE,
     );
+    $options['query_comment'] = array(
+      'default' => '',
+      'bool' => FALSE,
+    );
     $options['field_language'] = array(
       'default' => '***CURRENT_LANGUAGE***',
     );
@@ -209,6 +213,12 @@ class views_plugin_query_default extends views_plugin_query {
       '#description' => t('This will make the query attempt to connect to a slave server if available.  If no slave server is defined or available, it will fall back to the default server.'),
       '#default_value' => !empty($this->options['slave']),
     );
+    $form['query_comment'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Query Comment'),
+      '#description' => t('If set, this comment will be embedded in the query and passed to the SQL server. This can be helpful for logging or debugging.'),
+      '#default_value' => $this->options['query_comment'],
+    );
 
     $entities = entity_get_info();
     $entity_tables = array();
@@ -230,7 +240,7 @@ class views_plugin_query_default extends views_plugin_query {
         '***DEFAULT_LANGUAGE***' => t("Default site language"),
         LANGUAGE_NONE => t('Language neutral'),
       );
-      $languages = array_merge($languages, locale_language_list());
+      $languages = array_merge($languages, views_language_list());
 
       $form['field_language'] = array(
         '#type' => 'select',
@@ -241,7 +251,7 @@ class views_plugin_query_default extends views_plugin_query {
       );
       $form['field_language_add_to_query'] = array(
         '#type' => 'checkbox',
-        '#title' => t('When needed, add the field language condition to the query.'),
+        '#title' => t('When needed, add the field language condition to the query'),
         '#default_value' => $this->options['field_language_add_to_query'],
       );
     }
@@ -1170,7 +1180,10 @@ class views_plugin_query_default extends views_plugin_query {
 
     // Go ahead and build the query.
     // db_select doesn't support to specify the key, so use getConnection directly.
-    $query = Database::getConnection($target, $key)->select($this->base_table, $this->base_table, $options)->addTag('views');
+    $query = Database::getConnection($target, $key)
+      ->select($this->base_table, $this->base_table, $options)
+      ->addTag('views')
+      ->addTag('views_' . $this->view->name);
 
     if (!empty($distinct)) {
       $query->distinct();
@@ -1220,6 +1233,11 @@ class views_plugin_query_default extends views_plugin_query {
 
     if (!empty($this->where) && $condition = $this->build_condition('where')) {
       $query->condition($condition);
+    }
+
+    // Add a query comment.
+    if (!empty($this->options['query_comment'])) {
+      $query->comment($this->options['query_comment']);
     }
 
     // Add all query substitutions as metadata.

@@ -1,5 +1,4 @@
 <?php
-// $Id: devel.module,v 1.444 2010/09/23 03:02:06 weitzman Exp $
 
 // This module holds functions useful for Drupal development.
 // Please contribute!
@@ -33,10 +32,25 @@ function devel_help($section) {
 }
 
 /**
- * Implementationation of hook_menu().
+ * Implements hook_modules_installed().
+ *
+ * @see devel_install()
+ */
+function devel_modules_installed($modules) {
+  if (in_array('menu', $modules)) {
+    $menu = array(
+      'menu_name' => 'devel',
+      'title' => t('Development'),
+      'description' => t('Development link'),
+    );
+    menu_save($menu);
+  }
+}
+
+/**
+ * Implements hook_menu().
  */
 function devel_menu() {
-  $items = array();
   // Note: we can't dynamically append destination to querystring. Do so at theme layer. Fix in D7?
   $items['devel/cache/clear'] = array(
     'title' => 'Empty cache',
@@ -61,14 +75,6 @@ function devel_menu() {
     'page arguments' => array('devel_reinstall'),
     'description' => 'Run hook_uninstall() and then hook_install() for a given module.',
     'access arguments' => array('access devel information'),
-    'file' => 'devel.pages.inc',
-    'menu_name' => 'devel',
-  );
-  $items['devel/source'] = array(
-    'title' => 'Display the PHP code of any file in your Drupal installation',
-    'page callback' => 'devel_display_source',
-    'access arguments' => array('display source code'),
-    'type' => MENU_CALLBACK,
     'file' => 'devel.pages.inc',
     'menu_name' => 'devel',
   );
@@ -219,7 +225,7 @@ function devel_menu() {
   $items['node/%node/devel'] = array(
     'title' => 'Devel',
     'page callback' => 'devel_load_object',
-    'page arguments' => array(1, 'node'),
+    'page arguments' => array('node', 1),
     'access arguments' => array('access devel information'),
     'type' => MENU_LOCAL_TASK,
     'file' => 'devel.pages.inc',
@@ -227,10 +233,6 @@ function devel_menu() {
   );
   $items['node/%node/devel/load'] = array(
     'title' => 'Load',
-    'page callback' => 'devel_load_object',
-    'page arguments' => array(1, 'node'),
-    'access arguments' => array('access devel information'),
-    'file' => 'devel.pages.inc',
     'type' => MENU_DEFAULT_LOCAL_TASK,
   );
   $items['node/%node/devel/render'] = array(
@@ -245,7 +247,7 @@ function devel_menu() {
   $items['comment/%comment/devel'] = array(
     'title' => 'Devel',
     'page callback' => 'devel_load_object',
-    'page arguments' => array(1, 'comment'),
+    'page arguments' => array('comment', 1),
     'access arguments' => array('access devel information'),
     'type' => MENU_LOCAL_TASK,
     'file' => 'devel.pages.inc',
@@ -253,11 +255,7 @@ function devel_menu() {
   );
   $items['comment/%comment/devel/load'] = array(
     'title' => 'Load',
-    'page callback' => 'devel_load_object',
-    'page arguments' => array(1, 'comment'),
-    'access arguments' => array('access devel information'),
     'type' => MENU_DEFAULT_LOCAL_TASK,
-    'file' => 'devel.pages.inc',
   );
   $items['comment/%comment/devel/render'] = array(
     'title' => 'Render',
@@ -271,7 +269,7 @@ function devel_menu() {
   $items['user/%user/devel'] = array(
     'title' => 'Devel',
     'page callback' => 'devel_load_object',
-    'page arguments' => array(1, 'user'),
+    'page arguments' => array('user', 1),
     'access arguments' => array('access devel information'),
     'type' => MENU_LOCAL_TASK,
     'file' => 'devel.pages.inc',
@@ -279,10 +277,6 @@ function devel_menu() {
   );
   $items['user/%user/devel/load'] = array(
     'title' => 'Load',
-    'page callback' => 'devel_load_object',
-    'page arguments' => array(1, 'user'),
-    'access arguments' => array('access devel information'),
-    'file' => 'devel.pages.inc',
     'type' => MENU_DEFAULT_LOCAL_TASK,
   );
   $items['user/%user/devel/render'] = array(
@@ -297,7 +291,7 @@ function devel_menu() {
   $items['taxonomy/term/%taxonomy_term/devel'] = array(
     'title' => 'Devel',
     'page callback' => 'devel_load_object',
-    'page arguments' => array(2, 'term'),
+    'page arguments' => array('taxonomy_term', 2, 'term'),
     'access arguments' => array('access devel information'),
     'file' => 'devel.pages.inc',
     'type' => MENU_LOCAL_TASK,
@@ -305,16 +299,12 @@ function devel_menu() {
   );
   $items['taxonomy/term/%taxonomy_term/devel/load'] = array(
     'title' => 'Load',
-    'page callback' => 'devel_load_object',
-    'page arguments' => array(2, 'term'),
-    'access arguments' => array('access devel information'),
-    'file' => 'devel.pages.inc',
     'type' => MENU_DEFAULT_LOCAL_TASK,
   );
   $items['taxonomy/term/%taxonomy_term/devel/render'] = array(
     'title' => 'Render',
-    'page callback' => 'devel_render_term',
-    'page arguments' => array(2),
+    'page callback' => 'devel_render_object',
+    'page arguments' => array('taxonomy_term', 2, 'term'),
     'access arguments' => array('access devel information'),
     'type' => MENU_LOCAL_TASK,
     'file' => 'devel.pages.inc',
@@ -322,6 +312,24 @@ function devel_menu() {
   );
 
   return $items;
+}
+
+/**
+ * Implements hook_admin_paths().
+ */
+function devel_admin_paths() {
+  $paths = array(
+    'devel/*' => TRUE,
+    'node/*/devel' => TRUE,
+    'node/*/devel/*' => TRUE,
+    'comment/*/devel' => TRUE,
+    'comment/*/devel/*' => TRUE,
+    'user/*/devel' => TRUE,
+    'user/*/devel/*' => TRUE,
+    'taxonomy/term/*/devel' => TRUE,
+    'taxonomy/term/*/devel/*' => TRUE,
+  );
+  return $paths;
 }
 
 function devel_menu_need_destination() {
@@ -386,19 +394,31 @@ function devel_init() {
       }
       elseif (module_exists('libraries')) {
         // Support Libraries API - http://drupal.org/project/libraries
-        $path = libraries_get_path('FirePHPCore') . '/lib/FirePHPCore/';
+        $firephp_path = libraries_get_path('FirePHPCore');
+        $firephp_path = ($firephp_path ? $firephp_path . '/lib/FirePHPCore/' : '');
+        $chromephp_path = libraries_get_path('chromephp');
       }
       else {
-        $path = './'. drupal_get_path('module', 'devel') .'/FirePHPCore/lib/FirePHPCore/';
+        $firephp_path = './' . drupal_get_path('module', 'devel') . '/FirePHPCore/lib/FirePHPCore/';
+        $chromephp_path = './' . drupal_get_path('module', 'devel') . '/chromephp';
       }
-      if (file_exists($path . 'fb.php')) {
-        include_once $path . 'fb.php';
+
+      // Include FirePHP if it exists.
+      if (!empty($firephp_path) && file_exists($firephp_path . 'fb.php')) {
+        include_once $firephp_path . 'fb.php';
+        include_once $firephp_path . 'FirePHP.class.php';
       }
+
+      // Include ChromePHP if it exists.
+      if (!empty($chromephp_path) && file_exists($chromephp_path .= '/ChromePhp.php')) {
+        include_once $chromephp_path;
+      }
+
 
       // Add CSS for query log if should be displayed.
       if (variable_get('devel_query_display', 0)) {
-        drupal_add_css(drupal_get_path('module', 'devel') .'/devel.css');
-        drupal_add_js(drupal_get_path('module', 'devel'). '/devel.js');
+        drupal_add_css(drupal_get_path('module', 'devel') . '/devel.css');
+        drupal_add_js(drupal_get_path('module', 'devel') . '/devel.js');
       }
     }
   }
@@ -452,6 +472,16 @@ function dfb() {
  */
 function dfbt($label) {
   dfb($label, FirePHP::TRACE);
+}
+
+/**
+ * Wrapper for ChromePHP Class log method
+ */
+function dcp() {
+  if (class_exists('ChromePhp') && user_access('access devel information')) {
+    $args = func_get_args();
+    call_user_func_array(array('ChromePhp', 'log'), $args);
+  }
 }
 
 /**
@@ -526,7 +556,7 @@ function devel_silent() {
 }
 
 function devel_xhprof_enable() {
-  if (extension_loaded('xhprof') && variable_get('devel_xhprof_enabled', FALSE)) {
+  if (devel_xhprof_is_enabled()) {
     if ($path = variable_get('devel_xhprof_directory', '')) {
       include_once $path . '/xhprof_lib/utils/xhprof_lib.php';
       include_once $path . '/xhprof_lib/utils/xhprof_runs.php';
@@ -534,6 +564,10 @@ function devel_xhprof_enable() {
       xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
     }
   }
+}
+
+function devel_xhprof_is_enabled() {
+  return extension_loaded('xhprof') && variable_get('devel_xhprof_enabled', FALSE);
 }
 
 /**
@@ -563,41 +597,51 @@ function devel_boot() {
   drupal_register_shutdown_function('devel_shutdown');
 }
 
-function backtrace_error_handler($errno, $message, $filename, $line) {
+function backtrace_error_handler($error_level, $message, $filename, $line, $context) {
+  // Hide stack trace and parameters from unqualified users.
+  if (!user_access('access devel information')) {
+    return _drupal_error_handler($error_level, $message, $filename, $line, $context);
+  }
   // Don't respond to the error if it was suppressed with a '@'
-  if (error_reporting() == 0) return;
-
-  if ($errno & (E_ALL ^ E_NOTICE)) {
-    // We can't use the PHP E_* constants here as not all versions of PHP have all
-    // the constants defined, so for consistency, we just use the numeric equivelant.
-    $types = array(
-      1 => 'error',
-      2 => 'warning',
-      4 => 'parse error',
-      8 => 'notice',
-      16 => 'core error',
-      32 => 'core warning',
-      64 => 'compile error',
-      128 => 'compile warning',
-      256 => 'user error',
-      512 => 'user warning',
-      1024 => 'user notice',
-      2048 => 'strict warning',
-      4096 => 'recoverable error',
-      8192 => 'deprecated',
-      16384 => 'user deprecated',
-    );
-    $entry = $types[$errno] .': '. $message .' in '. $filename .' on line '. $line .'.';
-
-    if (variable_get('error_level', 1) == 1) {
-      $backtrace = debug_backtrace();
-      foreach ($backtrace as $call) {
-        $nicetrace[$call['function']] = $call;
+  if (error_reporting() == 0) {
+    return;
+  }
+  // Don't respond to warning caused by ourselves.
+  if (preg_match('#Cannot modify header information - headers already sent by \\([^\\)]*[/\\\\]devel[/\\\\]#', $message)) {
+    return;
+  }
+  if ($error_level & error_reporting()) {
+    // Only write each distinct NOTICE message once, as repeats do not give any
+    // further information and can choke the page output.
+    if ($error_level == E_NOTICE) {
+      static $written = array();
+      if (!empty($written[$line][$filename][$message])) {
+        return;
       }
+      $written[$line][$filename][$message] = TRUE;
+    }
+
+    require_once DRUPAL_ROOT . '/includes/errors.inc';
+    $types = drupal_error_levels();
+    $type = $types[$error_level];
+    $backtrace = debug_backtrace();
+    array_shift($backtrace);
+    $variables = array('%error' => $type[0], '%message' => $message, '%function' => $backtrace[0]['function'] .'()', '%file' => $filename, '%line' => $line);
+    $counter = count($backtrace);
+
+    // Show message if error_level is ERROR_REPORTING_DISPLAY_SOME or higher.
+    // (This is Drupal's error_level, which is different from $error_level,
+    // and we purposely ignore the difference between _SOME and _ALL,
+    // see #970688!)
+    if (variable_get('error_level', 1) >= 1) {
+      foreach ($backtrace as $call) {
+        $nicetrace[--$counter . ': ' . $call['function']] = $call;
+      }
+      print t('%error: %message in %function (line %line of %file).', $variables) ." =&gt;\n";
       krumo($nicetrace);
     }
 
-    watchdog('php', '%message in %file on line %line.', array('%error' => $types[$errno], '%message' => $message, '%file' => $filename, '%line' => $line), WATCHDOG_ERROR);
+    watchdog('php', '%error: %message in %function (line %line of %file).', $variables, $type[1]);
   }
 }
 
@@ -609,18 +653,17 @@ function devel_permission() {
     'access devel information' => array(
       'description' => t('View developer output like variable printouts, query log, etc.'),
       'title' => t('Access developer information'),
+      'restrict access' => TRUE,
     ),
     'execute php code' => array(
       'title' => t('Execute PHP code'),
-      'description' => t('Run arbitrary PHP from a block. Danger!'),
+      'description' => t('Run arbitrary PHP from a block.'),
+      'restrict access' => TRUE,
     ),
     'switch users' => array(
       'title' => t('Switch users'),
-      'description' => t('Become any user on the site with just a click. Danger!'),
-    ),
-    'display source code' => array(
-      'title' => t('Display source code'),
-      'description' => t('View the site\'s php source code. Danger!'),
+      'description' => t('Become any user on the site with just a click.'),
+      'restrict access' => TRUE,
     ),
   );
 }
@@ -711,24 +754,33 @@ function devel_switch_user_list() {
     }
     $dest = drupal_get_destination();
     // Try to find at least $list_size users that can switch.
+    // Inactive users are omitted from all of the following db selects.
     $roles = user_roles(TRUE, 'switch users');
-    if (isset($roles[DRUPAL_AUTHENTICATED_RID])) {
-      // If authenticated users have this permission, just grab
-      // the last $list_size users, since there won't be records in
-      // {user_roles} and every user on the system can switch.
-      $accounts = db_query_range("SELECT DISTINCT u.uid, u.name, u.access FROM {users} u WHERE u.uid > 0 ORDER BY u.access DESC", 0, $list_size);
-    }
-    else {
-      $where = array('u.uid = 1');
-      if (count($roles)) {
-        $where[] = 'r.rid IN ('. implode(',', array_keys($roles)) .')';
+    $query = db_select('users', 'u');
+    $query->addField('u', 'uid');
+    $query->addField('u', 'access');
+    $query->distinct();
+    $query->condition('u.uid', 0, '>');
+    $query->condition('u.status', 0, '>');
+    $query->orderBy('u.access', 'DESC');
+    $query->range(0, $list_size);
+
+    if (!isset($roles[DRUPAL_AUTHENTICATED_RID])) {
+      $query->leftJoin('users_roles', 'r', 'u.uid = r.uid');
+      $or_condition = db_or();
+      $or_condition->condition('u.uid', 1);
+      if (!empty($roles)) {
+        $or_condition->condition('r.rid', array_keys($roles), 'IN');
       }
-      $where_sql = implode(' OR ', $where);
-      $accounts = db_query_range("SELECT DISTINCT u.uid, u.name, u.access FROM {users} u LEFT JOIN {users_roles} r ON u.uid = r.uid WHERE $where_sql ORDER BY u.access DESC", 0, $list_size);
+      $query->condition($or_condition);
     }
+
+    $uids = $query->execute()->fetchCol();
+    $accounts = user_load_multiple($uids);
+
     foreach ($accounts as $account) {
       $links[$account->uid] = array(
-        'title' => drupal_placeholder($account->name),
+        'title' => drupal_placeholder(format_username($account)),
         'href' => 'devel/switch/'. $account->name,
         'query' => $dest,
         'attributes' => array('title' => t('This user can switch back.')),
@@ -739,10 +791,11 @@ function devel_switch_user_list() {
     $num_links = count($links);
     if ($num_links < $list_size) {
       // If we don't have enough, add distinct uids until we hit $list_size.
-      $accounts = db_query_range('SELECT uid, name, access FROM {users} WHERE uid > 0 AND uid NOT IN ('. implode(',', array_keys($links)) .') ORDER BY access DESC', 0, $list_size - $num_links);
+      $uids = db_query_range('SELECT uid FROM {users} WHERE uid > 0 AND uid NOT IN (:uids) AND status > 0 ORDER BY access DESC', 0, $list_size - $num_links, array(':uids' => array_keys($links)))->fetchCol();
+      $accounts = user_load_multiple($uids);
       foreach ($accounts as $account) {
         $links[$account->uid] = array(
-          'title' => $account->name ? $account->name : 'anon',
+          'title' => format_username($account),
           'href' => 'devel/switch/'. $account->name,
           'query' => $dest,
           'attributes' => array('title' => t('Caution: this user will be unable to switch back.')),
@@ -753,7 +806,7 @@ function devel_switch_user_list() {
     }
     if ($include_anon) {
       $link = array(
-        'title' => check_plain(format_username(drupal_anonymous_user())),
+        'title' => format_username(drupal_anonymous_user()),
         'href' => 'devel/switch',
         'query' => $dest,
         'attributes' => array('title' => t('Caution: the anonymous user will be unable to switch back.')),
@@ -827,7 +880,9 @@ function devel_switch_user_form_submit($form, &$form_state) {
   $form_state['redirect'] = 'devel/switch/'. $form_state['values']['username'];
 }
 
-// An implementation of hook_drupal_goto_alter().
+/**
+ * Implements hook_drupal_goto_alter().
+ */
 function devel_drupal_goto_alter($path, $options, $http_response_code) {
   global $user;
 
@@ -850,15 +905,35 @@ function devel_drupal_goto_alter($path, $options, $http_response_code) {
 }
 
 /**
+ * Implements hook_library_alter().
+ */
+function devel_library_alter(&$libraries, $module) {
+  // Use an uncompressed version of jQuery for debugging.
+  if ($module === 'system' && variable_get('devel_use_uncompressed_jquery', FALSE) && isset($libraries['jquery'])) {
+    // Make sure we're not changing the jQuery version used on the site.
+    if (version_compare($libraries['jquery']['version'], '1.4.4', '=')) {
+      $libraries['jquery']['js'] = array(
+        drupal_get_path('module', 'devel') . '/jquery-1.4.4-uncompressed.js' => array('weight' => JS_LIBRARY - 20),
+      );
+    }
+    else {
+      if (!devel_silent() && user_access('access devel information')) {
+        drupal_set_message(t('jQuery could not be replaced with an uncompressed version of 1.4.4, because jQuery @version is running on the site.', array('@version' => $libraries['jquery']['version'])));
+      }
+
+    }
+  }
+}
+
+/**
  * See devel_start() which registers this function as a shutdown function.
  */
 function devel_shutdown() {
   // Register the real shutdown function so it runs later than other shutdown functions.
   drupal_register_shutdown_function('devel_shutdown_real');
 
-  // Do this now so that we don't get cut off by drush_shutdown().
   global $devel_run_id;
-  $devel_run_id = variable_get('devel_xhprof_enabled', FALSE) ? devel_shutdown_xhprof(): NULL;
+  $devel_run_id = devel_xhprof_is_enabled() ? devel_shutdown_xhprof(): NULL;
   if ($devel_run_id && function_exists('drush_log')) {
     drush_log('xhprof link: ' . devel_xhprof_link($devel_run_id, 'url'), 'notice');
   }
@@ -902,7 +977,7 @@ function devel_shutdown_real() {
     }
 
     if (isset($user) && user_access('access devel information')) {
-      $queries = Database::getLog('devel', 'default');
+      $queries = (devel_query_enabled() ? Database::getLog('devel', 'default') : NULL);
       $output .= devel_shutdown_summary($queries);
       $output .= devel_shutdown_query($queries);
     }
@@ -931,7 +1006,7 @@ function devel_shutdown_summary($queries) {
     $output .= devel_timer();
   }
 
-  if (variable_get('devel_xhprof_enabled', FALSE)) {
+  if (devel_xhprof_is_enabled()) {
     $output .= ' ' . devel_xhprof_link($GLOBALS['devel_run_id']);
   }
 
@@ -1109,10 +1184,13 @@ function devel_execute_form() {
     '#title' => t('PHP code to execute'),
     '#description' => t('Enter some code. Do not use <code>&lt;?php ?&gt;</code> tags.'),
     '#default_value' => (isset($_SESSION['devel_execute_code']) ? $_SESSION['devel_execute_code'] : ''),
+    '#rows' => 20,
   );
   $form['execute']['op'] = array('#type' => 'submit', '#value' => t('Execute'));
   $form['#redirect'] = FALSE;
-  unset($_SESSION['devel_execute_code']);
+  if (isset($_SESSION['devel_execute_code'])) {
+    unset($_SESSION['devel_execute_code']);
+  }
   return $form;
 }
 
@@ -1139,8 +1217,13 @@ function devel_switch_user($name = NULL) {
     module_invoke_all('user_logout', $user);
   }
   if (isset($name) && $account = user_load_by_name($name)) {
+    $old_uid = $user->uid;
     $user = $account;
-    drupal_session_regenerate();
+    $user->timestamp = time() - 9999;
+    if (!$old_uid) {
+      // Switch from anonymous to authorized.
+      drupal_session_regenerate();
+    }
     $edit = array();
     user_module_invoke('login', $edit, $user);
   }
@@ -1470,6 +1553,35 @@ function dargs($always = TRUE) {
 }
 
 /**
+ * Print a SQL string from a DBTNG Query object. Includes quoted arguments.
+ *
+ * @param $query
+ *   A Query object.
+ * @param $return
+ *   Whether to return or print the string. Default to FALSE.
+ * @param $name
+ *   Optional name for identifying the output.
+ */
+function dpq($query, $return = FALSE, $name = NULL) {
+  if (user_access('access devel information')) {
+    $query->preExecute();
+    $sql = (string) $query;
+    $quoted = array();
+    $connection = Database::getConnection();
+    foreach ((array)$query->arguments() as $key => $val) {
+      $quoted[$key] = $connection->quote($val);
+    }
+    $sql = strtr($sql, $quoted);
+    if ($return) {
+      return $sql;
+    }
+    else {
+      dpm($sql, $name);
+    }
+  }
+}
+
+/**
  * Print a variable to the 'message' area of the page. Uses drupal_set_message()
  */
 function dpm($input, $name = NULL) {
@@ -1568,14 +1680,32 @@ function dprint_r($input, $return = FALSE, $name = NULL, $function = 'print_r', 
 }
 
 /**
+ * Prints a renderable array element to the screen using kprint_r().
+ *
+ * #pre_render and/or #post_render pass-through callback for kprint_r().
+ *
+ * @todo Investigate appending to #suffix.
+ * @todo Investigate label derived from #id, #title, #name, and #theme.
+ */
+function devel_render() {
+  $args = func_get_args();
+  // #pre_render and #post_render pass the rendered $element as last argument.
+  kprint_r(end($args));
+  // #pre_render and #post_render expect the first argument to be returned.
+  return reset($args);
+}
+
+/**
  * Print the function call stack.
  */
 function ddebug_backtrace() {
   if (user_access('access devel information')) {
     $trace = debug_backtrace();
     array_shift($trace);
-    foreach ($trace as $key => $value) {
-      $rich_trace[$value['function']] = $value;
+    $count = count($trace);
+    foreach ($trace as $i => $call) {
+      $key = ($count - $i) . ': ' . $call['function'];
+      $rich_trace[$key] = $call;
     }
     if (has_krumo()) {
       print krumo($rich_trace);
@@ -1596,7 +1726,6 @@ function devel_empty_dir($dir) {
 /*
  * migration related functions
  */
-
 
 /**
  * Regenerate the data in node_comment_statistics table. Technique comes from

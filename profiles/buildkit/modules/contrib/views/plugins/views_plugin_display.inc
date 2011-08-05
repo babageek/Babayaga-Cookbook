@@ -300,29 +300,30 @@ class views_plugin_display extends views_plugin {
    */
   function defaultable_sections($section = NULL) {
     $sections = array(
-      'access' => array('access'),
-      'access_options' => array('access_options'),
-      'cache' => array('cache'),
-      'cache_options' => array('cache_options'),
+      'access' => array('access', 'access_options'),
+      'access_options' => array('access', 'access_options'),
+      'cache' => array('cache', 'cache_options'),
+      'cache_options' => array('cache', 'cache_options'),
       'title' => array('title'),
       'css_class' => array('css_class'),
       'use_ajax' => array('use_ajax'),
       'hide_attachment_summary' => array('hide_attachment_summary'),
       'group_by' => array('group_by'),
       'query' => array('query'),
-      'items_per_page' => array('items_per_page', 'offset', 'use_pager', 'pager_element'),
-      'pager' => array('pager'),
-      'pager_options' => array('pager_options'),
       'use_more' => array('use_more', 'use_more_always', 'use_more_text'),
       'link_display' => array('link_display'),
-      'exposed_form' => array('exposed_form'),
-      'exposed_form_options' => array('exposed_form_options'),
 
       // Force these to cascade properly.
       'style_plugin' => array('style_plugin', 'style_options', 'row_plugin', 'row_options'),
       'style_options' => array('style_plugin', 'style_options', 'row_plugin', 'row_options'),
       'row_plugin' => array('style_plugin', 'style_options', 'row_plugin', 'row_options'),
       'row_options' => array('style_plugin', 'style_options', 'row_plugin', 'row_options'),
+
+      'pager' => array('pager', 'pager_options'),
+      'pager_options' => array('pager', 'pager_options'),
+
+      'exposed_form' => array('exposed_form', 'exposed_form_options'),
+      'exposed_form_options' => array('exposed_form', 'exposed_form_options'),
 
       // These guys are special
       'header' => array('header'),
@@ -368,14 +369,13 @@ class views_plugin_display extends views_plugin {
           'display_description' => FALSE,
           'use_ajax' => TRUE,
           'hide_attachment_summary' => TRUE,
-          'items_per_page' => TRUE,
-          'use_pager' => TRUE,
-          'offset' => TRUE,
           'pager' => TRUE,
+          'pager_options' => TRUE,
           'use_more' => TRUE,
           'use_more_always' => TRUE,
           'use_more_text' => TRUE,
           'exposed_form' => TRUE,
+          'exposed_form_options' => TRUE,
 
           'link_display' => TRUE,
           'group_by' => TRUE,
@@ -427,6 +427,10 @@ class views_plugin_display extends views_plugin {
         'default' => FALSE,
         'bool' => TRUE,
       ),
+      // This is legacy code:
+      // Items_per/offset/use_pager is moved to the pager plugin
+      // but the automatic update path needs this items defined, so don't remove it.
+      // @see views_plugin_display::init()
       'items_per_page' => array(
         'default' => 10,
       ),
@@ -1070,7 +1074,7 @@ class views_plugin_display extends views_plugin {
     if ($this->view->query->get_aggregation_info()) {
       $options['group_by'] = array(
         'category' => 'other',
-        'title' => t('Use grouping'),
+        'title' => t('Use aggregation'),
         'value' => $this->get_option('group_by') ? t('Yes') : t('No'),
         'desc' => t('Allow grouping and aggregation (calculation) of fields.'),
       );
@@ -1306,19 +1310,25 @@ class views_plugin_display extends views_plugin {
           '#title' => t('Do not display more link unless there is more content'),
           '#description' => t("This will display the more link even if there are no more items to display."),
           '#default_value' => !$this->get_option('use_more_always'),
+            '#dependency' => array(
+              'edit-use-more' => array(TRUE),
+            ),
         );
         $form['use_more_text'] = array(
           '#type' => 'textfield',
           '#title' => t('More link text'),
           '#description' => t("The text to display for the more link."),
           '#default_value' => $this->get_option('use_more_text'),
+          '#dependency' => array(
+            'edit-use-more' => array(TRUE),
+          ),
         );
         break;
       case 'group_by':
         $form['#title'] .= t('Allow grouping and aggregation (calculation) of fields.');
         $form['group_by'] = array(
           '#type' => 'checkbox',
-          '#title' => t('Group by'),
+          '#title' => t('Aggregate'),
           '#description' => t('If enabled, some fields may become unavailable. All fields that are selected for grouping will be collapsed to one record per distinct value. Other fields which are selected for aggregation will have the function run on them. For example, you can group nodes on title and count the number of nids in order to get a list of duplicate titles.'),
           '#default_value' => $this->get_option('group_by'),
         );
@@ -2524,7 +2534,20 @@ class views_plugin_display extends views_plugin {
       else {
         $handler_type = $type;
       }
-      $handler = views_get_handler($info['table'], $info['field'], $handler_type);
+      // If aggregation is on, the group type might override the actual
+      // handler that is in use. This piece of code checks that and,
+      // if necessary, sets the override handler.
+      $override = NULL;
+      if ($this->use_group_by() && !empty($info['group_type'])) {
+        if (empty($this->view->query)) {
+          $this->view->init_query();
+        }
+        $aggregate = $this->view->query->get_aggregation_info();
+        if (!empty($aggregate[$info['group_type']]['handler'][$type])) {
+          $override = $aggregate[$info['group_type']]['handler'][$type];
+        }
+      }
+      $handler = views_get_handler($info['table'], $info['field'], $handler_type, $override);
       if ($handler) {
         $handler->init($this->view, $info);
         $output .= $indent . '/* ' . $types[$type]['stitle'] . ': ' . $handler->ui_name() . " */\n";
@@ -2698,6 +2721,19 @@ class views_plugin_display extends views_plugin {
       'filter value not present' => t('When the filter value is <em>NOT</em> available'),
       'filter value present' => t('When the filter value <em>IS</em> available or a default is provided'),
       'description' => t("This display does not have a source for contextual filters, so no contextual filter value will be available unless you select 'Provide default'."),
+    );
+  }
+
+  /**
+   * Provide some helpful text for pagers.
+   *
+   * The result should contain of an array within
+   *   - items per page title
+   */
+  function get_pager_text() {
+    return array(
+      'items per page title' => t('Items to display'),
+      'items per page description' => t('The number of items to display. Enter 0 for no limit.')
     );
   }
 }

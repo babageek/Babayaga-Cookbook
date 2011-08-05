@@ -1,5 +1,4 @@
 <?php
-// $Id: image.devel_generate.inc,v 1.6 2010/07/07 05:11:40 weitzman Exp $
 
 define('DEVEL_GENERATE_IMAGE_MAX', 5);
 
@@ -26,6 +25,7 @@ function _image_devel_generate($object, $field, $instance, $bundle) {
   // Generate a max of 5 different images.
   if (!isset($images[$extension][$min_resolution][$max_resolution]) || count($images[$extension][$min_resolution][$max_resolution]) <= DEVEL_GENERATE_IMAGE_MAX) {
     if ($path = devel_generate_image($extension, $min_resolution, $max_resolution)) {
+      $source = new stdClass();
       $source->uri = $path;
       $source->uid = 1; // TODO: randomize? Use case specific.
       $source->filemime = 'image/' . pathinfo($path, PATHINFO_EXTENSION);
@@ -41,6 +41,7 @@ function _image_devel_generate($object, $field, $instance, $bundle) {
   }
   else {
     // Select one of the images we've already generated for this field.
+    $file = new stdClass();
     $file->fid = array_rand($images[$extension][$min_resolution][$max_resolution]);
   }
 

@@ -326,7 +326,14 @@ function features_include_defaults($components = NULL, $reset = FALSE) {
   foreach ($components as $component) {
     if (isset($include_components[$component]) && (!isset($included[$component]) || $reset)) {
       $info = $include_components[$component];
-      if (isset($info['api'], $info['module'], $info['current_version'])) {
+      // Inclusion of defaults for Views.
+      if ($component === 'views') {
+        views_include('view');
+        views_include_handlers();
+        views_module_include('views_default.inc');
+      }
+      // Inclusion of defaults for CTools.
+      else if (isset($info['api'], $info['module'], $info['current_version'])) {
         ctools_include('plugins');
         ctools_plugin_api_include($info['module'], $info['api'], $info['current_version'], $info['current_version']);
       }
@@ -497,7 +504,7 @@ function features_get_info($type = 'module', $name = NULL, $reset = FALSE) {
     $cache->data = $data;
   }
   if (!empty($name)) {
-    return !empty($cache->data[$type][$name]) ? $cache->data[$type][$name] : array();
+    return !empty($cache->data[$type][$name]) ? clone $cache->data[$type][$name] : array();
   }
   return !empty($cache->data[$type]) ? $cache->data[$type] : array();
 }
@@ -678,7 +685,7 @@ function _features_restore($op, $items = array()) {
   }
 
   if (empty($items)) {
-    $states = features_get_component_states();
+    $states = features_get_component_states(array(), ($op == 'rebuild'));
     foreach ($states as $module_name => $components) {
       foreach ($components as $component => $state) {
         if (in_array($state, $restore_states)) {

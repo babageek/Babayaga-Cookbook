@@ -59,7 +59,7 @@ class views_handler_field_field extends views_handler_field {
 
       // Otherwise, we only limit values if the user hasn't selected "all", 0, or
       // the value matching field cardinality.
-      if (intval($this->options['delta_limit']) && ($this->options['delta_limit'] != $field['cardinality'])) {
+      if ((intval($this->options['delta_limit']) && ($this->options['delta_limit'] != $field['cardinality'])) || intval($this->options['delta_offset'])) {
         $this->limit_values = TRUE;
       }
     }
@@ -86,12 +86,14 @@ class views_handler_field_field extends views_handler_field {
       // For example a field from a node author on a node view does have users as base table.
       if (!empty($this->options['relationship']) && $this->options['relationship'] != 'none') {
         $relationships = $this->view->display_handler->get_option('relationships');
-        $options = $relationships[$this->options['relationship']];
-        $data = views_fetch_data($options['table']);
-        $this->base_table = $data[$options['field']]['relationship']['base'];
-//            $this->base_table_alias = $relationship->alias;
+        if (!empty($relationships[$this->options['relationship']])) {
+          $options = $relationships[$this->options['relationship']];
+          $data = views_fetch_data($options['table']);
+          $this->base_table = $data[$options['field']]['relationship']['base'];
+        }
       }
     }
+
     return $this->base_table;
   }
 
@@ -157,7 +159,14 @@ class views_handler_field_field extends views_handler_field {
 
     if ($use_groupby) {
       // Add the fields that we're actually grouping on.
-      $options = array($this->options['group_column'] => $this->options['group_column']) + $this->options['group_columns'];
+      $options = array();
+
+      if ($this->options['group_column'] != 'entity id') {
+        $options = array($this->options['group_column'] => $this->options['group_column']);
+      }
+
+      $options += $this->options['group_columns'];
+
 
       $fields = array();
       $rkey = $this->definition['is revision'] ? 'FIELD_LOAD_REVISION' : 'FIELD_LOAD_CURRENT';
@@ -408,7 +417,7 @@ class views_handler_field_field extends views_handler_field {
       '#title' => t('Display all values in the same row'),
       '#type' => 'checkbox',
       '#default_value' => $this->options['group_rows'],
-      '#description' => t('If checked, multiple values for this field will be shown in the same row. If not checked, each value in this field will create a new row.'),
+      '#description' => t('If checked, multiple values for this field will be shown in the same row. If not checked, each value in this field will create a new row. If using group by, please make sure to group by "Entity ID" for this setting to have any effect.'),
       '#fieldset' => 'multiple_field_settings',
     );
 
@@ -499,7 +508,10 @@ class views_handler_field_field extends views_handler_field {
     parent::groupby_form($form, $form_state);
     // With "field API" fields, the column target of the grouping function
     // and any additional grouping columns must be specified.
-    $group_columns = drupal_map_assoc(array_keys($this->field_info['columns']), 'ucfirst');
+    $group_columns = array(
+      'entity id' => t('Entity ID'),
+    ) + drupal_map_assoc(array_keys($this->field_info['columns']), 'ucfirst');
+
     $form['group_column'] = array(
       '#type' => 'select',
       '#title' => t('Group column'),
@@ -605,7 +617,7 @@ class views_handler_field_field extends views_handler_field {
       }
 
       if ($this->options['multi_type'] == 'separator') {
-        return implode(check_plain($this->options['separator']), $items);
+        return implode(filter_xss_admin($this->options['separator']), $items);
       }
       else {
         return theme('item_list',
@@ -622,23 +634,16 @@ class views_handler_field_field extends views_handler_field {
     return $values->{'field_' . $this->options['id']};
   }
 
-  /**
-   * Return an array of items for the field.
-   */
-  function set_items($values, $row_id) {
-    if (empty($values->_field_data[$this->field_alias]) || empty($values->_field_data[$this->field_alias]['entity'])) {
-      return array();
-    }
-
+  function get_value($values, $field = NULL) {
     // Go ahead and render and store in $this->items.
     $entity = clone $values->_field_data[$this->field_alias]['entity'];
 
     $entity_type = $values->_field_data[$this->field_alias]['entity_type'];
-    $langcode = $this->field_language($entity_type);
+    $langcode = $this->field_language($entity_type, $entity);
     // If we are grouping, copy our group fields into the cloned entity.
     // It's possible this will cause some weirdness, but there's only
     // so much we can hope to do.
-    if (isset($this->group_fields)) {
+    if (!empty($this->group_fields)) {
       // first, test to see if we have a base value.
       $base_value = array();
       // Note: We would copy original values here, but it can cause problems.
@@ -688,6 +693,12 @@ class views_handler_field_field extends views_handler_field {
       else {
         $delta_limit = $this->options['delta_limit'];
         $offset = intval($this->options['delta_offset']);
+
+        // We should only get here in this case if there's an offset, and
+        // in that case we're limiting to all values after the offset.
+        if ($delta_limit == 'all') {
+          $delta_limit = count($all_values) - $offset;
+        }
       }
 
       $new_values = array();
@@ -701,6 +712,22 @@ class views_handler_field_field extends views_handler_field {
       $entity->{$this->definition['field_name']}[$langcode] = $new_values;
     }
 
+    if ($field == 'entity') {
+      return $entity;
+    }
+    else {
+      return $entity->{$this->definition['field_name']}[$langcode];
+    }
+  }
+
+  /**
+   * Return an array of items for the field.
+   */
+  function set_items($values, $row_id) {
+    if (empty($values->_field_data[$this->field_alias]) || empty($values->_field_data[$this->field_alias]['entity'])) {
+      return array();
+    }
+
     $display = array(
       'type' => $this->options['type'],
       'settings' => $this->options['settings'],
@@ -711,6 +738,14 @@ class views_handler_field_field extends views_handler_field {
       'views_row_id' => $row_id,
     );
 
+
+    $entity_type = $values->_field_data[$this->field_alias]['entity_type'];
+    $entity = $this->get_value($values, 'entity');
+    if (!$entity) {
+      return array();
+    }
+
+    $langcode = $this->field_language($entity_type, $entity);
     $render_array = field_view_field($entity_type, $entity, $this->definition['field_name'], $display, $langcode);
 
     $items = array();
@@ -760,7 +795,7 @@ class views_handler_field_field extends views_handler_field {
    * Return the language code of the language the field should be displayed in,
    * according to the settings.
    */
-  function field_language($entity_type) {
+  function field_language($entity_type, $entity) {
     global $language_content;
 
     if (field_is_translatable($entity_type, $this->field_info)) {
@@ -768,6 +803,12 @@ class views_handler_field_field extends views_handler_field {
       $language = str_replace(array('***CURRENT_LANGUAGE***', '***DEFAULT_LANGUAGE***'),
                               array($language_content->language, $default_language),
                               $this->query->options['field_language']);
+
+      // Give the Field Language API a chance to fallback to a different language
+      // (or LANGUAGE_NONE), in case the field has no data for the selected language.
+      // field_view_field() does this as well, but since the returned language code
+      // is used before calling it, the fallback needs to happen explicitly.
+      $language = field_language($entity_type, $entity, $this->field_info['field_name'], $language);
 
       return $language;
     }
