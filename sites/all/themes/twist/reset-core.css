@@ -1,0 +1,120 @@
+
+/**
+ * Menus, lists =======================================================
+ */
+.menu li,
+.prose .item-list li {
+  border-bottom:0;
+}
+
+
+/**
+ * Tables =============================================================
+ */
+table {
+  width:100%;
+  margin:0px 0px 10px;
+  background-color: transparent;
+
+  border-collapse:collapse;
+  border-color:#ddd;
+  border-width:1px;
+  border-style:solid;
+  }
+
+  .fieldset table { margin:0px; }
+
+table td,
+table th {
+  vertical-align:top;
+  border-width:1px 0px;
+  border-style:solid;
+  border-color:#ddd;
+  padding:5px;
+  }
+
+table th {
+  font-size:11px;
+  text-align:left;
+  font-weight:normal;
+  color:#666;
+  background:#eee;
+  }
+
+  table thead th { border-top-color:#ccc; }
+
+table td.active { background:#e4f0f8; }
+table tr.odd td.active { background:#ecf8fc; }
+
+table tr.selected td.active,
+table tr.selected td {
+  background:#ffc;
+  border-color:#eeb;
+  }
+
+
+/**
+ * Forms ==============================================================
+ */
+.confirmation ul,
+.item-list,
+.block {
+  background:transparent;
+  border-width:0px;
+ }
+
+input.form-autocomplete,
+input.form-text,
+textarea.form-textarea,
+select.form-select {
+  padding:3px;
+  border-width:1px;
+  border-style:solid;
+  border-color:#ccc;
+  background:#fff;
+  color:#555;
+  max-width:100%;
+  }
+
+.form-item label {
+  font-size: 10px;
+  letter-spacing: .05em;
+}
+
+.item-list h3 {
+  display:block;
+  font-size:14px;
+  line-height: 20px
+  margin:0px;
+  padding: 5px 0px;
+  color:#333;
+  background:transparent;
+  }
+.block .block-title {
+  display: block;
+  font-size: 20px;
+  line-height: 30px;
+  margin: 0px;
+  padding: 10px 5px;
+  color: #333;
+  font-weight: normal;
+  background: transparent;
+}
+.block .block-content {
+  padding:10px 9px 9px;
+  background:transparent;
+  }
+
+/**
+ * "Boxes" aka generic wrappers =======================================
+ */
+.box-title {
+  font-weight:normal;
+  font-size:10px;
+  text-transform:uppercase;
+
+  background:transparent;
+  border:0px;
+  padding:4px 9px;
+  margin:0px 0px 10px;
+  }
