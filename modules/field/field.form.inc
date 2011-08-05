@@ -1,5 +1,4 @@
 <?php
-// $Id: field.form.inc,v 1.54 2010/11/20 19:57:01 webchick Exp $
 
 /**
  * @file
@@ -70,7 +69,7 @@ function field_default_form($entity_type, $entity, $field, $instance, $langcode,
           '#language' => $langcode,
           '#field_parents' => $parents,
           '#columns' => array_keys($field['columns']),
-          '#title' => check_plain(t($instance['label'])),
+          '#title' => check_plain($instance['label']),
           '#description' => field_filter_xss($instance['description']),
           // Only the first widget should be required.
           '#required' => $delta == 0 && $instance['required'],
@@ -152,8 +151,8 @@ function field_multiple_value_form($field, $instance, $langcode, $items, &$form,
       break;
   }
 
-  $title = check_plain(t($instance['label']));
-  $description = field_filter_xss(t($instance['description']));
+  $title = check_plain($instance['label']);
+  $description = field_filter_xss($instance['description']);
 
   $id_prefix = implode('-', array_merge($parents, array($field_name)));
   $wrapper_id = drupal_html_id($id_prefix . '-add-more-wrapper');
@@ -374,7 +373,7 @@ function field_default_form_errors($entity_type, $entity, $field, $instance, $la
  * to return just the changed part of the form.
  */
 function field_add_more_submit($form, &$form_state) {
-  $button = $form_state['clicked_button'];
+  $button = $form_state['triggering_element'];
 
   // Go one level up in the form, to the widgets container.
   $element = drupal_array_get_nested_value($form, array_slice($button['#array_parents'], 0, -1));
@@ -399,7 +398,7 @@ function field_add_more_submit($form, &$form_state) {
  * @see field_add_more_submit()
  */
 function field_add_more_js($form, $form_state) {
-  $button = $form_state['clicked_button'];
+  $button = $form_state['triggering_element'];
 
   // Go one level up in the form, to the widgets container.
   $element = drupal_array_get_nested_value($form, array_slice($button['#array_parents'], 0, -1));
@@ -414,7 +413,7 @@ function field_add_more_js($form, $form_state) {
     return;
   }
 
-  // Add a DIV around the delta receiving the AJAX effect.
+  // Add a DIV around the delta receiving the Ajax effect.
   $delta = $element['#max_delta'];
   $element[$delta]['#prefix'] = '<div class="ajax-new-content">' . (isset($element[$delta]['#prefix']) ? $element[$delta]['#prefix'] : '');
   $element[$delta]['#suffix'] = (isset($element[$delta]['#suffix']) ? $element[$delta]['#suffix'] : '') . '</div>';
