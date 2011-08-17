@@ -39,15 +39,15 @@
   position: relative;
 }
 #logo {
+  padding-top: 25px;
   display: block;
-  position: absolute;
-  top: 45px;
-  left: 0;
+  margin: 0 auto;
 }
 
 
 #header {
   margin-bottom: 25px;
+  text-align: center;
 }
 .block,
 .item-list,
@@ -119,11 +119,11 @@ table.dsq-global-toolbar-container {
 .views-summary-unformatted a {
  display: block;
  padding: 5px;
- background: #eee;
+ background: #B3B29E;
  margin-bottom: 5px;
  font-weight: bold;
  text-decoration: none;
- color: #555;
+ color: #fff;
 }
 .views-summary-unformatted a.active,
 .views-summary-unformatted a:hover {
@@ -154,13 +154,8 @@ table.dsq-global-toolbar-container {
 /**
  * Babayaga CSS -------------------------------------------------------
  */
- .block-inner {
-   padding: 15px;
- }
  
- 
-.item-list h3,
-.block .block-title {
+.item-list h3 {
   display: block;
   font-size: 18px;
   margin: 0px;
@@ -171,12 +166,9 @@ table.dsq-global-toolbar-container {
 
 #navigation {
   text-align: center;
-  padding-top: 95px;
-  background: transparent url("images/spoon.jpg") center 22px no-repeat;
 }
 
 #navigation-container {
-  margin-top: 10px;
   float:left;
   width:100%;
   overflow:hidden;
@@ -202,17 +194,17 @@ ul.main-menu  li {
 
 #navigation ul.links li.first {
   background: transparent url("images/sprites.png") no-repeat;
-  background-position: 0 -155px;
+  background-position: 0 -170px;
   padding-left: 35px;
 }
 #navigation ul.links li.last {
   background: transparent url("images/sprites.png") no-repeat;
-  background-position: 100% -80px;
+  background-position: 100% -95px;
   padding-right: 50px;
 }
 
 #navigation ul.links li {
-  padding: 20px 0px;
+  padding: 5px 0px;
 }
 #navigation ul.links li a {
   font-family: "Garamond 3 LT Std", "EB Garamond", Georgia, serif;
@@ -247,7 +239,6 @@ ul.main-menu  li {
   padding: 35px;
 }
 
-h2.block-title,
 h2.node-title {
   font-family: "Garamond 3 LT Std", "EB Garamond", Georgia, serif;
 }
@@ -267,11 +258,6 @@ h2.node-title {
 }
 h2.node-title a:hover {
   text-decoration: underline;
-}
-.block .block-title {
-  color: #4D4D4D;
-  font-size: 24px;
-  font-style: normal;
 }
 
 .addthis_toolbox.addthis_default_style a {
@@ -308,4 +294,13 @@ h2.node-title a:hover {
 .headings {
   color: #A13562;
   margin-bottom: 10px;
+}
+
+.title a,
+.title {
+  font-family: "Garamond 3 LT Std", "EB Garamond", Georgia, serif;
+  font-size: 20px;
+  line-height: 23px;
+  color: #333; 
+  font-weight: normal;
 }
