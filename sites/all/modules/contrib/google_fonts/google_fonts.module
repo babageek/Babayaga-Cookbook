@@ -38,25 +38,27 @@ function google_fonts_menu() {
  * Implements hook_init().
  */
 function google_fonts_init() {
+
+  // Check if Google Fonts array has been converted yet
+  $google_fonts_version = db_query("SELECT schema_version FROM {system} WHERE name = :name", array(':name' => 'google_fonts'))->fetchField();
+  if ($google_fonts_version && $google_fonts_version < 7100 && user_access('administer software updates')) {
+    drupal_set_message(t('You need to run the <a href="@link">update script</a> to perform required database updates.', array('@link' => url('update.php'))), 'error');
+    return;
+  }
   
   // We don't need to load the fonts twice as the admin interface
   // loads ALL fonts by default already
   if ($_GET['q'] == 'admin/config/system/google_fonts') {
     return;
   }
-
-  _google_fonts_add_custom_css();
   
   $fonts_to_load = array();
   $enabled_fonts = variable_get('google_fonts_enabled_fonts', array());
+  _google_fonts_add_custom_css();
   
-  // Check if Google Fonts array has been converted yet
-  if (!empty($used_fonts) && !isset($used_fonts[0]) && user_access('administer software updates')) {
-    drupal_set_message(t('You have not updated your Google Fonts module yet. Please run the database update script.'), 'error');
-  }
   foreach ($enabled_fonts as $font) { 
-    $variants = empty($font['variants']) ? NULL : $font['variants'];
-    $subsets = empty($font['subsets']) ? NULL : $font['subsets'];
+    $variants = isset($font['variants']) ? $font['variants'] : NULL;
+    $subsets = isset($font['subsets']) ? $font['subsets'] : NULL;
     $fonts_to_load[] = _google_fonts_family_pathname($font['family'], $variants, $subsets);
   }
   if (!empty($fonts_to_load)) {
@@ -98,14 +100,15 @@ function _google_fonts_available_fonts($reset = FALSE) {
     // be sufficient as it is only used when selecting fonts in the
     // admin interface. After that, it's cached in Drupal.
     $result = drupal_http_request('https://www.googleapis.com/webfonts/v1/webfonts?key=AIzaSyBgeqKlFdYj3Y7VwmrEXnXzpnx5TfKXG4o');
-    if ($result->code == 0) {
-      drupal_set_message(t('The list of Google Fonts could not be fetched. Verify that your server can connect the Google Servers (https://www.googleapis.com/).<br />Error: %error', array('%error' => $result->error)), 'error');
+    if ($result->code != 200) {
+      drupal_set_message(t('The list of Google Fonts could not be fetched. Verify that your server can connect the Google Servers (https://www.googleapis.com). Error: %error', array('%error' => $result->error)), 'error');
     }
-    else if (isset($result->data)) {
+    elseif (isset($result->data)) {
       $fontsbuffer = json_decode($result->data);
       variable_set('google_fonts_webfonts', $fontsbuffer->items);
     }
   }
+  
   return $fontsbuffer;
 }
 
@@ -127,11 +130,11 @@ function _google_fonts_system_fontname($string) {
   return str_replace(' ', '_', $string);
 }
 
-function _google_fonts_family_pathname($family, $variants = NULL, $subset = NULL) {
+function _google_fonts_family_pathname($family, $variants = NULL, $subsets = NULL) {
   $string = str_replace(' ', '+', $family);
   
   if ($variants) {
-    if (sizeof($variants) == 1) {
+    if (is_array($variants) && sizeof($variants) == 1 && isset($variants['regular'])) {
       unset($variants['regular']);
     }
     if ($variants) {
@@ -140,9 +143,14 @@ function _google_fonts_family_pathname($family, $variants = NULL, $subset = NULL
   }
   
   // for latin, we don't need to declare a subset. 
-  // for other subsets, include latin as well
-  if ($subset && $subset != 'latin') {
-    $string .= '&subset=' . $subset . ',latin';
+  if (!empty($subsets)) {
+    $string .= '&subset=';
+    foreach((array) $subsets as $subset) {
+      if (!empty($subset)) {
+        $string .= $subset . ',';
+      }
+    }
+    $string = substr($string, 0, -1);
   }
   
   return $string;

@@ -1,16 +1,15 @@
 name = Google Fonts
 description = Make use of Open Source fonts using the <a href="http://code.google.com/apis/webfonts/">Google Fonts API</a>
 core = 7.x
-package = Google Fonts
 
 files[] = google_fonts.module
 files[] = google_fonts.admin.inc
 files[] = google_fonts.install
 
 configure = admin/config/system/google_fonts
-; Information added by drupal.org packaging script on 2011-03-28
-version = "7.x-2.0-alpha1"
+; Information added by drupal.org packaging script on 2011-07-12
+version = "7.x-2.3"
 core = "7.x"
 project = "google_fonts"
-datestamp = "1301304667"
+datestamp = "1310455318"
 

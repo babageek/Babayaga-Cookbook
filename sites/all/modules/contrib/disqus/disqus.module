@@ -1,8 +1,12 @@
 <?php
-// $Id: disqus.module,v 1.1.2.23.2.11 2011/01/19 16:34:36 robloach Exp $
 
 /**
- * Implement hook_help().
+ * @file
+ * The Disqus Drupal module.
+ */
+
+/**
+ * Implements hook_help().
  */
 function disqus_help($path, $arg) {
   switch ($path) {
@@ -19,7 +23,7 @@ function disqus_help($path, $arg) {
 }
 
 /**
- * Implement hook_permission().
+ * Implements hook_permission().
  */
 function disqus_permission() {
   return array(
@@ -34,6 +38,10 @@ function disqus_permission() {
     'display disqus comments on profile' => array(
       'title' => t('Disqus comments in profile'),
       'description' => t('When enabled, will display Disqus comments on the profiles of users belonging to this role.'),
+    ),
+    'toggle disqus comments' => array(
+      'title' => t('Toggle Disqus comments'),
+      'description' => t('When enabled, will allow users to toggle comments on and off on nodes.'),
     ),
   );
 }
@@ -50,6 +58,14 @@ function disqus_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('disqus_admin_settings'),
     'file' => 'disqus.admin.inc',
+  );
+  $items['disqus/closewindow'] = array(
+    'title' => 'Please wait',
+    'description' => 'Once the user logs in through the Disqus login workflow, they are redirected here to automatically close the popup window.',
+    'access arguments' => array('access content'),
+    'page callback' => 'disqus_closewindow',
+    'file' => 'disqus.admin.inc',
+    'type' => MENU_CALLBACK,
   );
   return $items;
 }
@@ -84,9 +100,71 @@ function disqus_element_post_render($children, &$element) {
 
   // If the user is logged in, we can inject the username and email for Disqus.
   global $user;
-  if ($user->uid > 0) {
+  if (variable_get('disqus_inherit_login', TRUE) && $user->uid > 0) {
     $disqus['name'] = $user->name;
     $disqus['email'] = $user->mail;
+  }
+
+  // Provide alternate language support if desired.
+  if (variable_get('disqus_localization', FALSE)) {
+    global $language;
+    $disqus['language'] = $language->language;
+  }
+
+  // Check if we are to provide Single Sign-On access.
+  if (variable_get('disqus_sso', FALSE)) {
+    $data = array();
+
+    // Inject the user data if it's available.
+    if ($user->uid > 0) {
+      $data['id'] = $user->uid;
+      $data['username'] = $user->name;
+      $data['email'] = $user->mail;
+      $data['url'] = url('user/' . $user->uid, array(
+        'absolute' => TRUE,
+      ));
+
+      // Load the user's avatar.
+      $user_picture_default = variable_get('user_picture_default', '');
+      if (isset($user->picture) && !empty($user->picture) && is_numeric($user->picture) && $file = file_load($user->picture)) {
+        $data['avatar'] = !empty($file->uri) ? $file->uri : NULL;
+      }
+      elseif (!empty($user_picture_default)) {
+        $data['avatar'] = variable_get('user_picture_default', '');
+      }
+      if (isset($data['avatar'])) {
+        $data['avatar'] = file_create_url($data['avatar']);
+      }
+    }
+
+    // Give Disqus information about the site.
+    $disqus['sso'] = array(
+      'name' => variable_get('site_name', t('Drupal')),
+      // The login window must be closed once the user logs in.
+      'url' => url('user/login', array('query' => array('destination' => 'disqus/closewindow'))),
+      // The logout link must redirect back to the original page.
+      'logout' => url('user/logout', array('query' => array('destination' => $_GET['q']))),
+      'width' => 800,
+      'height' => 600,
+    );
+    if ($logo = theme_get_setting('logo')) {
+      $disqus['sso']['button'] = $logo;
+    }
+    else {
+      $disqus['sso']['button'] = url('misc/druplicon.png', array('absolute' => TRUE));
+    }
+    if ($favicon = theme_get_setting('favicon')) {
+      $disqus['sso']['icon'] = $favicon;
+    }
+
+    // Encode the data to be sent off to Disqus.
+    $message = base64_encode(json_encode($data));
+    $timestamp = time();
+    $hmac = hash_hmac('sha1', "$message $timestamp", variable_get('disqus_secretkey', ''));
+
+    // Stick the authentication requirements and data in the settings.
+    $disqus['remote_auth_s3'] = "$message $hmac $timestamp";
+    $disqus['api_key'] = variable_get('disqus_publickey', '');
   }
 
   // Add the disqus.js and all the settings to process the JavaScript and load Disqus.
@@ -124,7 +202,6 @@ function disqus_node_load($nodes, $types) {
 
         // Build the absolute URL without the alias for the disqus_url flag.
         $node->disqus['url'] = url("node/$node->nid", array(
-          'alias' => TRUE,
           'absolute' => TRUE,
         ));
 
@@ -187,22 +264,17 @@ function disqus_node_view($node, $view_mode) {
 
         // Attach disqus.js to load the Disqus comment count JavaScript.
         $node->content['links']['#attached']['js'][] = drupal_get_path('module', 'disqus') . '/disqus.js';
-
-        // Add the disqusComments setting.
-        static $added = FALSE;
-        if ($added == FALSE) {
-          drupal_add_js(array(
-            'disqusComments' => $node->disqus['domain'],
-          ), 'setting');
-          $added = TRUE;
-        }
+        $node->content['links']['#attached']['js'][] = array(
+          'data' => array('disqusComments' => $node->disqus['domain']),
+          'type' => 'setting',
+        );
         break;
     }
   }
 }
 
 /**
- * Implements hook_note_delete().
+ * Implements hook_node_delete().
  */
 function disqus_node_delete($node) {
   db_delete('disqus')->condition('nid', $node->nid)->execute();
@@ -216,7 +288,7 @@ function disqus_node_insert($node) {
   disqus_node_delete($node);
 
   // Write the value only if it's disabled (default is enabled).
-  if ($node->disqus_status == FALSE) {
+  if (isset($node->disqus_status) && $node->disqus_status == FALSE) {
     $data = array(
       'nid' => $node->nid,
       'status' => $node->disqus_status,
@@ -248,7 +320,6 @@ function disqus_user_load($users) {
 
         // Build the absolute URL without the alias for the disqus_url flag.
         $account->disqus['url'] = url('user/' . $account->uid, array(
-          'alias' => TRUE,
           'absolute' => TRUE,
         ));
 
@@ -508,7 +579,7 @@ function disqus_form_alter(&$form, $form_state, $form_id) {
       if (!isset($form['comment_settings'])) {
         $form['comment_settings'] = array(
           '#type' => 'fieldset',
-          '#access' => user_access('view disqus comments'),
+          '#access' => user_access('toggle disqus comments'),
           '#title' => t('Comment settings'),
           '#collapsible' => TRUE,
           '#collapsed' => TRUE,
@@ -516,11 +587,18 @@ function disqus_form_alter(&$form, $form_state, $form_id) {
           '#weight' => 30,
         );
       }
+      else {
+        if (isset($form['comment_settings']['comment'])) {
+          $form['comment_settings']['comment']['#access'] = $form['comment_settings']['#access'];
+          $form['comment_settings']['#access'] = true;
+        }
+      }
       $form['comment_settings']['disqus_status'] = array(
         '#type' => 'checkbox',
         '#title' => t('Disqus comments'),
         '#description' => t('Users can post comments using <a href="@disqus">Disqus</a>.', array('@disqus' => 'http://disqus.com')),
         '#default_value' => isset($node->disqus['status']) ? $node->disqus['status'] : TRUE,
+        '#access' => user_access('toggle disqus comments'),
       );
     }
   }
@@ -568,3 +646,11 @@ function disqus($user_api_key = NULL, $forum_api_key = NULL) {
   module_load_include('php', 'disqus', 'disqus');
   return new Disqus($user_api_key, $forum_api_key);
 }
+
+/**
+ * Implementation of hook_views_api().
+ */
+function disqus_views_api() {
+  return array('api' => 3);
+}
+

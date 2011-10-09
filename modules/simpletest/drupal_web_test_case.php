@@ -1255,6 +1255,11 @@ class DrupalWebTestCase extends DrupalTestCase {
     $this->originalProfile = drupal_get_profile();
     $clean_url_original = variable_get('clean_url', 0);
 
+    // Set to English to prevent exceptions from utf8_truncate() from t()
+    // during install if the current language is not 'en'.
+    // The following array/object conversion is copied from language_default().
+    $language = (object) array('language' => 'en', 'name' => 'English', 'native' => 'English', 'direction' => 0, 'enabled' => 1, 'plurals' => 0, 'formula' => '', 'domain' => '', 'prefix' => '', 'weight' => 0, 'javascript' => '');
+
     // Save and clean shutdown callbacks array because it static cached and
     // will be changed by the test run. If we don't, then it will contain
     // callbacks from both environments. So testing environment will try
@@ -1299,10 +1304,7 @@ class DrupalWebTestCase extends DrupalTestCase {
     variable_set('file_private_path', $private_files_directory);
     variable_set('file_temporary_path', $temp_files_directory);
 
-    // Include the testing profile and set the simpletest_parent_profile
-    // variable which is used to add the parent profile's search path to the
-    // child site's search paths. See drupal_system_listing().
-    variable_set('simpletest_parent_profile', $this->originalProfile);
+    // Include the testing profile.
     variable_set('install_profile', $this->profile);
     $profile_details = install_profile_info($this->profile, 'en');
 
@@ -1496,9 +1498,6 @@ class DrupalWebTestCase extends DrupalTestCase {
     if ($this->originalLanguageDefault) {
       $GLOBALS['conf']['language_default'] = $this->originalLanguageDefault;
     }
-
-    // Delete 'simpletest_parent_profile' variable.
-    variable_del('simpletest_parent_profile');
 
     // Close the CURL handler.
     $this->curlClose();
