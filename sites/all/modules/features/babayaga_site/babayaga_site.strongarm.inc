@@ -5,7 +5,7 @@
  */
 
 /**
- * Implementation of hook_strongarm().
+ * Implements hook_strongarm().
  */
 function babayaga_site_strongarm() {
   $export = array();
@@ -27,16 +27,16 @@ function babayaga_site_strongarm() {
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
-  $strongarm->name = 'colorbox_image_style';
-  $strongarm->value = 'blog-l';
-  $export['colorbox_image_style'] = $strongarm;
+  $strongarm->name = 'colorbox_imagefield_gallery';
+  $strongarm->value = '1';
+  $export['colorbox_imagefield_gallery'] = $strongarm;
 
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
-  $strongarm->name = 'colorbox_imagefield_gallery';
-  $strongarm->value = '1';
-  $export['colorbox_imagefield_gallery'] = $strongarm;
+  $strongarm->name = 'colorbox_image_style';
+  $strongarm->value = 'blog-l';
+  $export['colorbox_image_style'] = $strongarm;
 
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
@@ -195,20 +195,6 @@ node/*/edit';
   $strongarm->name = 'colorbox_text_stop';
   $strongarm->value = 'stop slideshow';
   $export['colorbox_text_stop'] = $strongarm;
-
-  $strongarm = new stdClass;
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'colorbox_title_trim';
-  $strongarm->value = '1';
-  $export['colorbox_title_trim'] = $strongarm;
-
-  $strongarm = new stdClass;
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'colorbox_title_trim_length';
-  $strongarm->value = '100';
-  $export['colorbox_title_trim_length'] = $strongarm;
 
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
