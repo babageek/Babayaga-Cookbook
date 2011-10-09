@@ -390,3 +390,31 @@ div.node .column-side .column-wrapper {
   font-weight:normal;
   font-size:16px;
   }
+  
+div.toggle-blocks div.block {
+  float: right;
+  position: relative;
+}
+div.toggle-blocks div.block-content {
+  width: 200px;
+  display: none;
+  position: absolute;
+  right: 0;
+  left: auto;
+  z-index: 1000;    
+  background: #fff;
+  -moz-box-shadow: 1px 2px 2px #333;
+  -webkit-box-shadow: 1px 2px 2px #333;
+}
+div.toggle-blocks div.block-title:hover {
+  cursor: pointer;
+}
+div.toggle-blocks div.block,
+div.toggle-blocks div.block-title,
+div.toggle-blocks div.block-content {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+div.toggle-blocks div.block-title h2 {
+  font-size: 12px;
+}

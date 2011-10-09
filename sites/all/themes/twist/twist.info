@@ -16,6 +16,9 @@ stylesheets[screen][] = style.css
 stylesheets[screen][] = reset-core.css
 stylesheets[screen][] = twist.css
 
+scripts[] = js/stickyfloat.js
+scripts[] = js/twist.js
+
 ;
 ; Layouts ----------------------------------------------------------------------
 ;

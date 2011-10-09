@@ -1,4 +1,4 @@
-wewqr<?php print $page_header; ?>
+<?php print $page_header; ?>
 
 <div id='page'><div id='main-content' class='limiter clearfix inner'>
   <?php if ($page['help']) print render($page['help']) ?>
