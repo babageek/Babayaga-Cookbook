@@ -1,6 +1,6 @@
 name = Babayaga
 description = Babayaga theme.
-base theme = rubik
+base theme = twist
 core = 7.x
 engine = phptemplate
 

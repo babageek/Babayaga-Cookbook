@@ -282,7 +282,7 @@ node/*/edit';
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'filter_fallback_format';
-  $strongarm->value = 'full_html';
+  $strongarm->value = 'plain_text';
   $export['filter_fallback_format'] = $strongarm;
 
   $strongarm = new stdClass;
@@ -299,13 +299,6 @@ node/*/edit';
     ),
   );
   $export['google_fonts_enabled_fonts'] = $strongarm;
-
-  $strongarm = new stdClass;
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'site_mail';
-  $strongarm->value = 'info@local';
-  $export['site_mail'] = $strongarm;
 
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
