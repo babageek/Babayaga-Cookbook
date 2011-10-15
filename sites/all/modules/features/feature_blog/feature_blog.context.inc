@@ -41,6 +41,7 @@ function feature_blog_context_default_contexts() {
           'weight' => '-10',
         ),
       ),
+      'layout' => 'right_sidebar',
     ),
     'breadcrumb' => 'blog',
   );
