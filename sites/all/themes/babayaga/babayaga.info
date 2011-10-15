@@ -15,19 +15,3 @@ stylesheets[screen][] = blocks.css
 
 scripts[] = babayaga.js
 
-; Layout: Default
-layouts[default][name] = "Default"
-layouts[default][description] = "Simple two column page."
-layouts[default][template] = "page"
-layouts[default][regions][] = "content"
-layouts[default][regions][] = "right"
-layouts[default][regions][] = "footer"
-
-; Layout: Front page
-layouts[front][name] = "Front page"
-layouts[front][description] = "Front page layout."
-layouts[front][stylesheet] = "layout-front.css"
-layouts[front][template] = "layout-front"
-layouts[front][regions][] = "content"
-layouts[front][regions][] = "right"
-layouts[front][regions][] = "footer"
