@@ -12,6 +12,37 @@ regions[footer] = "Footer"
 stylesheets[screen][] = style.css
 stylesheets[screen][] = babayaga.css
 stylesheets[screen][] = blocks.css
+stylesheets[screen][] = twist.css
 
 scripts[] = babayaga.js
 
+
+; Layout: Left Sidebar
+
+layouts[left_sidebar][name] = "Left Sidebar"
+layouts[left_sidebar][description] = "Simple two column page."
+layouts[left_sidebar][template] = "layouts/left-sidebar"
+layouts[left_sidebar][regions][] = "featured"
+layouts[left_sidebar][regions][] = "content"
+layouts[left_sidebar][regions][] = "left"
+layouts[left_sidebar][regions][] = "footer"
+
+; Layout: Right Sidebar
+
+layouts[right_sidebar][name] = "Right Sidebar"
+layouts[right_sidebar][description] = "Simple two column page."
+layouts[right_sidebar][template] = "layouts/right-sidebar"
+layouts[right_sidebar][regions][] = "featured"
+layouts[right_sidebar][regions][] = "content"
+layouts[right_sidebar][regions][] = "right"
+layouts[right_sidebar][regions][] = "footer"
+
+; Layout: Split
+
+layouts[split][name] = "Split"
+layouts[split][description] = "Split layout."
+layouts[split][template] = "layouts/split"
+layouts[split][regions][] = "featured"
+layouts[split][regions][] = "content"
+layouts[split][regions][] = "right"
+layouts[split][regions][] = "footer"

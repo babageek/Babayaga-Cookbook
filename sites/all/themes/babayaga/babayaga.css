@@ -304,3 +304,13 @@ h2.node-title a:hover {
   color: #333; 
   font-weight: normal;
 }
+
+.node-form .form-layout-default .column-wrapper {
+  padding: 10px;
+  padding-top: 5px;
+}
+.node-form .form-layout-default .column-main {
+  background: #fff;
+  -webkit-box-shadow: 0 0 5px #ccc;
+  -moz-box-shadow: 0 0 5px #ccc;
+}

@@ -39,7 +39,7 @@ function babayaga_site_context_default_contexts() {
           'weight' => '-10',
         ),
       ),
-      'layout' => 'front',
+      'layout' => 'right_sidebar',
     ),
   );
   $context->condition_mode = 0;
