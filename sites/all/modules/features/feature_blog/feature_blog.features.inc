@@ -5,20 +5,35 @@
  */
 
 /**
- * Implementation of hook_ctools_plugin_api().
+ * Implements hook_ctools_plugin_api().
  */
 function feature_blog_ctools_plugin_api() {
   list($module, $api) = func_get_args();
   if ($module == "context" && $api == "context") {
-    return array("version" => 3);
+    return array("version" => "3");
   }
-  elseif ($module == "strongarm" && $api == "strongarm") {
-    return array("version" => 1);
+  list($module, $api) = func_get_args();
+  if ($module == "ds" && $api == "ds") {
+    return array("version" => "1");
+  }
+  list($module, $api) = func_get_args();
+  if ($module == "strongarm" && $api == "strongarm") {
+    return array("version" => "1");
   }
 }
 
 /**
- * Implementation of hook_image_default_styles().
+ * Implements hook_views_api().
+ */
+function feature_blog_views_api() {
+  list($module, $api) = func_get_args();
+  if ($module == "views" && $api == "views_default") {
+    return array("version" => "3.0");
+  }
+}
+
+/**
+ * Implements hook_image_default_styles().
  */
 function feature_blog_image_default_styles() {
   $styles = array();
@@ -49,7 +64,7 @@ function feature_blog_image_default_styles() {
 }
 
 /**
- * Implementation of hook_node_info().
+ * Implements hook_node_info().
  */
 function feature_blog_node_info() {
   $items = array(
@@ -63,13 +78,4 @@ function feature_blog_node_info() {
     ),
   );
   return $items;
-}
-
-/**
- * Implementation of hook_views_api().
- */
-function feature_blog_views_api() {
-  return array(
-    'api' => '3.0-alpha1',
-  );
 }
