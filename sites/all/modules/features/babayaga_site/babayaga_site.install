@@ -1,0 +1,9 @@
+<?php
+
+/**
+ * Implements hook_install()
+ */
+function babayaga_site_install() {
+  theme_enable(array('babayaga'));
+  variable_set('theme_default', 'babayaga');  
+}
