@@ -151,27 +151,11 @@ function feature_blog_field_default_fields() {
       'deleted' => '0',
       'description' => '',
       'display' => array(
-        'badge_medium' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => 0,
-        ),
-        'badge_small' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => 0,
-        ),
         'default' => array(
           'label' => 'above',
-          'module' => 'image',
-          'settings' => array(
-            'image_link' => '',
-            'image_style' => '',
-          ),
-          'type' => 'image',
-          'weight' => 3,
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => '3',
         ),
         'full' => array(
           'label' => 'above',
@@ -184,7 +168,7 @@ function feature_blog_field_default_fields() {
           'module' => 'image',
           'settings' => array(
             'image_link' => 'content',
-            'image_style' => 'thumbnail',
+            'image_style' => 'medium',
           ),
           'type' => 'image',
           'weight' => '0',

@@ -5,20 +5,21 @@
  */
 
 /**
- * Implementation of hook_ctools_plugin_api().
+ * Implements hook_ctools_plugin_api().
  */
 function babayaga_recipe_ctools_plugin_api() {
   list($module, $api) = func_get_args();
   if ($module == "context" && $api == "context") {
-    return array("version" => 3);
+    return array("version" => "3");
   }
-  elseif ($module == "strongarm" && $api == "strongarm") {
-    return array("version" => 1);
+  list($module, $api) = func_get_args();
+  if ($module == "strongarm" && $api == "strongarm") {
+    return array("version" => "1");
   }
 }
 
 /**
- * Implementation of hook_image_default_styles().
+ * Implements hook_image_default_styles().
  */
 function babayaga_recipe_image_default_styles() {
   $styles = array();
@@ -36,8 +37,8 @@ function babayaga_recipe_image_default_styles() {
         'module' => 'image',
         'name' => 'image_scale_and_crop',
         'data' => array(
-          'width' => '128',
-          'height' => '128',
+          'width' => '320',
+          'height' => '194',
         ),
         'weight' => '1',
       ),
@@ -78,8 +79,8 @@ function babayaga_recipe_image_default_styles() {
         'module' => 'image',
         'name' => 'image_scale_and_crop',
         'data' => array(
-          'width' => '64',
-          'height' => '64',
+          'width' => '128',
+          'height' => '128',
         ),
         'weight' => '1',
       ),
@@ -90,7 +91,7 @@ function babayaga_recipe_image_default_styles() {
 }
 
 /**
- * Implementation of hook_node_info().
+ * Implements hook_node_info().
  */
 function babayaga_recipe_node_info() {
   $items = array(
@@ -115,10 +116,475 @@ function babayaga_recipe_node_info() {
 }
 
 /**
- * Implementation of hook_views_api().
+ * Implements hook_default_search_api_facet().
  */
-function babayaga_recipe_views_api() {
-  return array(
-    'api' => '3.0-alpha1',
-  );
+function babayaga_recipe_default_search_api_facet() {
+  $items = array();
+  $items['default_node_index_field_recip_1'] = entity_import('search_api_facet', '{
+    "delta" : "default_node_index_field_recip_1",
+    "index_id" : "default_node_index",
+    "field" : "field_recipe_ingredients_terms:parent",
+    "name" : "Default node index: Ingredients Terms \\u00bb Parent terms",
+    "enabled" : "1",
+    "options" : {
+      "limit" : 10,
+      "display_more_link" : false,
+      "more_limit" : 10,
+      "min_count" : 1,
+      "sort" : "count",
+      "missing" : false,
+      "show_active" : true,
+      "default_true" : true,
+      "ids_list" : [],
+      "type" : "",
+      "field_name" : "Ingredients Terms \\u00bb Parent terms",
+      "entity_type" : "taxonomy_term"
+    }
+  }');
+  $items['default_node_index_field_recip_2'] = entity_import('search_api_facet', '{
+    "delta" : "default_node_index_field_recip_2",
+    "index_id" : "default_node_index",
+    "field" : "field_recipe_ingredients_terms:node_count",
+    "name" : "Default node index: Ingredients Terms \\u00bb Node count",
+    "enabled" : "1",
+    "options" : {
+      "limit" : 10,
+      "display_more_link" : false,
+      "more_limit" : 10,
+      "min_count" : 1,
+      "sort" : "count",
+      "missing" : false,
+      "show_active" : true,
+      "default_true" : true,
+      "ids_list" : [],
+      "type" : "integer",
+      "field_name" : "Ingredients Terms \\u00bb Node count"
+    }
+  }');
+  $items['default_node_index_field_recipe_'] = entity_import('search_api_facet', '{
+    "delta" : "default_node_index_field_recipe_",
+    "index_id" : "default_node_index",
+    "field" : "field_recipe_ingredients_terms:name",
+    "name" : "Default node index: Ingredients Terms \\u00bb Name",
+    "enabled" : "1",
+    "options" : {
+      "limit" : 10,
+      "display_more_link" : false,
+      "more_limit" : 10,
+      "min_count" : 1,
+      "sort" : "count",
+      "missing" : false,
+      "show_active" : true,
+      "default_true" : true,
+      "ids_list" : [],
+      "type" : "text",
+      "field_name" : "Ingredients Terms \\u00bb Name"
+    }
+  }');
+  return $items;
+}
+
+/**
+ * Implements hook_default_search_api_index().
+ */
+function babayaga_recipe_default_search_api_index() {
+  $items = array();
+  $items['default_node_index'] = entity_import('search_api_index', '{
+    "name" : "Default node index",
+    "machine_name" : "default_node_index",
+    "description" : "An automatically created search index for indexing node data. Might be configured to specific needs.",
+    "server" : "database_server",
+    "entity_type" : "node",
+    "options" : {
+      "cron_limit" : "50",
+      "data_alter_callbacks" : {
+        "search_api_alter_bundle_filter" : {
+          "status" : 0,
+          "weight" : "0",
+          "settings" : { "default" : "1", "bundles" : [] }
+        },
+        "search_api_alter_add_viewed_entity" : { "status" : 0, "weight" : "0", "settings" : { "mode" : "full" } },
+        "search_api_alter_add_aggregation" : { "status" : 0, "weight" : "0", "settings" : null },
+        "search_api_alter_add_url" : { "status" : 0, "weight" : "0", "settings" : [] }
+      },
+      "processors" : {
+        "search_api_case_ignore" : {
+          "status" : 1,
+          "weight" : "0",
+          "settings" : { "fields" : {
+              "title" : "title",
+              "body:value" : "body:value",
+              "field_recipe_ingredients_terms:name" : "field_recipe_ingredients_terms:name",
+              "search_api_language" : 0,
+              "type" : 0,
+              "status" : 0,
+              "promote" : 0,
+              "sticky" : 0,
+              "created" : 0,
+              "changed" : 0,
+              "author" : 0
+            }
+          }
+        },
+        "search_api_html_filter" : {
+          "status" : 1,
+          "weight" : "10",
+          "settings" : {
+            "fields" : {
+              "title" : "title",
+              "body:value" : "body:value",
+              "field_recipe_ingredients_terms:name" : "field_recipe_ingredients_terms:name",
+              "search_api_language" : 0,
+              "type" : 0,
+              "status" : 0,
+              "promote" : 0,
+              "sticky" : 0,
+              "created" : 0,
+              "changed" : 0,
+              "author" : 0
+            },
+            "title" : 0,
+            "alt" : 1,
+            "tags" : "h1 = 5\\r\\nh2 = 3\\r\\nh3 = 2\\r\\nstrong = 2\\r\\nb = 2\\r\\nem = 1.5\\r\\nu = 1.5"
+          }
+        },
+        "search_api_tokenizer" : {
+          "status" : 1,
+          "weight" : "20",
+          "settings" : {
+            "fields" : {
+              "title" : "title",
+              "body:value" : "body:value",
+              "field_recipe_ingredients_terms:name" : "field_recipe_ingredients_terms:name",
+              "search_api_language" : 0,
+              "type" : 0,
+              "status" : 0,
+              "promote" : 0,
+              "sticky" : 0,
+              "created" : 0,
+              "changed" : 0,
+              "author" : 0
+            },
+            "spaces" : "[^\\\\p{L}\\\\p{N}]",
+            "ignorable" : "[-]"
+          }
+        },
+        "search_api_stopwords" : {
+          "status" : 0,
+          "weight" : "30",
+          "settings" : { "file" : "", "stopwords" : "but\\r\\ndid\\r\\nthe this that those\\r\\netc" }
+        }
+      },
+      "fields" : {
+        "search_api_language" : {
+          "name" : "Item language",
+          "indexed" : 1,
+          "type" : "string",
+          "boost" : "1.0"
+        },
+        "nid" : { "name" : "Node ID", "indexed" : 0, "type" : "integer", "boost" : "1.0" },
+        "vid" : {
+          "name" : "Revision ID",
+          "indexed" : 0,
+          "type" : "integer",
+          "boost" : "1.0"
+        },
+        "is_new" : { "name" : "Is new", "indexed" : 0, "type" : "boolean", "boost" : "1.0" },
+        "type" : {
+          "name" : "Content type",
+          "indexed" : 1,
+          "type" : "string",
+          "boost" : "1.0"
+        },
+        "title" : { "name" : "Title", "indexed" : 1, "type" : "text", "boost" : "5.0" },
+        "language" : { "name" : "Language", "indexed" : 0, "type" : "string", "boost" : "1.0" },
+        "url" : { "name" : "URL", "indexed" : 0, "type" : "uri", "boost" : "1.0" },
+        "edit_url" : { "name" : "Edit URL", "indexed" : 0, "type" : "uri", "boost" : "1.0" },
+        "status" : {
+          "name" : "Published",
+          "indexed" : 1,
+          "type" : "boolean",
+          "boost" : "1.0"
+        },
+        "promote" : {
+          "name" : "Promoted to frontpage",
+          "indexed" : 1,
+          "type" : "boolean",
+          "boost" : "1.0"
+        },
+        "sticky" : {
+          "name" : "Sticky in lists",
+          "indexed" : 1,
+          "type" : "boolean",
+          "boost" : "1.0"
+        },
+        "created" : {
+          "name" : "Date created",
+          "indexed" : 1,
+          "type" : "date",
+          "boost" : "1.0"
+        },
+        "changed" : {
+          "name" : "Date changed",
+          "indexed" : 1,
+          "type" : "date",
+          "boost" : "1.0"
+        },
+        "author" : {
+          "name" : "Author",
+          "indexed" : 1,
+          "type" : "integer",
+          "entity_type" : "user",
+          "boost" : "1.0"
+        },
+        "source" : {
+          "name" : "Translation source node",
+          "indexed" : 0,
+          "type" : "integer",
+          "entity_type" : "node",
+          "boost" : "1.0"
+        },
+        "log" : {
+          "name" : "Revision log message",
+          "indexed" : 0,
+          "type" : "text",
+          "boost" : "1.0"
+        },
+        "revision" : {
+          "name" : "Creates revision",
+          "indexed" : 0,
+          "type" : "boolean",
+          "boost" : "1.0"
+        },
+        "field_ingredient_term" : {
+          "name" : "Term",
+          "indexed" : 0,
+          "type" : "integer",
+          "entity_type" : "taxonomy_term",
+          "boost" : "1.0"
+        },
+        "field_recipe_duration" : { "name" : "Duration", "indexed" : 0, "type" : "string", "boost" : "1.0" },
+        "field_recipe_ingredients_terms" : {
+          "name" : "Ingredients Terms",
+          "indexed" : 0,
+          "type" : "list\\u003cinteger\\u003e",
+          "entity_type" : "taxonomy_term",
+          "boost" : "1.0"
+        },
+        "field_recipe_time" : {
+          "name" : "Preparation time",
+          "indexed" : 0,
+          "type" : "integer",
+          "boost" : "1.0"
+        },
+        "field_blog_subtitle" : { "name" : "Subtitle", "indexed" : 0, "type" : "text", "boost" : "1.0" },
+        "body:value" : {
+          "name" : "The main body text \\u00bb Text",
+          "indexed" : 1,
+          "type" : "text",
+          "boost" : "1.0"
+        },
+        "body:summary" : {
+          "name" : "The main body text \\u00bb Summary",
+          "indexed" : 0,
+          "type" : "text",
+          "boost" : "1.0"
+        },
+        "body:format" : {
+          "name" : "The main body text \\u00bb Text format",
+          "indexed" : 0,
+          "type" : "integer",
+          "boost" : "1.0"
+        },
+        "field_recipe_ingredients_terms:tid" : {
+          "name" : "Ingredients Terms \\u00bb Term ID",
+          "indexed" : 1,
+          "type" : "list\\u003cinteger\\u003e",
+          "boost" : "1.0"
+        },
+        "field_recipe_ingredients_terms:name" : {
+          "name" : "Ingredients Terms \\u00bb Name",
+          "indexed" : 1,
+          "type" : "list\\u003ctext\\u003e",
+          "boost" : "1.0"
+        },
+        "field_recipe_ingredients_terms:description" : {
+          "name" : "Ingredients Terms \\u00bb Description",
+          "indexed" : 0,
+          "type" : "list\\u003ctext\\u003e",
+          "boost" : "1.0"
+        },
+        "field_recipe_ingredients_terms:weight" : {
+          "name" : "Ingredients Terms \\u00bb Weight",
+          "indexed" : 0,
+          "type" : "list\\u003cinteger\\u003e",
+          "boost" : "1.0"
+        },
+        "field_recipe_ingredients_terms:node_count" : {
+          "name" : "Ingredients Terms \\u00bb Node count",
+          "indexed" : 1,
+          "type" : "list\\u003cinteger\\u003e",
+          "boost" : "1.0"
+        },
+        "field_recipe_ingredients_terms:url" : {
+          "name" : "Ingredients Terms \\u00bb URL",
+          "indexed" : 0,
+          "type" : "list\\u003curi\\u003e",
+          "boost" : "1.0"
+        },
+        "field_recipe_ingredients_terms:vocabulary" : {
+          "name" : "Ingredients Terms \\u00bb Vocabulary",
+          "indexed" : 0,
+          "type" : "list\\u003cinteger\\u003e",
+          "entity_type" : "taxonomy_vocabulary",
+          "boost" : "1.0"
+        },
+        "field_recipe_ingredients_terms:parent" : {
+          "name" : "Ingredients Terms \\u00bb Parent terms",
+          "indexed" : 1,
+          "type" : "list\\u003clist\\u003cinteger\\u003e\\u003e",
+          "entity_type" : "taxonomy_term",
+          "boost" : "1.0"
+        },
+        "field_recipe_subtitle:value" : {
+          "name" : "Subtitle \\u00bb Text",
+          "indexed" : 0,
+          "type" : "text",
+          "boost" : "1.0"
+        },
+        "field_recipe_subtitle:format" : {
+          "name" : "Subtitle \\u00bb Text format",
+          "indexed" : 0,
+          "type" : "string",
+          "boost" : "1.0"
+        },
+        "field_recipe_ingredients_terms:vocabulary:vid" : {
+          "name" : "Ingredients Terms \\u00bb Vocabulary \\u00bb Vocabulary ID",
+          "indexed" : 0,
+          "type" : "list\\u003cinteger\\u003e",
+          "boost" : "1.0"
+        },
+        "field_recipe_ingredients_terms:vocabulary:name" : {
+          "name" : "Ingredients Terms \\u00bb Vocabulary \\u00bb Name",
+          "indexed" : 0,
+          "type" : "list\\u003ctext\\u003e",
+          "boost" : "1.0"
+        },
+        "field_recipe_ingredients_terms:vocabulary:machine_name" : {
+          "name" : "Ingredients Terms \\u00bb Vocabulary \\u00bb Machine name",
+          "indexed" : 0,
+          "type" : "list\\u003cstring\\u003e",
+          "boost" : "1.0"
+        },
+        "field_recipe_ingredients_terms:vocabulary:description" : {
+          "name" : "Ingredients Terms \\u00bb Vocabulary \\u00bb Description",
+          "indexed" : 0,
+          "type" : "list\\u003ctext\\u003e",
+          "boost" : "1.0"
+        },
+        "field_recipe_ingredients_terms:vocabulary:term_count" : {
+          "name" : "Ingredients Terms \\u00bb Vocabulary \\u00bb Term count",
+          "indexed" : 0,
+          "type" : "list\\u003cinteger\\u003e",
+          "boost" : "1.0"
+        }
+      },
+      "index_directly" : 1
+    },
+    "enabled" : "1",
+    "read_only" : "0"
+  }');
+  return $items;
+}
+
+/**
+ * Implements hook_default_search_api_server().
+ */
+function babayaga_recipe_default_search_api_server() {
+  $items = array();
+  $items['database_server'] = entity_import('search_api_server', '{
+    "name" : "Database Server",
+    "machine_name" : "database_server",
+    "description" : "Generic database indexing server",
+    "class" : "search_api_db_service",
+    "options" : {
+      "database" : "default:default",
+      "min_chars" : "3",
+      "indexes" : { "default_node_index" : {
+          "type" : {
+            "table" : "search_api_db_default_node_index_type",
+            "type" : "string",
+            "boost" : "1.0"
+          },
+          "title" : {
+            "table" : "search_api_db_default_node_index_title",
+            "type" : "text",
+            "boost" : "5.0"
+          },
+          "status" : {
+            "table" : "search_api_db_default_node_index_status",
+            "type" : "boolean",
+            "boost" : "1.0"
+          },
+          "promote" : {
+            "table" : "search_api_db_default_node_index_promote",
+            "type" : "boolean",
+            "boost" : "1.0"
+          },
+          "sticky" : {
+            "table" : "search_api_db_default_node_index_sticky",
+            "type" : "boolean",
+            "boost" : "1.0"
+          },
+          "created" : {
+            "table" : "search_api_db_default_node_index_created",
+            "type" : "date",
+            "boost" : "1.0"
+          },
+          "changed" : {
+            "table" : "search_api_db_default_node_index_changed",
+            "type" : "date",
+            "boost" : "1.0"
+          },
+          "author" : {
+            "table" : "search_api_db_default_node_index_author",
+            "type" : "integer",
+            "boost" : "1.0"
+          },
+          "search_api_language" : {
+            "table" : "search_api_db_default_node_index_search_api_language",
+            "type" : "string",
+            "boost" : "1.0"
+          },
+          "body:value" : {
+            "table" : "search_api_db_default_node_index_body_value",
+            "type" : "text",
+            "boost" : "1.0"
+          },
+          "field_recipe_ingredients_terms:name" : {
+            "table" : "search_api_db_default_node_index_field_recipe_ingredients_terms",
+            "type" : "list\\u003ctext\\u003e",
+            "boost" : "1.0"
+          },
+          "field_recipe_ingredients_terms:parent" : {
+            "table" : "search_api_db_default_node_index_field_recipe_ingredients_ter_1",
+            "type" : "list\\u003clist\\u003cinteger\\u003e\\u003e",
+            "boost" : "1.0"
+          },
+          "field_recipe_ingredients_terms:tid" : {
+            "table" : "search_api_db_default_node_index_field_recipe_ingredients_ter_2",
+            "type" : "list\\u003cinteger\\u003e",
+            "boost" : "1.0"
+          },
+          "field_recipe_ingredients_terms:node_count" : {
+            "table" : "search_api_db_default_node_index_field_recipe_ingredients_ter_3",
+            "type" : "list\\u003cinteger\\u003e",
+            "boost" : "1.0"
+          }
+        }
+      }
+    },
+    "enabled" : "1"
+  }');
+  return $items;
 }

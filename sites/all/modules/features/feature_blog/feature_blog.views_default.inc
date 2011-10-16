@@ -5,12 +5,11 @@
  */
 
 /**
- * Implementation of hook_views_default_views().
+ * Implements hook_views_default_views().
  */
 function feature_blog_views_default_views() {
-  $views = array();
+  $export = array();
 
-  // Exported view: blog
   $view = new view;
   $view->name = 'blog';
   $view->description = 'Main blog post view.';
@@ -27,6 +26,7 @@ function feature_blog_views_default_views() {
   $handler->display->display_options['access']['type'] = 'none';
   $handler->display->display_options['cache']['type'] = 'none';
   $handler->display->display_options['query']['type'] = 'views_query';
+  $handler->display->display_options['query']['options']['query_comment'] = FALSE;
   $handler->display->display_options['exposed_form']['type'] = 'basic';
   $handler->display->display_options['pager']['type'] = 'full';
   $handler->display->display_options['style_plugin'] = 'default';
@@ -71,6 +71,16 @@ function feature_blog_views_default_views() {
   $handler = $view->new_display('page', 'Page: List of posts', 'page_1');
   $handler->display->display_options['defaults']['title'] = FALSE;
   $handler->display->display_options['title'] = 'Blog';
+  $handler->display->display_options['defaults']['style_plugin'] = FALSE;
+  $handler->display->display_options['style_plugin'] = 'default';
+  $handler->display->display_options['defaults']['style_options'] = FALSE;
+  $handler->display->display_options['defaults']['row_plugin'] = FALSE;
+  $handler->display->display_options['row_plugin'] = 'ds';
+  $handler->display->display_options['row_options']['view_mode'] = 'list';
+  $handler->display->display_options['row_options']['alternating'] = 0;
+  $handler->display->display_options['row_options']['grouping'] = 0;
+  $handler->display->display_options['row_options']['advanced'] = 0;
+  $handler->display->display_options['defaults']['row_options'] = FALSE;
   $handler->display->display_options['path'] = 'blog';
   $handler->display->display_options['menu']['type'] = 'normal';
   $handler->display->display_options['menu']['title'] = 'Blog';
@@ -80,6 +90,14 @@ function feature_blog_views_default_views() {
   /* Display: Block: List of posts */
   $handler = $view->new_display('block', 'Block: List of posts', 'block_1');
   $handler->display->display_options['defaults']['title'] = FALSE;
+  $handler->display->display_options['defaults']['style_plugin'] = FALSE;
+  $handler->display->display_options['style_plugin'] = 'default';
+  $handler->display->display_options['defaults']['style_options'] = FALSE;
+  $handler->display->display_options['defaults']['row_plugin'] = FALSE;
+  $handler->display->display_options['row_plugin'] = 'node';
+  $handler->display->display_options['row_options']['links'] = 1;
+  $handler->display->display_options['row_options']['comments'] = 0;
+  $handler->display->display_options['defaults']['row_options'] = FALSE;
 
   /* Display: Block: Post archive */
   $handler = $view->new_display('block', 'Block: Post archive', 'block_2');
@@ -100,29 +118,7 @@ function feature_blog_views_default_views() {
   $handler->display->display_options['arguments']['created_year_month']['summary']['format'] = 'unformatted_summary';
   $handler->display->display_options['arguments']['created_year_month']['summary_options']['items_per_page'] = '25';
   $handler->display->display_options['arguments']['created_year_month']['summary_options']['inline'] = 0;
-  $translatables['blog'] = array(
-    t('Defaults'),
-    t('Latest blog posts'),
-    t('more'),
-    t('Apply'),
-    t('Reset'),
-    t('Sort by'),
-    t('Asc'),
-    t('Desc'),
-    t('Items per page'),
-    t('- All -'),
-    t('Offset'),
-    t('All'),
-    t('Posts published in %1'),
-    t('Page: List of posts'),
-    t('Blog'),
-    t('Block: List of posts'),
-    t('Block: Post archive'),
-    t('Post archive'),
-    t('Blog post for %1'),
-  );
+  $export['blog'] = $view;
 
-  $views[$view->name] = $view;
-
-  return $views;
+  return $export;
 }
