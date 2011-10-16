@@ -16,6 +16,13 @@ function babayaga_preprocess_node(&$vars) {
   }
 }
 
+/**
+ * Preprocessor for theme('page').
+ */
+function babayaga_preprocess_page(&$vars) {
+  
+}
+
 
 /**
  * Preprocessor for theme('comment').

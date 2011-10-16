@@ -1,0 +1,43 @@
+<?php
+/**
+ * @file
+ * Code for the Pages feature.
+ */
+
+include_once('feature_pages.features.inc');
+
+/**
+ * Implementation of hook_init()
+ */
+function feature_pages_init() {
+  drupal_add_css(drupal_get_path('module', 'feature_pages') . '/feature_pages.css');
+}
+
+/**
+ * Implementation of hook_form_alter()
+ */
+function feature_pages_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'page_node_form') {
+    $form['menu']['enabled']['#default_value'] = TRUE;
+  }
+}
+
+/**
+ * Implements hook_menu_block_blocks().
+ */
+function feature_pages_menu_block_blocks() {
+  // The array key is the block delta used by menu block.
+  return array(
+    'feature_pages-1' => array(
+      'menu_name'   => 'main-menu',
+      'parent_mlid' => 0,
+      'title_link'  => 0,
+      'admin_title' => 'Main menu - 2nd level',
+      'level'       => 2,
+      'follow'      => 0,
+      'depth'       => 0,
+      'expanded'    => 0,
+      'sort'        => 0,
+    ),
+  );
+}

@@ -6,8 +6,9 @@
 #right .block {
   background: transparent url('images/bg-block.png');
   border-radius: 5px;
-  -moz-border-radius: 5px;
-  -webkit-border-radius: 5px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -webkit-box-shadow: 2px 2px 3px #bbb;
 }
 
 #right .block .block-title {
@@ -20,8 +21,8 @@
   padding:5px 15px 10px;
   background: transparent url('images/sprites.png') 0 -300px no-repeat;
   font-family: "Garamond 3 LT Std", "EB Garamond", Georgia, serif;
-  margin-bottom: 10px;
-  margin-right: -22px;
+  margin-top: 10px;
+  margin-left: -12px;
 }
 
 #block-views-recipes-block-1 .field-content.picture {

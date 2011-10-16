@@ -46,7 +46,7 @@
 
 
 #header {
-  margin-bottom: 25px;
+  margin-bottom: 10px;
   text-align: center;
 }
 .block,
@@ -66,7 +66,7 @@
 
 .help-page, 
 div.comment, 
-div.node {
+div.node-teaser {
   margin-bottom: 35px;
 }
 
@@ -199,8 +199,8 @@ ul.main-menu  li {
 }
 #navigation ul.links li.last {
   background: transparent url("images/sprites.png") no-repeat;
-  background-position: 100% -95px;
-  padding-right: 50px;
+  background-position: 100% -93px;
+  padding-right: 35px;
 }
 
 #navigation ul.links li {
@@ -217,7 +217,7 @@ ul.main-menu  li {
 }
 #navigation ul.links li.first a {
   background-image: none;
-  padding-left: 30px;
+  padding-left: 15px;
 } 
 
 
@@ -239,6 +239,14 @@ ul.main-menu  li {
   padding: 35px;
 }
 
+.tabs {
+  position: relative;
+  right: 0px;
+  float: right;
+}
+h2 {
+  font-weight: normal;
+}
 h2.node-title {
   font-family: "Garamond 3 LT Std", "EB Garamond", Georgia, serif;
 }
@@ -295,15 +303,15 @@ h2.node-title a:hover {
   color: #A13562;
   margin-bottom: 10px;
 }
-
+.field-name-title,
+.field-name-title a,
 .title a,
 .title {
   font-family: "Garamond 3 LT Std", "EB Garamond", Georgia, serif;
-  font-size: 20px;
-  line-height: 23px;
   color: #333; 
   font-weight: normal;
 }
+
 
 .node-form .form-layout-default .column-wrapper {
   padding: 10px;
@@ -313,4 +321,56 @@ h2.node-title a:hover {
   background: #fff;
   -webkit-box-shadow: 0 0 5px #ccc;
   -moz-box-shadow: 0 0 5px #ccc;
+}
+
+.field-name-post-date {
+  font-size: 12px;
+  color: #777;
+  margin-bottom: 10px;
+}
+
+.node-blog .field-name-title {
+  font-size: 35px;
+  line-height: 35px;
+}
+.node-blog .field-name-field-blog-subtitle {
+  font-size: 15px;
+  line-height: 18px;
+}
+.page-node .page-title {
+  display: none;
+}
+
+.block .view-id-recipes .view-mode-badge_medium {
+}
+.block .view-id-recipes .view-mode-badge_small {
+  width: 49%;
+  float: left;
+}
+.view-id-recipes .view-mode-badge_medium .field-name-title {
+  font-size: 21px;
+  line-height: 27px;
+  text-align: center;
+}
+.view-id-recipes .view-mode-badge_small .field-name-title {
+  font-size: 18px;
+  line-height: 24px;  
+  text-align: center;
+}
+.field-name-field-recipe-subtitle {
+  color: #7D294C;
+}
+.view-id-recipes .view-mode-badge_medium {
+  text-align: center;  
+}
+
+.node-blog.view-mode-list .field-name-title {
+  font-size: 32px;
+}
+
+.block .inner {
+}
+.page-recipes .view-id-recipes .view-mode-badge_medium {
+}
+.page-recipes .view-id-recipes .view-mode-badge_medium .inner {
 }

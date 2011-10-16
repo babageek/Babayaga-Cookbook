@@ -1,0 +1,13 @@
+<?php
+
+/**
+ * Implementing hook_enable()
+ */
+function feature_pages_enable() {
+  db_update('system')
+    ->fields(array('weight' => 10))
+    ->condition('name', 'feature_pages')
+    ->condition('type', 'module')
+    ->execute();  
+}
+
