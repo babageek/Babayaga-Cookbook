@@ -1,8 +1,5 @@
 
-.block-inner {
- padding: 15px;
-}
-
+/*
 #right .block {
   background: transparent url('images/bg-block.png');
   border-radius: 5px;
@@ -24,7 +21,28 @@
   margin-top: 10px;
   margin-left: -12px;
 }
-
+*/
 #block-views-recipes-block-1 .field-content.picture {
   text-align: center;
 }
+
+#left .block .block-title,
+#right .block .block-title {
+  font-size: 25px;
+  font-style: normal;
+  font-weight: lighter;
+  display: block;
+  margin: 0px;
+  font-family: "Garamond 3 LT Std", "EB Garamond", Georgia, serif;
+  text-align: center;
+  color: #463434;
+}
+#right .block {
+/*  background: #EAE7E4;*/
+/*  border-radius: 5px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -webkit-box-shadow: 2px 2px 3px #bbb;*/
+}
+
+

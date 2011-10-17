@@ -48,6 +48,7 @@ function babayaga_recipe_context_default_contexts() {
           'weight' => '-18',
         ),
       ),
+      'layout' => 'right_sidebar',
     ),
   );
   $context->condition_mode = 0;
@@ -66,8 +67,8 @@ function babayaga_recipe_context_default_contexts() {
   $context->conditions = array(
     'path' => array(
       'values' => array(
-        'recipes-search' => 'recipes-search',
-        'recipes-search/*' => 'recipes-search/*',
+        'recipes' => 'recipes',
+        'recipes/*' => 'recipes/*',
       ),
     ),
   );
