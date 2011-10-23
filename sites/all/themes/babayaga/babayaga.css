@@ -374,3 +374,44 @@ h2.node-title a:hover {
 }
 .page-recipes .view-id-recipes .view-mode-badge_medium .inner {
 }
+
+body.page-recipes #content {
+  width: 72.9%;
+}
+body.page-recipes #right {
+  width: 16.9%;
+}
+
+
+/**
+ * Search ----------------------------------------------------------------------
+ */
+.facet-remove,
+.facet-count {
+  font-size: 10px;
+  padding: 0 3px;
+  background-color: #fff;
+  float: right;
+  color: #777;
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+}
+.block.block-facetapi .block-content {
+  padding: 0;
+}
+ul.facetapi-processed li {
+  border-bottom: 0;
+  padding: 0;
+  margin-bottom: 1px;
+}
+ul.facetapi-processed li a {
+  background-color: #ebebeb;
+  display: block;
+  padding: 5px 7px;
+  color: #777;
+}
+ul.facetapi-processed li a:hover {
+  background-color: #00AEEF;
+  color: #fff;
+}

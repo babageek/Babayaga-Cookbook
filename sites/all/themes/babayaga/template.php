@@ -47,3 +47,78 @@ function babayaga_addthis(&$node) {
   $out .= '<!-- AddThis Button END -->';
   return $out;
 }
+
+
+
+/**
+ * Returns HTML for a "missing" facet link.
+ *
+ * @param $variables
+ *   An associative array containing:
+ *   - field_name: The name of the facet field.
+ *
+ * @ingroup themeable
+ */
+function babayaga_facetapi_facet_missing($variables) {
+  return t('Missing %field_name', array('%field_name' => $variables['field_name']));
+}
+
+/**
+ * Returns HTML for the facet title, usually the title of the block.
+ *
+ * @param $variables
+ *   An associative array containing:
+ *   - title: The title of the facet.
+ *
+ * @ingroup themeable
+ */
+function babayaga_facetapi_title($variables) {
+  return t('Filter by @title:', array('@title' => drupal_strtolower($variables['title'])));
+}
+
+/**
+ * Returns HTML for an active facet item.
+ *
+ * @param $variables
+ *   An associative array containing the keys 'text', 'path', 'options', and
+ *   'count'. See the l() and babayaga_facetapi_count() functions for information
+ *   about these variables.
+ *
+ * @ingroup themeable
+ */
+function babayaga_facetapi_link_inactive($variables) {
+  if (isset($variables['count'])) {
+    $variables['text'] = theme('facetapi_count', $variables) . '<div class="facet-label">' . $variables['text'] . '</div>';
+  }
+  $variables['options']['html'] = TRUE;
+  return theme_link($variables);
+}
+
+/**
+ * Returns HTML for the inactive facet item's count.
+ *
+ * @param $variables
+ *   An associative array containing:
+ *   - count: The item's facet count.
+ *
+ * @ingroup themeable
+ */
+function babayaga_facetapi_count($variables) {
+  return '<div class="facet-count">' . (int) $variables['count'] . '</div>';
+}
+
+/**
+ * Returns HTML for an inactive facet item.
+ *
+ * @param $variables
+ *   An associative array containing the keys 'text', 'path', and 'options'. See
+ *   the l() function for information about these variables.
+ *
+ * @ingroup themeable
+ */
+function babayaga_facetapi_link_active($variables) {
+  $suffix = '';
+  $variables['options']['html'] = TRUE;
+  $variables['text'] = '<div class="facet-remove">-</div>' . '<div class="facet-label">' . check_plain($variables['text']) .'</div>';
+  return theme_link($variables);
+}

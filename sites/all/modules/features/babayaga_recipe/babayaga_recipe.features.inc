@@ -23,6 +23,16 @@ function babayaga_recipe_ctools_plugin_api() {
 }
 
 /**
+ * Implements hook_views_api().
+ */
+function babayaga_recipe_views_api() {
+  list($module, $api) = func_get_args();
+  if ($module == "views" && $api == "views_default") {
+    return array("version" => "3.0");
+  }
+}
+
+/**
  * Implements hook_image_default_styles().
  */
 function babayaga_recipe_image_default_styles() {
@@ -212,7 +222,7 @@ function babayaga_recipe_default_search_api_index() {
         },
         "field_recipe_duration" : { "name" : "Duration", "indexed" : 0, "type" : "string", "boost" : "1.0" },
         "field_recipe_ingredients_terms" : {
-          "name" : "Ingredients Terms",
+          "name" : "Ingredients",
           "indexed" : 1,
           "type" : "list\\u003cinteger\\u003e",
           "entity_type" : "taxonomy_term",
@@ -222,6 +232,20 @@ function babayaga_recipe_default_search_api_index() {
           "name" : "Preparation time",
           "indexed" : 0,
           "type" : "integer",
+          "boost" : "1.0"
+        },
+        "field_recipe_cuisines" : {
+          "name" : "Cuisines",
+          "indexed" : 1,
+          "type" : "integer",
+          "entity_type" : "taxonomy_term",
+          "boost" : "1.0"
+        },
+        "field_recipe_courses" : {
+          "name" : "Courses",
+          "indexed" : 1,
+          "type" : "integer",
+          "entity_type" : "taxonomy_term",
           "boost" : "1.0"
         },
         "field_blog_subtitle" : { "name" : "Subtitle", "indexed" : 0, "type" : "text", "boost" : "1.0" },
@@ -381,6 +405,16 @@ function babayaga_recipe_default_search_api_server() {
           "search_api_language" : {
             "table" : "search_api_db_recipes_index_search_api_language",
             "type" : "string",
+            "boost" : "1.0"
+          },
+          "field_recipe_cuisines" : {
+            "table" : "search_api_db_recipes_index_field_recipe_cuisines",
+            "type" : "integer",
+            "boost" : "1.0"
+          },
+          "field_recipe_courses" : {
+            "table" : "search_api_db_recipes_index_field_recipe_courses",
+            "type" : "integer",
             "boost" : "1.0"
           }
         }

@@ -324,7 +324,7 @@ function babayaga_recipe_field_default_fields() {
           'summary_rows' => 5,
         ),
         'type' => 'text_textarea_with_summary',
-        'weight' => '4',
+        'weight' => '7',
       ),
       'widget_type' => 'text_textarea_with_summary',
     ),
@@ -402,7 +402,7 @@ function babayaga_recipe_field_default_fields() {
           'rows' => '5',
         ),
         'type' => 'text_textarea',
-        'weight' => '9',
+        'weight' => '11',
       ),
     ),
   );
@@ -484,7 +484,7 @@ function babayaga_recipe_field_default_fields() {
         'module' => 'options',
         'settings' => array(),
         'type' => 'options_select',
-        'weight' => '11',
+        'weight' => '4',
       ),
     ),
   );
@@ -566,7 +566,7 @@ function babayaga_recipe_field_default_fields() {
         'module' => 'options',
         'settings' => array(),
         'type' => 'options_select',
-        'weight' => '10',
+        'weight' => '5',
       ),
     ),
   );
@@ -717,7 +717,7 @@ function babayaga_recipe_field_default_fields() {
           'rows' => '5',
         ),
         'type' => 'text_textarea',
-        'weight' => '5',
+        'weight' => '8',
       ),
     ),
   );
@@ -747,8 +747,8 @@ function babayaga_recipe_field_default_fields() {
       'settings' => array(
         'allowed_values' => array(
           0 => array(
-            'parent' => '0',
             'vocabulary' => 'ingredients',
+            'parent' => '0',
           ),
         ),
       ),
@@ -788,20 +788,21 @@ function babayaga_recipe_field_default_fields() {
       ),
       'entity_type' => 'node',
       'field_name' => 'field_recipe_ingredients_terms',
-      'label' => 'Ingredients Terms',
+      'label' => 'Ingredients',
       'required' => 0,
       'settings' => array(
         'user_register_form' => FALSE,
       ),
       'widget' => array(
-        'active' => 0,
+        'active' => 1,
         'module' => 'active_tags',
         'settings' => array(
           'autocomplete_path' => 'taxonomy/autocomplete',
+          'mode' => 'single',
           'size' => 60,
         ),
         'type' => 'active_tags_taxonomy_autocomplete',
-        'weight' => '7',
+        'weight' => '3',
       ),
     ),
   );
@@ -878,7 +879,7 @@ function babayaga_recipe_field_default_fields() {
           'rows' => '5',
         ),
         'type' => 'text_textarea',
-        'weight' => '8',
+        'weight' => '10',
       ),
     ),
   );
@@ -981,7 +982,7 @@ function babayaga_recipe_field_default_fields() {
           'progress_indicator' => 'throbber',
         ),
         'type' => 'image_image',
-        'weight' => '6',
+        'weight' => '9',
       ),
     ),
   );
@@ -1130,7 +1131,7 @@ function babayaga_recipe_field_default_fields() {
         'module' => 'number',
         'settings' => array(),
         'type' => 'number',
-        'weight' => '3',
+        'weight' => '6',
       ),
     ),
   );
@@ -1143,7 +1144,6 @@ function babayaga_recipe_field_default_fields() {
   t('Cuisines');
   t('Duration');
   t('Ingredients');
-  t('Ingredients Terms');
   t('Notes');
   t('Pictures');
   t('Preparation time');
