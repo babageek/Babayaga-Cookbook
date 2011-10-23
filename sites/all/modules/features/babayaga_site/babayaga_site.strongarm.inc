@@ -341,7 +341,7 @@ node/*/edit';
             'custom_settings' => FALSE,
           ),
           'search_result' => array(
-            'custom_settings' => FALSE,
+            'custom_settings' => TRUE,
           ),
           'list' => array(
             'custom_settings' => FALSE,

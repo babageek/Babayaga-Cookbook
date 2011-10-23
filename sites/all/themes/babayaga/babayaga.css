@@ -207,7 +207,7 @@ ul.main-menu  li {
   padding: 5px 0px;
 }
 #navigation ul.links li a {
-  font-family: "Garamond 3 LT Std", "EB Garamond", Georgia, serif;
+  font-family: "Garamond Premier Pro", "Garamond 3 LT Std", "EB Garamond", Georgia, serif;
   color: #222;
   font-size: 24px;
   background: transparent url("images/sprites.png") 0 3px no-repeat;
@@ -246,9 +246,12 @@ ul.main-menu  li {
 }
 h2 {
   font-weight: normal;
+  font-size: 21px;
+  line-height: 25px;
+  color: #463434;
 }
 h2.node-title {
-  font-family: "Garamond 3 LT Std", "EB Garamond", Georgia, serif;
+  font-family: "Garamond Premier Pro", "Garamond 3 LT Std", "EB Garamond", Georgia, serif;
 }
 .prose p {
   font-family: Georgia, serif;
@@ -307,7 +310,7 @@ h2.node-title a:hover {
 .field-name-title a,
 .title a,
 .title {
-  font-family: "Garamond 3 LT Std", "EB Garamond", Georgia, serif;
+  font-family: "Garamond Premier Pro", "Garamond 3 LT Std", "EB Garamond", Georgia, serif;
   color: #333; 
   font-weight: normal;
 }
@@ -339,6 +342,18 @@ h2.node-title a:hover {
 }
 .page-node .page-title {
   display: none;
+}
+#page-title .page-title {
+  float: left;
+  padding: 15px 10px 15px 0px;
+  text-shadow: white 0px 1px 0px;
+  -webkit-text-shadow: #fff 0px 1px 0px;
+  letter-spacing: -1px;
+  font-weight: normal;
+  font-size: 34px;  
+  line-height: 32px;
+  font-family: "Garamond Premier Pro", "Garamond 3 LT Std", "EB Garamond", Georgia, serif;
+  color: #463434;
 }
 
 .block .view-id-recipes .view-mode-badge_medium {
@@ -375,13 +390,6 @@ h2.node-title a:hover {
 .page-recipes .view-id-recipes .view-mode-badge_medium .inner {
 }
 
-body.page-recipes #content {
-  width: 72.9%;
-}
-body.page-recipes #right {
-  width: 16.9%;
-}
-
 
 /**
  * Search ----------------------------------------------------------------------
@@ -390,12 +398,15 @@ body.page-recipes #right {
 .facet-count {
   font-size: 10px;
   padding: 0 3px;
-  background-color: #fff;
+  background-color: white;
   float: right;
   color: #777;
   border-radius: 3px;
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
+  width: 15px;
+  text-align: center;
+  border: 1px solid #D4D0CD;
 }
 .block.block-facetapi .block-content {
   padding: 0;
@@ -406,12 +417,53 @@ ul.facetapi-processed li {
   margin-bottom: 1px;
 }
 ul.facetapi-processed li a {
-  background-color: #ebebeb;
+  background-color: #E8E4E1;
   display: block;
-  padding: 5px 7px;
+  padding: 5px 4px 7px 8px;
   color: #777;
+  border: 1px solid #D4D0CD;
+  border-radius: 3px; 
 }
 ul.facetapi-processed li a:hover {
-  background-color: #00AEEF;
-  color: #fff;
+  background-color: #D4D0CD;
+  color: #333;
+}
+.facet-label {
+  font-size: 15px;
+  text-align: right;
+  padding-right: 30px;
+}
+
+
+.node-recipe.view-mode-search_result {
+  border: 1px solid #B3B29E;  
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-box-shadow: 0 0 5px #ccc;
+  -moz-box-shadow: 0 0 5px #ccc;
+  background: transparent url("images/bg-top.jpg") 0 -15px repeat-x;
+  text-align: center;
+}
+.node-recipe.view-mode-search_result:hover {
+  background: #fff;  
+}
+.node-recipe.view-mode-search_result h2 {
+  font-size: 20px;
+  line-height: 21px;
+}
+.node-recipe.view-mode-search_result .field-name-field-recipe-subtitle {
+  font-size: 11px;
+  line-height: 17px;
+}
+
+.page-recipes #left .inner {
+  padding: 0;
+}
+.page-recipes #left .block .block-title {
+  margin: 0;
+  padding: 5px;
+}
+.page-recipes #left .block .block-title h2 {
+  font-size: 20px;
+  text-align: right;  
 }

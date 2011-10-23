@@ -75,20 +75,26 @@ function babayaga_recipe_context_default_contexts() {
   $context->reactions = array(
     'block' => array(
       'blocks' => array(
-        'search_api_facets-current-search' => array(
-          'module' => 'search_api_facets',
-          'delta' => 'current-search',
-          'region' => 'right',
-          'weight' => '-10',
+        'facetapi-G_T9dXSgDUeLCAZvESaTcIKarNR-PNuo' => array(
+          'module' => 'facetapi',
+          'delta' => 'G_T9dXSgDUeLCAZvESaTcIKarNR-PNuo',
+          'region' => 'left',
+          'weight' => '-22',
         ),
-        'search_api_facets-default_node_index_field_recipe_' => array(
-          'module' => 'search_api_facets',
-          'delta' => 'default_node_index_field_recipe_',
-          'region' => 'right',
-          'weight' => '-8',
+        'facetapi-Y9LV9L4QUGoaPpCWr7ZxvqolL88xdsAD' => array(
+          'module' => 'facetapi',
+          'delta' => 'Y9LV9L4QUGoaPpCWr7ZxvqolL88xdsAD',
+          'region' => 'left',
+          'weight' => '-21',
+        ),
+        'facetapi-HO-UlnKCNWpfuLznVLxDW6XphrvTMg2G' => array(
+          'module' => 'facetapi',
+          'delta' => 'HO-UlnKCNWpfuLznVLxDW6XphrvTMg2G',
+          'region' => 'left',
+          'weight' => '-20',
         ),
       ),
-      'layout' => 'right_sidebar',
+      'layout' => 'left_sidebar',
     ),
   );
   $context->condition_mode = 0;

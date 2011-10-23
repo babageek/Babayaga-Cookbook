@@ -63,7 +63,7 @@ function babayaga_recipe_image_default_styles() {
   $styles['recipe-portrait'] = array(
     'name' => 'recipe-portrait',
     'effects' => array(
-      4 => array(
+      3 => array(
         'label' => 'Scale and crop',
         'help' => 'Scale and crop will maintain the aspect-ratio of the original image, then crop the larger dimension. This is most useful for creating perfectly square thumbnails without stretching the image.',
         'effect callback' => 'image_scale_and_crop_effect',
@@ -72,8 +72,8 @@ function babayaga_recipe_image_default_styles() {
         'module' => 'image',
         'name' => 'image_scale_and_crop',
         'data' => array(
-          'width' => '300',
-          'height' => '185',
+          'width' => '192',
+          'height' => '150',
         ),
         'weight' => '1',
       ),
@@ -260,7 +260,7 @@ function babayaga_recipe_default_search_api_index() {
         "search_api_alter_bundle_filter" : {
           "status" : 1,
           "weight" : "-10",
-          "settings" : { "default" : "0", "bundles" : { "ingredient" : "ingredient" } }
+          "settings" : { "default" : "0", "bundles" : { "recipe" : "recipe" } }
         },
         "search_api_alter_node_access" : { "status" : 0, "weight" : "0", "settings" : [] },
         "search_api_alter_add_hierarchy" : {
@@ -276,13 +276,24 @@ function babayaga_recipe_default_search_api_index() {
         "search_api_case_ignore" : {
           "status" : 1,
           "weight" : "0",
-          "settings" : { "fields" : { "field_recipe_ingredients_terms" : 0, "search_api_language" : 0 } }
+          "settings" : { "fields" : {
+              "field_recipe_ingredients_terms" : 0,
+              "field_recipe_cuisines" : 0,
+              "field_recipe_courses" : 0,
+              "search_api_language" : 0
+            }
+          }
         },
         "search_api_html_filter" : {
           "status" : 0,
           "weight" : "10",
           "settings" : {
-            "fields" : { "field_recipe_ingredients_terms" : 0, "search_api_language" : 0 },
+            "fields" : {
+              "field_recipe_ingredients_terms" : 0,
+              "field_recipe_cuisines" : 0,
+              "field_recipe_courses" : 0,
+              "search_api_language" : 0
+            },
             "title" : 0,
             "alt" : 1,
             "tags" : "h1 = 5\\r\\nh2 = 3\\r\\nh3 = 2\\r\\nstrong = 2\\r\\nb = 2\\r\\nem = 1.5\\r\\nu = 1.5"
@@ -292,7 +303,12 @@ function babayaga_recipe_default_search_api_index() {
           "status" : 0,
           "weight" : "20",
           "settings" : {
-            "fields" : { "field_recipe_ingredients_terms" : 0, "search_api_language" : 0 },
+            "fields" : {
+              "field_recipe_ingredients_terms" : 0,
+              "field_recipe_cuisines" : 0,
+              "field_recipe_courses" : 0,
+              "search_api_language" : 0
+            },
             "spaces" : "[^\\\\p{L}\\\\p{N}^\']",
             "ignorable" : "[-]"
           }

@@ -5,6 +5,8 @@ core = 7.x
 engine = phptemplate
 
 regions[content] = Content
+regions[featured] = Featured
+regions[left] = Left
 regions[right] = Right
 regions[help] = Help
 regions[footer] = "Footer"
