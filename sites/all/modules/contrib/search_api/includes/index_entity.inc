@@ -5,6 +5,16 @@
  */
 class SearchApiIndex extends Entity {
 
+  // Cache values, set when the corresponding methods are called for the first
+  // time.
+
+  /**
+   * Cached return value of datasource().
+   *
+   * @var SearchApiDataSourceControllerInterface
+   */
+  protected $datasource = NULL;
+
   /**
    * Cached return value of server().
    *
@@ -13,60 +23,86 @@ class SearchApiIndex extends Entity {
   protected $server_object = NULL;
 
   /**
+   * All enabled data alterations for this index.
+   *
    * @var array
    */
   protected $callbacks = NULL;
 
   /**
+   * All enabled processors for this index.
+   *
    * @var array
    */
   protected $processors = NULL;
 
   /**
+   * The properties added by data alterations on this index.
+   *
    * @var array
    */
   protected $added_properties = NULL;
 
   /**
+   * An array containing two arrays.
+   *
+   * At index 0, all fulltext fields of this index. At index 1, all indexed
+   * fulltext fields of this index.
+   *
    * @var array
    */
   protected $fulltext_fields = array();
 
-  // Database values that will be set when object is loaded
+  // Database values that will be set when object is loaded.
 
   /**
+   * An integer identifying the index.
+   * Immutable.
+   *
    * @var integer
    */
   public $id;
 
   /**
+   * A name to be displayed for the index.
+   *
    * @var string
    */
   public $name;
 
   /**
+   * The machine name of the index.
+   * Immutable.
+   *
    * @var string
    */
   public $machine_name;
 
   /**
+   * A string describing the index' use to users.
+   *
    * @var string
    */
   public $description;
 
   /**
+   * The machine_name of the server with which data should be indexed.
+   *
    * @var string
    */
   public $server;
 
   /**
+   * The type of items stored in this index.
+   * Immutable.
+   *
    * @var string
    */
-  public $entity_type;
+  public $item_type;
 
   /**
    * An array of options for configuring this index. The layout is as follows:
-   * - cron_limit: The maximum number of items to be indexed per cron run.
+   * - cron_limit: The maximum number of items to be indexed per cron batch.
    * - index_directly: Boolean setting whether entities are indexed immediately
    *   after they are created or updated.
    * - fields: An array of all known fields for this index. Keys are the field
@@ -100,17 +136,21 @@ class SearchApiIndex extends Entity {
    *
    * @var array
    */
-  public $options;
+  public $options = array();
 
   /**
+   * A flag indicating whether this index is enabled.
+   *
    * @var integer
    */
-  public $enabled;
+  public $enabled = 1;
 
   /**
+   * A flag indicating whether to write to this index.
+   *
    * @var integer
    */
-  public $read_only;
+  public $read_only = 0;
 
   /**
    * Constructor as a helper to the parent constructor.
@@ -120,11 +160,12 @@ class SearchApiIndex extends Entity {
   }
 
   /**
-   * Execute necessary tasks for a newly created index (either created in the
-   * database, or for the first time loaded from code).
+   * Execute necessary tasks for a newly created index.
    */
   public function postCreate() {
-    $this->queueItems();
+    if ($this->enabled) {
+      $this->queueItems();
+    }
     $server = $this->server();
     if ($server) {
       // Tell the server about the new index.
@@ -141,8 +182,7 @@ class SearchApiIndex extends Entity {
   }
 
   /**
-   * Execute necessary tasks when index is either deleted from the database or
-   * not defined in code anymore.
+   * Execute necessary tasks when the index is removed from the database.
    */
   public function postDelete() {
     if ($server = $this->server()) {
@@ -164,50 +204,8 @@ class SearchApiIndex extends Entity {
    * Record entities to index.
    */
   public function queueItems() {
-    $this->dequeueItems();
-
     if (!$this->read_only) {
-      $entity_info = entity_get_info($this->entity_type);
-
-      if (!empty($entity_info['base table'])) {
-        // Use a subselect, which will probably be much faster than entity_load().
-
-        // Assumes that all entities use the "base table" property and the
-        // "entity keys[id]" in the same way as the default controller.
-        $id_field = $entity_info['entity keys']['id'];
-        $table = $entity_info['base table'];
-
-        // Select all entity ids.
-        $query = db_select($table, 't');
-        $query->addField('t', $id_field, 'item_id');
-        $query->addExpression(':index_id', 'index_id', array(':index_id' => $this->id));
-        $query->addExpression('1', 'changed');
-
-        // INSERT ... SELECT ...
-        db_insert('search_api_item')
-          ->from($query)
-          ->execute();
-      }
-      else {
-        // In the absence of a 'base table', use the slow entity_load().
-
-        // Get an array of all entities using entity_load().
-        $entities = entity_load($this->entity_type, FALSE);
-
-        $query = db_insert('search_api_item')
-          ->fields(array('item_id', 'index_id', 'changed'));
-
-        // Add each entity to the query.
-        foreach ($entities as $item_id => $entity) {
-          $query->values(array(
-            'item_id' => $item_id,
-            'index_id' => $this->id,
-            'changed' => 1,
-          ));
-        }
-
-        $query->execute();
-      }
+      $this->datasource()->startTracking(array($this));
     }
   }
 
@@ -215,9 +213,7 @@ class SearchApiIndex extends Entity {
    * Remove all records of entities to index.
    */
   public function dequeueItems() {
-    $query = db_delete('search_api_item')
-      ->condition('index_id', $this->id)
-      ->execute();
+    $this->datasource()->stopTracking(array($this));
   }
 
   /**
@@ -285,10 +281,8 @@ class SearchApiIndex extends Entity {
     if (!$this->server || $this->read_only) {
       return TRUE;
     }
-    $ret = _search_api_index_reindex($this->id);
-    if($ret) {
-      module_invoke_all('search_api_index_reindex', $this, FALSE);
-    }
+    _search_api_index_reindex($this);
+    module_invoke_all('search_api_index_reindex', $this, FALSE);
     return TRUE;
   }
 
@@ -310,19 +304,16 @@ class SearchApiIndex extends Entity {
     else {
       $tasks = variable_get('search_api_tasks', array());
       // If the index was cleared or newly added since the server was last enabled, we don't need to do anything.
-      if (!isset($tasks[$server->machine_name][$this->id])
-          || (array_search('add', $tasks[$server->machine_name][$this->id]) === FALSE
-              && array_search('clear', $tasks[$server->machine_name][$this->id]) === FALSE)) {
-        $tasks[$server->machine_name][$this->id][] = 'clear';
+      if (!isset($tasks[$server->machine_name][$this->machine_name])
+          || (array_search('add', $tasks[$server->machine_name][$this->machine_name]) === FALSE
+              && array_search('clear', $tasks[$server->machine_name][$this->machine_name]) === FALSE)) {
+        $tasks[$server->machine_name][$this->machine_name][] = 'clear';
         variable_set('search_api_tasks', $tasks);
       }
     }
 
-    $ret = _search_api_index_reindex($this->id);
-    if($ret) {
-      module_invoke_all('search_api_index_reindex', $this, TRUE);
-    }
-
+    _search_api_index_reindex($this);
+    module_invoke_all('search_api_index_reindex', $this, TRUE);
     return TRUE;
   }
 
@@ -336,8 +327,24 @@ class SearchApiIndex extends Entity {
    */
   public function __sleep() {
     $ret = get_object_vars($this);
-    unset($ret['server_object'], $ret['processors'], $ret['added_properties'], $ret['fulltext_fields'], $ret['status'], $ret['module'], $ret['is_new']);
+    unset($ret['server_object'], $ret['datasource'], $ret['processors'], $ret['added_properties'], $ret['fulltext_fields']);
     return array_keys($ret);
+  }
+
+  /**
+   * Get the controller object of the data source used by this index.
+   *
+   * @throws SearchApiException
+   *   If the specified item type or data source doesn't exist or is invalid.
+   *
+   * @return SearchApiDataSourceControllerInterface
+   *   The data source controller for this index.
+   */
+  public function datasource() {
+    if (!isset($this->datasource)) {
+      $this->datasource = search_api_get_datasource_controller($this->item_type);
+    }
+    return $this->datasource;
   }
 
   /**
@@ -388,11 +395,11 @@ class SearchApiIndex extends Entity {
 
   /**
    * Indexes items on this index. Will return an array of IDs of items that
-   * should be marked as indexed – i.e. items that were either rejected by a
+   * should be marked as indexed – i.e., items that were either rejected by a
    * data-alter callback or were successfully indexed.
    *
    * @param array $items
-   *   An array of entities to index.
+   *   An array of items to index.
    *
    * @return array
    *   An array of the IDs of all items that should be marked as indexed.
@@ -435,19 +442,14 @@ class SearchApiIndex extends Entity {
       return $ret;
     }
 
-    $wrappers = array();
+    $data = array();
     foreach ($items as $id => $item) {
-      $wrappers[$id] = $this->entityWrapper($item);
+      $data[$id] = search_api_extract_fields($this->entityWrapper($item), $fields);
     }
 
-    $items = array();
-    foreach ($wrappers as $id => $wrapper) {
-      $items[$id] = search_api_extract_fields($wrapper, $fields);
-    }
+    $this->preprocessIndexItems($data);
 
-    $this->preprocessIndexItems($items);
-
-    return array_merge($ret, $this->server()->indexItems($this, $items));
+    return array_merge($ret, $this->server()->indexItems($this, $data));
   }
 
   /**
@@ -486,16 +488,19 @@ class SearchApiIndex extends Entity {
    *   The altered property info.
    */
   public function propertyInfoAlter(EntityMetadataWrapper $wrapper, array $property_info) {
-    // Overwrite the existing properties with the list of properties including
-    // all fields regardless of the used bundle.
-    $property_info['properties'] = entity_get_all_property_info($wrapper->type());
+    if (entity_get_property_info($wrapper->type())) {
+      // Overwrite the existing properties with the list of properties including
+      // all fields regardless of the used bundle.
+      $property_info['properties'] = entity_get_all_property_info($wrapper->type());
+    }
 
     if (!isset($this->added_properties)) {
       $this->added_properties = array(
         'search_api_language' => array(
           'label' => t('Item language'),
           'description' => t("A field added by the search framework to let components determine an item's language. Is always indexed."),
-          'type' => 'string',
+          'type' => 'token',
+          'options list' => 'entity_metadata_language_list',
         ),
       );
       // We use the reverse order here so the hierarchy for overwriting property infos is the same
@@ -508,7 +513,7 @@ class SearchApiIndex extends Entity {
       }
     }
     // Let fields added by data-alter callbacks override default fields.
-    $property_info['properties'] = $this->added_properties + $property_info['properties'];
+    $property_info['properties'] = array_merge($property_info['properties'], $this->added_properties);
 
     return $property_info;
   }
@@ -687,13 +692,37 @@ class SearchApiIndex extends Entity {
    * Helper function for creating an entity metadata wrapper appropriate for
    * this index.
    *
+   * @param $item
+   *   Unless NULL, an item of this index's item type which should be wrapped.
+   * @param $alter
+   *   Whether to apply the index's active data alterations on the property
+   *   information used. To also apply the data alteration to the wrapped item,
+   *   execute SearchApiIndex::dataAlter() on it before calling this method.
+   *
    * @return EntityMetadataWrapper
-   *   A wrapper for the entity type of this index, optionally loaded with the
-   *   given data, and having fields according to the data alterations of this
-   *   index.
+   *   A wrapper for the item type of this index, optionally loaded with the
+   *   given data and having additional fields according to the data alterations
+   *   of this index.
    */
-  public function entityWrapper($item = NULL) {
-    return entity_metadata_wrapper($this->entity_type, $item, array('property info alter' => array($this, 'propertyInfoAlter')));
+  public function entityWrapper($item = NULL, $alter = TRUE) {
+    $info['property info alter'] = $alter ? array($this, 'propertyInfoAlter') : '_search_api_wrapper_add_all_properties';
+    $info['property defaults']['property info alter'] = '_search_api_wrapper_add_all_properties';
+    return $this->datasource()->getMetadataWrapper($item, $info);
+  }
+
+  /**
+   * Helper method to load items from the type lying on this index.
+   *
+   * @param array $ids
+   *   The IDs of the items to load.
+   *
+   * @return array
+   *   The requested items, as loaded by the data source.
+   *
+   * @see SearchApiDataSourceControllerInterface::loadItems()
+   */
+  public function loadItems(array $ids) {
+    return $this->datasource()->loadItems($ids);
   }
 
 }

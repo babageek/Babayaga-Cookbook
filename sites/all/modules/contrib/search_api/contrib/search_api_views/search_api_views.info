@@ -22,14 +22,15 @@ files[] = includes/handler_filter.inc
 files[] = includes/handler_filter_boolean.inc
 files[] = includes/handler_filter_date.inc
 files[] = includes/handler_filter_fulltext.inc
+files[] = includes/handler_filter_language.inc
 files[] = includes/handler_filter_options.inc
 files[] = includes/handler_filter_text.inc
 files[] = includes/handler_sort.inc
 files[] = includes/query.inc
 
-; Information added by drupal.org packaging script on 2011-06-20
-version = "7.x-1.0-beta10"
+; Information added by drupal.org packaging script on 2011-10-18
+version = "7.x-1.x-dev"
 core = "7.x"
 project = "search_api"
-datestamp = "1308562319"
+datestamp = "1318898022"
 

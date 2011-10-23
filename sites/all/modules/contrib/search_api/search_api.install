@@ -44,6 +44,7 @@ function search_api_schema() {
       'options' => array(
         'description' => 'The options used to configure the service object.',
         'type' => 'text',
+        'size' => 'medium',
         'serialize' => TRUE,
         'not null' => TRUE,
       ),
@@ -109,8 +110,8 @@ function search_api_schema() {
         'length' => 50,
         'not null' => FALSE,
       ),
-      'entity_type' => array(
-        'description' => 'The entity type of items stored in this index.',
+      'item_type' => array(
+        'description' => 'The type of items stored in this index.',
         'type' => 'varchar',
         'length' => 50,
         'not null' => TRUE,
@@ -118,6 +119,7 @@ function search_api_schema() {
       'options' => array(
         'description' => 'An array of additional arguments configuring this index.',
         'type' => 'text',
+        'size' => 'medium',
         'serialize' => TRUE,
         'not null' => TRUE,
       ),
@@ -150,7 +152,7 @@ function search_api_schema() {
       ),
     ),
     'indexes' => array(
-      'entity_type' => array('entity_type'),
+      'item_type' => array('item_type'),
       'server' => array('server'),
       'enabled' => array('enabled'),
     ),
@@ -178,7 +180,7 @@ function search_api_schema() {
       'changed' => array(
         'description' => 'Either a flag or a timestamp to indicate if or when the item was changed since it was last indexed.',
         'type' => 'int',
-        'unsigned' => TRUE,
+        'size' => 'big',
         'not null' => TRUE,
         'default' => 1,
       ),
@@ -210,7 +212,7 @@ function search_api_install() {
     'machine_name' => preg_replace('/[^a-z0-9]+/', '_', drupal_strtolower($name)),
     'description' => t('An automatically created search index for indexing node data. Might be configured to specific needs.'),
     'server' => NULL,
-    'entity_type' => 'node',
+    'item_type' => 'node',
     'options' => array(
       'cron_limit' => '50',
       'data_alter_callbacks' => array(
@@ -425,64 +427,19 @@ function search_api_install() {
 
 /**
  * Implements hook_enable().
+ *
+ * Mark all items as "dirty", since we can't know whether they are.
  */
 function search_api_enable() {
-  // Mark all items as "dirty", since we can't know whether they are.
-  db_delete('search_api_item')
-    ->execute();
   $types = array();
   foreach (search_api_index_load_multiple(FALSE) as $index) {
-    $types[$index->entity_type][] = $index->id;
+    if ($index->enabled) {
+      $types[$index->item_type][] = $index;
+    }
   }
-  if (!$types) {
-    return;
-  }
-  $insert = db_insert('search_api_item')
-    ->fields(array('item_id', 'index_id', 'changed'));
   foreach ($types as $type => $indexes) {
-    // Partly copied from SearchApiIndex::queueItems().
-
-    $entity_info = entity_get_info($type);
-
-    // If the entity info specifies a base table, use that to add all items
-    // directly in an INSERT ... SELECT. Otherwise, use entity_load() and add
-    // the values to the outer $insert query.
-    if (!empty($entity_info['base table'])) {
-      // Use a subselect, which will probably be much faster than entity_load().
-
-      // Assumes that all entities use the "base table" property and the
-      // "entity keys[id]" in the same way as the default controller.
-      $id_field = $entity_info['entity keys']['id'];
-      $table = $entity_info['base table'];
-
-      // Select all entity ids and all relevant indexes.
-      $query = db_select($table, 't');
-      $query->join('search_api_index', 'i', 'i.entity_type = :type AND i.read_only = :read_only AND i.enabled = :enabled',
-          array(':type' => $type, ':read_only' => 0, ':enabled' => 1));
-      $query->addField('t', $id_field, 'item_id');
-      $query->addField('i', 'id', 'index_id');
-      $query->addExpression('1', 'changed');
-
-      // INSERT ... SELECT ...
-      db_insert('search_api_item')
-        ->from($query)
-        ->execute();
-    }
-    else {
-      foreach (entity_load($type) as $id => $entity) {
-        foreach ($indexes as $index_id) {
-          $insert->values(array(
-            'item_id' => $id,
-            'index_id' => $index_id,
-            'changed' => 1,
-          ));
-        }
-      }
-    }
-  }
-  // Only execute this query if we added any values to it.
-  if (isset($index_id)) {
-    $insert->execute();
+    $controller = search_api_get_datasource_controller($type);
+    $controller->startTracking($indexes);
   }
 }
 
@@ -490,8 +447,14 @@ function search_api_enable() {
  * Implements hook_disable().
  */
 function search_api_disable() {
-  db_delete('search_api_item')
-    ->execute();
+  $types = array();
+  foreach (search_api_index_load_multiple(FALSE) as $index) {
+    $types[$index->item_type][] = $index;
+  }
+  foreach ($types as $type => $indexes) {
+    $controller = search_api_get_datasource_controller($type);
+    $controller->stopTracking($indexes);
+  }
 }
 
 /**
@@ -499,6 +462,7 @@ function search_api_disable() {
  */
 function search_api_uninstall() {
   variable_del('search_api_tasks');
+  variable_del('search_api_index_worker_callback_runtime');
 }
 
 /**
@@ -815,4 +779,68 @@ function search_api_update_7108() {
  */
 function search_api_update_7109() {
   cache_clear_all('entity_info:', 'cache', TRUE);
+}
+
+/**
+ * Rename the "entity_type" field to "item_type" in the {search_api_index} table.
+ */
+function search_api_update_7110() {
+  $table = 'search_api_index';
+  // This index isn't used anymore.
+  db_drop_index($table, 'entity_type');
+  // Rename the "item_type" field (and change the description).
+  $item_type = array(
+    'description' => 'The type of items stored in this index.',
+    'type' => 'varchar',
+    'length' => 50,
+    'not null' => TRUE,
+  );
+  // Also add the new "item_type" index, while we're at it.
+  $keys_new['indexes']['item_type'] = array('item_type');
+  db_change_field($table, 'entity_type', 'item_type', $item_type, $keys_new);
+  // Mark all indexes in code as "OVERRIDDEN".
+  db_update($table)
+    ->fields(array(
+      'status' => 0x03,
+    ))
+    ->condition('status', 0x02)
+    ->execute();
+  // Clear entity info caches.
+  cache_clear_all('*', 'cache', TRUE);
+}
+
+/**
+ * Change the definition of the {search_api_item}.changed field.
+ */
+function search_api_update_7111() {
+  $spec = array(
+    'description' => 'Either a flag or a timestamp to indicate if or when the item was changed since it was last indexed.',
+    'type' => 'int',
+    'size' => 'big',
+    'not null' => TRUE,
+    'default' => 1,
+  );
+  db_change_field('search_api_item', 'changed', 'changed', $spec);
+}
+
+/**
+ * Changes the size of the {search_api_index}.options and {search_api_server}.options fields to "medium".
+ */
+function search_api_update_7112() {
+  $spec = array(
+    'description' => 'The options used to configure the service object.',
+    'type' => 'text',
+    'size' => 'medium',
+    'serialize' => TRUE,
+    'not null' => TRUE,
+  );
+  db_change_field('search_api_server', 'options', 'options', $spec);
+  $spec = array(
+    'description' => 'An array of additional arguments configuring this index.',
+    'type' => 'text',
+    'size' => 'medium',
+    'serialize' => TRUE,
+    'not null' => TRUE,
+  );
+  db_change_field('search_api_index', 'options', 'options', $spec);
 }

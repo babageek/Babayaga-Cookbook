@@ -45,18 +45,12 @@ function entity_metadata_comment_get_properties($comment, array $options, $name)
     case 'edit_url':
       return url('comment/edit/' . $comment->cid, $options);
 
-    case 'node':
-      return node_load($comment->nid);
-
     case 'parent':
       if (!empty($comment->pid)) {
         return $comment->pid;
       }
       // There is no parent comment.
       return NULL;
-
-    case 'author':
-      return $comment->uid;
   }
 }
 
@@ -72,9 +66,6 @@ function entity_metadata_comment_setter($comment, $name, $value) {
       $node = node_load($value);
       $comment->node_type = 'comment_node_' . $node->type;
       break;
-
-    case 'author':
-      return $comment->uid = $value;
   }
 }
 
@@ -93,7 +84,18 @@ function entity_metadata_comment_get_node_properties($node, array $options, $nam
 }
 
 /**
+ * Return the options lists for the node and comment status property.
+ */
+function entity_metadata_status_options_list() {
+  return array(
+    0 => t('Published'),
+    1 => t('Unpublished'),
+  );
+}
+
+/**
  * Callback for getting node properties.
+ *
  * @see entity_metadata_node_entity_info_alter()
  */
 function entity_metadata_node_get_properties($node, array $options, $name, $entity_type) {
@@ -109,19 +111,6 @@ function entity_metadata_node_get_properties($node, array $options, $name, $enti
 
     case 'edit_url':
       return url('node/' . $node->nid . '/edit', $options);
-
-    case 'author':
-      return $node->uid;
-  }
-}
-
-/**
- * Callback for setting node properties.
- * @see entity_metadata_node_entity_info_alter()
- */
-function entity_metadata_node_set_properties($node, $name, $value) {
-  if ($name == 'author') {
-    $node->uid = $value;
   }
 }
 
@@ -254,6 +243,7 @@ function entity_metadata_system_get_file_properties($file, array $options, $name
 
 /**
  * Callback for getting term properties.
+ *
  * @see entity_metadata_taxonomy_entity_info_alter()
  */
 function entity_metadata_taxonomy_term_get_properties($term, array $options, $name) {
@@ -263,9 +253,6 @@ function entity_metadata_taxonomy_term_get_properties($term, array $options, $na
 
     case 'description':
       return check_markup($term->description, isset($term->format) ? $term->format : NULL, '', TRUE);
-
-    case 'vocabulary':
-      return $term->vid;
 
     case 'parent':
       if (isset($term->parent[0]) && !is_array(isset($term->parent[0]))) {
@@ -277,11 +264,15 @@ function entity_metadata_taxonomy_term_get_properties($term, array $options, $na
 
 /**
  * Callback for setting term properties.
+ *
  * @see entity_metadata_taxonomy_entity_info_alter()
  */
 function entity_metadata_taxonomy_term_setter($term, $name, $value) {
   switch ($name) {
     case 'vocabulary':
+      // Make sure to also update the taxonomy bundle key.
+      $vocabulary = taxonomy_vocabulary_load($value);
+      $term->vocabulary_machine_name = $vocabulary->machine_name;
       return $term->vid = $value;
     case 'parent':
       return $term->parent = $value;
@@ -348,6 +339,16 @@ function entity_metadata_user_roles($property_name = 'roles', $info = array(), $
     unset($roles[DRUPAL_AUTHENTICATED_RID], $roles[DRUPAL_ANONYMOUS_RID]);
   }
   return $roles;
+}
+
+/**
+ * Return the options lists for user status property.
+ */
+function entity_metadata_user_status_options_list() {
+  return array(
+    0 => t('Blocked'),
+    1 => t('Active'),
+  );
 }
 
 /**
@@ -719,7 +720,7 @@ function entity_metadata_view_comment($entities, $view_mode = 'full', $langcode 
     $node = isset($nodes[$nid]) ? $nodes[$nid] : NULL;
     $build += comment_view_multiple($comments, $node, $view_mode, 0, $langcode);
   }
-  return $build;
+  return array('comment' => $build);
 }
 
 /**
@@ -729,9 +730,79 @@ function entity_metadata_view_single($entities, $view_mode = 'full', $langcode =
   $function = $entity_type . '_view';
   $build = array();
   foreach ($entities as $key => $entity) {
-    $build[$key] = $function($entity, $view_mode, $langcode);
+    $build[$entity_type][$key] = $function($entity, $view_mode, $langcode);
   }
   return $build;
+}
+
+/**
+ * Callback to get the form of a node.
+ */
+function entity_metadata_form_node($node) {
+  // Pre-populate the form-state with the right form include.
+  $form_state['build_info']['args'] = array($node);
+  form_load_include($form_state, 'inc', 'node', 'node.pages');
+  return drupal_build_form($node->type . '_node_form', $form_state);
+}
+
+/**
+ * Callback to get the form of a comment.
+ */
+function entity_metadata_form_comment($comment) {
+  if (!isset($comment->node_type)) {
+    $node = node_load($comment->nid);
+    $comment->node_type = 'comment_node_' . $node->type;
+  }
+  return drupal_get_form($comment->node_type . '_form', $comment);
+}
+
+/**
+ * Callback to get the form of a user account.
+ */
+function entity_metadata_form_user($account) {
+  // Pre-populate the form-state with the right form include.
+  $form_state['build_info']['args'] = array($account);
+  form_load_include($form_state, 'inc', 'user', 'user.pages');
+  return drupal_build_form('user_profile_form', $form_state);
+}
+
+/**
+ * Callback to get the form of a term.
+ */
+function entity_metadata_form_taxonomy_term($term) {
+  // Pre-populate the form-state with the right form include.
+  $form_state['build_info']['args'] = array($term);
+  form_load_include($form_state, 'inc', 'taxonomy', 'taxonomy.admin');
+  return drupal_build_form('taxonomy_form_term', $form_state);
+}
+
+/**
+ * Callback to get the form of a vocabulary.
+ */
+function entity_metadata_form_taxonomy_vocabulary($term) {
+  // Pre-populate the form-state with the right form include.
+  $form_state['build_info']['args'] = array($term);
+  form_load_include($form_state, 'inc', 'taxonomy', 'taxonomy.admin');
+  return drupal_build_form('taxonomy_form_term', $form_state);
+}
+
+/**
+ * Callback to get the form for entities using the entity API admin ui.
+ */
+function entity_metadata_form_entity_ui($entity, $entity_type) {
+  $info = entity_get_info($entity_type);
+  $form_state = array();
+  // Add in the include file as the form API does else with the include file
+  // specified for the active menu item.
+  if (!empty($info['admin ui']['file'])) {
+    $path = isset($info['admin ui']['file path']) ? $info['admin ui']['file path'] : drupal_get_path('module', $info['module']);
+    $form_state['build_info']['files']['entity_ui'] = $path . '/' . $info['admin ui']['file'];
+    // Also load the include file.
+    if (file_exists($form_state['build_info']['files']['entity_ui'])) {
+      require_once DRUPAL_ROOT . '/' . $form_state['build_info']['files']['entity_ui'];
+    }
+  }
+  return entity_ui_get_form($entity_type, $entity, $op = 'edit', $form_state);
 }
 
 /**

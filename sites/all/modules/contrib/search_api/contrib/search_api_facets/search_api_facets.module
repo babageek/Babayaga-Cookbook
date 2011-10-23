@@ -15,8 +15,8 @@ function search_api_facets_help($path, array $arg) {
  * Implements hook_menu().
  */
 function search_api_facets_menu() {
-  $items['admin/config/search/search_api/index/%search_api_index/facets'] = array(
-    'title' => 'Facets',
+  $items['admin/config/search/search_api/index/%search_api_index/old_facets'] = array(
+    'title' => 'Old facets',
     'description' => 'Select the facet blocks to display.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('search_api_facets_index_select', 5),
@@ -390,6 +390,12 @@ function search_api_facets_block_view($delta = '') {
       $filter->name = _search_api_create_filter_name($v, $type, $values);
       $filter->params = $params;
       unset($filter->params[$filter_name][$facet->field][$i]);
+      if (empty($filter->params[$filter_name][$facet->field])) {
+        unset($filter->params[$filter_name][$facet->field]);
+      }
+      if (empty($filter->params[$filter_name])) {
+        unset($filter->params[$filter_name]);
+      }
       $active[] = $filter;
     }
   }
@@ -399,7 +405,7 @@ function search_api_facets_block_view($delta = '') {
   }
 
   $theme_suffix  = '';
-  $theme_suffix .= '__' . preg_replace('/\W+/', '_', $query->getIndex()->entity_type);
+  $theme_suffix .= '__' . preg_replace('/\W+/', '_', $query->getIndex()->item_type);
   $theme_suffix .= '__' . preg_replace('/\W+/', '_', $facet->field);
   $theme_suffix .= '__' . preg_replace('/\W+/', '_', $facet->delta);
   $theme = array(
@@ -549,7 +555,7 @@ function search_api_facets_block_current_search_view() {
       $facets = search_api_facet_load_multiple(FALSE, array('index_id' => $index->machine_name, 'field' => $field));
       if (!$facets) {
         $name = isset($index->options['fields'][$field]['name']) ? $index->options['fields'][$field]['name'] : $field;
-        $facet = new SearchApiFacet(array(
+        $facet = entity_create('search_api_facet', array(
           'name' => $name,
           'index_id' => $index->machine_name,
           'field' => $field,
@@ -596,7 +602,7 @@ function search_api_facets_block_current_search_view() {
       }
 
       $theme_suffix  = '';
-      $theme_suffix .= '__' . preg_replace('/\W+/', '_', $index->entity_type);
+      $theme_suffix .= '__' . preg_replace('/\W+/', '_', $index->item_type);
       $theme_suffix .= '__' . preg_replace('/\W+/', '_', $field);
       $theme_suffix .= '__' . preg_replace('/\W+/', '_', $facet->delta);
       foreach ($field_filters as $i => $v) {
@@ -610,6 +616,12 @@ function search_api_facets_block_current_search_view() {
           '#active'  => TRUE,
         );
         unset($filter['#options']['query'][$filter_name][$field][$i]);
+        if (empty($filter['#options']['query'][$filter_name][$field])) {
+          unset($filter['#options']['query'][$filter_name][$field]);
+        }
+        if (empty($filter['#options']['query'][$filter_name])) {
+          unset($filter['#options']['query'][$filter_name]);
+        }
         $filter_links[] = $filter;
       }
     }
@@ -756,9 +768,17 @@ function search_api_facets_search_api_index_update(SearchApiIndex $index) {
  * Implements hook_search_api_index_delete().
  */
 function search_api_facets_search_api_index_delete(SearchApiIndex $index) {
-  db_delete('search_api_facet')
+  // Only react on real delete, not revert.
+  if ($index->hasStatus(ENTITY_IN_CODE)) {
+    return;
+  }
+
+  $ids = db_select('search_api_facet', 'f')
+    ->fields('f', array('id'))
     ->condition('index_id', $index->machine_name)
-    ->execute();
+    ->execute()
+    ->fetchCol();
+  entity_delete_multiple('search_api_facet', $ids);
   if (search_api_facet_load_multiple(FALSE, array('index_id' => $index->machine_name), TRUE)) {
     drupal_set_message(t('A module defines default search facets for the deleted index. You should update the module code or disable it.'), 'warning');
   }
@@ -903,7 +923,7 @@ function search_api_facets_get_filters(SearchApiQueryInterface $query) {
 /**
  * Refresh the type information in the given options array.
  *
- * @param stdClass $facet
+ * @param SearchApiFacet $facet
  *   The facet whose type information should be refreshed.
  * @param array $options
  *   An array for which 'type' and, if applicable, 'options' and 'entity_type'
@@ -912,6 +932,10 @@ function search_api_facets_get_filters(SearchApiQueryInterface $query) {
 function _search_api_facets_refresh_type(SearchApiFacet $facet, array &$options) {
   unset($options['options'], $options['entity_type']);
   $index = search_api_index_load($facet->index_id);
+  if (!$index) {
+    watchdog('search_api_facets', 'Facet !delta specifies an unknown index !index_id.', array('!delta' => $facet->delta, '!index_id' => $facet->index_id), WATCHDOG_WARNING);
+    return;
+  }
   $field_info = $index->options['fields'][$facet->field];
   $type = $field_info['type'];
   if (isset($field_info['entity_type']) && entity_get_info($field_info['entity_type'])) {
@@ -996,4 +1020,72 @@ function _search_api_create_value_name($value, $type, array $values = array()) {
  */
 function _search_api_facets_compare_iname(stdClass $term1, stdClass $term2) {
   return strcmp($term1->iname, $term2->iname);
+}
+
+/**
+ * Helper function for exporting facets to the Facet API.
+ *
+ * Writes the settings for the given facets (or all facets of the index) into
+ * the global Facet API settings.
+ *
+ * CAUTION: Existing colliding settings in the Facet API will be overwritten!
+ *
+ * @param SearchApiIndex $index
+ *   The index for which the exported facets are defined.
+ * @param $facets
+ *   The facets that should be exported, or NULL to export all saved facets of
+ *   the index.
+ * @param
+ *   An array of realms to which realm-specific settings should be written; or
+ *   NULL to write to all available realms.
+ */
+function search_api_facets_export_to_facetapi(SearchApiIndex $index, $facets = NULL, $realms = NULL) {
+  if (!isset($facets)) {
+    $facets = search_api_facet_load_multiple(FALSE, array('index_id' => $index->machine_name));
+  }
+  if (!isset($realms)) {
+    $realms = facetapi_get_realm_info();
+  }
+  $searcher = 'search_api@' . $index->machine_name;
+  $adapter = facetapi_adapter_load($searcher);
+  foreach ($facets as $facet) {
+    $options = $facet->options;
+    $f = facetapi_facet_load($facet->field, $searcher);
+    if ($f) {
+      $f = $adapter->getFacet($f);
+      // Export to global Facet API facet settings.
+      $settings = $f->getSettings();
+      $settings->settings['hard_limit'] = max($options['limit'], $options['more_limit']);
+      $settings->settings['facet_mincount'] = $options['min_count'];
+      $settings->settings['facet_missing'] = $options['missing'] ? 1 : 0;
+      $settings->settings['default_true'] = $options['default_true'];
+      $settings->settings['facet_search_ids'] = $options['ids_list'];
+      ctools_export_crud_save('facetapi', $settings);
+
+      // Export to realm-specific Facet API facet settings.
+      foreach ($realms as $realm) {
+        $settings = $f->getSettings($realm);
+        $settings->enabled = $facet->enabled ? 1 : 0;
+        $settings->settings['active_sorts'] = drupal_map_assoc(array('active', 'count', 'display'));
+        $settings->settings['sort_weight'] = array(
+          'active' => -50,
+          'count' => -49,
+          'display' => -48,
+          'indexed' => -47,
+        );
+        $settings->settings['sort_weight'] = array(
+          'active' => SORT_DESC,
+          'count' => SORT_DESC,
+          'display' => SORT_ASC,
+          'indexed' => SORT_ASC,
+        );
+        if ($options['sort'] != 'count') {
+          unset($settings->settings['active_sorts']['count']);
+        }
+        $settings->settings['soft_limit'] = $options['limit'];
+        $settings->settings['filters']['active_items']['status'] = !$options['show_active'];
+        ctools_export_crud_save('facetapi', $settings);
+      }
+    }
+  }
 }
