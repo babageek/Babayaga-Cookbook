@@ -385,6 +385,35 @@ node/*/edit';
           'display' => array(),
         ),
       ),
+      'page' => array(
+        'view_modes' => array(
+          'full' => array(
+            'custom_settings' => TRUE,
+          ),
+          'teaser' => array(
+            'custom_settings' => TRUE,
+          ),
+          'rss' => array(
+            'custom_settings' => FALSE,
+          ),
+          'badge_medium' => array(
+            'custom_settings' => FALSE,
+          ),
+          'badge_small' => array(
+            'custom_settings' => FALSE,
+          ),
+          'list' => array(
+            'custom_settings' => FALSE,
+          ),
+          'search_result' => array(
+            'custom_settings' => FALSE,
+          ),
+        ),
+        'extra_fields' => array(
+          'form' => array(),
+          'display' => array(),
+        ),
+      ),
     ),
   );
   $export['field_bundle_settings'] = $strongarm;

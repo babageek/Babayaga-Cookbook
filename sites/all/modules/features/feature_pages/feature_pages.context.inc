@@ -5,7 +5,7 @@
  */
 
 /**
- * Implementation of hook_context_default_contexts().
+ * Implements hook_context_default_contexts().
  */
 function feature_pages_context_default_contexts() {
   $export = array();
@@ -26,19 +26,7 @@ function feature_pages_context_default_contexts() {
       ),
     ),
   );
-  $context->reactions = array(
-    'block' => array(
-      'blocks' => array(
-        'menu_block-feature_pages-1' => array(
-          'module' => 'menu_block',
-          'delta' => 'feature_pages-1',
-          'region' => 'left',
-          'weight' => '-10',
-        ),
-      ),
-      'layout' => 'left_sidebar',
-    ),
-  );
+  $context->reactions = array();
   $context->condition_mode = 0;
 
   // Translatables
