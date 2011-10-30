@@ -340,11 +340,9 @@ function babayaga_recipe_views_default_views() {
   $handler->display->display_options['style_plugin'] = 'default';
   $handler->display->display_options['defaults']['style_options'] = FALSE;
   $handler->display->display_options['defaults']['row_plugin'] = FALSE;
-  $handler->display->display_options['row_plugin'] = 'ds';
-  $handler->display->display_options['row_options']['view_mode'] = 'badge_small';
-  $handler->display->display_options['row_options']['alternating'] = 0;
-  $handler->display->display_options['row_options']['grouping'] = 0;
-  $handler->display->display_options['row_options']['advanced'] = 0;
+  $handler->display->display_options['row_plugin'] = 'fields';
+  $handler->display->display_options['row_options']['hide_empty'] = 0;
+  $handler->display->display_options['row_options']['default_field_elements'] = 1;
   $handler->display->display_options['defaults']['row_options'] = FALSE;
   $handler->display->display_options['defaults']['fields'] = FALSE;
   /* Field: Content: Pictures */
@@ -357,6 +355,7 @@ function babayaga_recipe_views_default_views() {
   $handler->display->display_options['fields']['entity_id']['alter']['absolute'] = 0;
   $handler->display->display_options['fields']['entity_id']['alter']['external'] = 0;
   $handler->display->display_options['fields']['entity_id']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['entity_id']['alter']['trim_whitespace'] = 0;
   $handler->display->display_options['fields']['entity_id']['alter']['nl2br'] = 0;
   $handler->display->display_options['fields']['entity_id']['alter']['word_boundary'] = 1;
   $handler->display->display_options['fields']['entity_id']['alter']['ellipsis'] = 1;
@@ -364,13 +363,14 @@ function babayaga_recipe_views_default_views() {
   $handler->display->display_options['fields']['entity_id']['alter']['trim'] = 0;
   $handler->display->display_options['fields']['entity_id']['alter']['html'] = 0;
   $handler->display->display_options['fields']['entity_id']['element_class'] = 'picture';
-  $handler->display->display_options['fields']['entity_id']['element_label_colon'] = 1;
+  $handler->display->display_options['fields']['entity_id']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['entity_id']['element_default_classes'] = 1;
   $handler->display->display_options['fields']['entity_id']['hide_empty'] = 0;
   $handler->display->display_options['fields']['entity_id']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['entity_id']['hide_alter_empty'] = 0;
   $handler->display->display_options['fields']['entity_id']['click_sort_column'] = 'fid';
   $handler->display->display_options['fields']['entity_id']['settings'] = array(
-    'image_style' => 'recipe-portrait',
+    'image_style' => 'recipe-s',
     'image_link' => 'content',
   );
   $handler->display->display_options['fields']['entity_id']['group_rows'] = 1;
@@ -379,6 +379,37 @@ function babayaga_recipe_views_default_views() {
   $handler->display->display_options['fields']['entity_id']['delta_reversed'] = 0;
   $handler->display->display_options['fields']['entity_id']['separator'] = '';
   $handler->display->display_options['fields']['entity_id']['field_api_classes'] = 0;
+  /* Field: Content: Pictures */
+  $handler->display->display_options['fields']['field_recipe_pictures']['id'] = 'field_recipe_pictures';
+  $handler->display->display_options['fields']['field_recipe_pictures']['table'] = 'field_data_field_recipe_pictures';
+  $handler->display->display_options['fields']['field_recipe_pictures']['field'] = 'field_recipe_pictures';
+  $handler->display->display_options['fields']['field_recipe_pictures']['label'] = '';
+  $handler->display->display_options['fields']['field_recipe_pictures']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['field_recipe_pictures']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['field_recipe_pictures']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['field_recipe_pictures']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['field_recipe_pictures']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['field_recipe_pictures']['alter']['trim_whitespace'] = 0;
+  $handler->display->display_options['fields']['field_recipe_pictures']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['field_recipe_pictures']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['field_recipe_pictures']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['field_recipe_pictures']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['field_recipe_pictures']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['field_recipe_pictures']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['field_recipe_pictures']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_recipe_pictures']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['field_recipe_pictures']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['field_recipe_pictures']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['field_recipe_pictures']['hide_alter_empty'] = 0;
+  $handler->display->display_options['fields']['field_recipe_pictures']['click_sort_column'] = 'fid';
+  $handler->display->display_options['fields']['field_recipe_pictures']['settings'] = array(
+    'image_style' => 'recipe-portrait',
+    'image_link' => '',
+  );
+  $handler->display->display_options['fields']['field_recipe_pictures']['group_rows'] = 1;
+  $handler->display->display_options['fields']['field_recipe_pictures']['delta_offset'] = '0';
+  $handler->display->display_options['fields']['field_recipe_pictures']['delta_reversed'] = 0;
+  $handler->display->display_options['fields']['field_recipe_pictures']['field_api_classes'] = 0;
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
@@ -387,6 +418,10 @@ function babayaga_recipe_views_default_views() {
   $handler->display->display_options['fields']['title']['alter']['alter_text'] = 0;
   $handler->display->display_options['fields']['title']['alter']['make_link'] = 0;
   $handler->display->display_options['fields']['title']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['trim_whitespace'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['nl2br'] = 0;
   $handler->display->display_options['fields']['title']['alter']['word_boundary'] = 1;
   $handler->display->display_options['fields']['title']['alter']['ellipsis'] = 1;
   $handler->display->display_options['fields']['title']['alter']['strip_tags'] = 0;
@@ -394,29 +429,40 @@ function babayaga_recipe_views_default_views() {
   $handler->display->display_options['fields']['title']['alter']['html'] = 0;
   $handler->display->display_options['fields']['title']['element_type'] = 'h3';
   $handler->display->display_options['fields']['title']['element_class'] = 'title';
-  $handler->display->display_options['fields']['title']['element_label_colon'] = 1;
+  $handler->display->display_options['fields']['title']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['title']['element_wrapper_type'] = '0';
   $handler->display->display_options['fields']['title']['element_default_classes'] = 1;
   $handler->display->display_options['fields']['title']['hide_empty'] = 0;
   $handler->display->display_options['fields']['title']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['title']['hide_alter_empty'] = 0;
   $handler->display->display_options['fields']['title']['link_to_node'] = 1;
   /* Field: Content: Subtitle */
   $handler->display->display_options['fields']['entity_id_1']['id'] = 'entity_id_1';
   $handler->display->display_options['fields']['entity_id_1']['table'] = 'field_data_field_recipe_subtitle';
   $handler->display->display_options['fields']['entity_id_1']['field'] = 'field_recipe_subtitle';
   $handler->display->display_options['fields']['entity_id_1']['label'] = '';
+  $handler->display->display_options['fields']['entity_id_1']['exclude'] = TRUE;
   $handler->display->display_options['fields']['entity_id_1']['alter']['alter_text'] = 0;
   $handler->display->display_options['fields']['entity_id_1']['alter']['make_link'] = 0;
   $handler->display->display_options['fields']['entity_id_1']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['entity_id_1']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['entity_id_1']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['entity_id_1']['alter']['trim_whitespace'] = 0;
+  $handler->display->display_options['fields']['entity_id_1']['alter']['nl2br'] = 0;
   $handler->display->display_options['fields']['entity_id_1']['alter']['word_boundary'] = 1;
   $handler->display->display_options['fields']['entity_id_1']['alter']['ellipsis'] = 1;
   $handler->display->display_options['fields']['entity_id_1']['alter']['strip_tags'] = 0;
   $handler->display->display_options['fields']['entity_id_1']['alter']['trim'] = 0;
   $handler->display->display_options['fields']['entity_id_1']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['entity_id_1']['element_type'] = 'div';
   $handler->display->display_options['fields']['entity_id_1']['element_class'] = 'subtitle';
-  $handler->display->display_options['fields']['entity_id_1']['element_label_colon'] = 1;
+  $handler->display->display_options['fields']['entity_id_1']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['entity_id_1']['element_wrapper_type'] = '0';
   $handler->display->display_options['fields']['entity_id_1']['element_default_classes'] = 1;
   $handler->display->display_options['fields']['entity_id_1']['hide_empty'] = 0;
   $handler->display->display_options['fields']['entity_id_1']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['entity_id_1']['hide_alter_empty'] = 0;
+  $handler->display->display_options['fields']['entity_id_1']['field_api_classes'] = 0;
 
   /* Display: Details */
   $handler = $view->new_display('block', 'Details', 'block_4');
