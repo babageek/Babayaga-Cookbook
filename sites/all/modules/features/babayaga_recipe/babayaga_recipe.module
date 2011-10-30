@@ -1,3 +1,10 @@
 <?php
 
 include_once('babayaga_recipe.features.inc');
+
+/**
+ * Implements hook_facetapi_facets_alter()
+ */
+function babayaga_recipe_facetapi_facets_alter($build, $this, $realm) {
+  $r=9;
+}

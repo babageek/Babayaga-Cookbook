@@ -2,10 +2,10 @@
 
 <div id='page'><div id='main-content' class='limiter clearfix inner'>
   <?php if ($page['help']) print render($page['help']) ?>
-  <div id='content' class='page-content clearfix position left size-60'><div class='inner'>
+  <div id='content' class='page-content clearfix position left <?php print (isset($region_content) && !empty($region_content) ? $region_content : 'size-65') ?>'><div class='inner'>
     <?php if (!empty($page['content'])) print render($page['content']) ?>
   </div></div>
-  <div id='right' class='page-right clearfix position left size-40'><div class='inner'>
+  <div id='right' class='page-right clearfix position left <?php print (isset($region_right) && !empty($region_right) ? $region_right : 'size-35') ?>'><div class='inner'>
     <?php if (!empty($page['right'])) print render($page['right']) ?>
   </div></div>
 </div></div>

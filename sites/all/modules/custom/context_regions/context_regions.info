@@ -1,0 +1,9 @@
+name = "Context Regions"
+dependencies[] = "context"
+description = "Allow administrators to add CSS classes to theme regions."
+package = "Context"
+core = "7.x"
+version = "7.x-3.0-dev"
+
+files[] = context_regions.module
+

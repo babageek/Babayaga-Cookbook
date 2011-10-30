@@ -1,0 +1,43 @@
+<?php
+
+/**
+ * Context registry.
+ */
+function context_regions_context_registry() {
+  
+  $registry = array();
+  $registry['reactions'] = array(
+    'theme_regions' => array(
+      'title' => t('Theme Regions'),
+      'description' => t('Add CSS classes to theme regions.'),
+      'plugin' => 'context_reaction_theme_regions',
+    ),
+  );
+  return $registry;
+}
+
+/**
+ * Context plugins.
+ */
+function context_regions_context_plugins() {
+  
+  $plugins = array();
+  $plugins['context_reaction_theme_regions'] = array(
+    'handler' => array(
+      'path' => drupal_get_path('module', 'context_regions') . '/plugins',
+      'file' => 'context_reaction_theme_regions.inc',
+      'class' => 'context_reaction_theme_regions',
+      'parent' => 'context_reaction_theme',
+    ),
+  );
+  return $plugins;
+}
+
+/**
+ * hook_preprocess_page()
+ */
+function context_regions_preprocess_page(&$vars) {
+  if ($plugin = context_get_plugin('reaction', 'theme_regions')) {
+    $plugin->execute($vars);
+  }
+}

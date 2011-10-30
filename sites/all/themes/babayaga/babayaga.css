@@ -113,43 +113,7 @@ table.dsq-global-toolbar-container {
   position: relative;
 }
 
-.views-summary-unformatted {
-  
-}
-.views-summary-unformatted a {
- display: block;
- padding: 5px;
- background: #B3B29E;
- margin-bottom: 5px;
- font-weight: bold;
- text-decoration: none;
- color: #fff;
-}
-.views-summary-unformatted a.active,
-.views-summary-unformatted a:hover {
-  background-color: #A13562;
-  color: white;
-}
-.views-summary-unformatted a,
-.views-summary-unformatted a span {
-  border-radius: 3px;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-}
-.views-summary-unformatted a span.link {
-  font-size: 12px;
-  padding-left: 5px;
-}
-.views-summary-unformatted a span.count {
- font-weight: normal;
- display: block;
- width: 20px;
- text-align: center;
- font-size: 10px;
- background: #fff;
- color: #555;
- float: right;
-}
+
 
 /**
  * Babayaga CSS -------------------------------------------------------
@@ -253,7 +217,8 @@ h2 {
 h2.node-title {
   font-family: "Garamond Premier Pro", "Garamond 3 LT Std", "EB Garamond", Georgia, serif;
 }
-.prose p {
+.field-content,
+.prose {
   font-family: Georgia, serif;
   font-size: 15px;
   line-height: 25px;
@@ -297,10 +262,6 @@ h2.node-title a:hover {
 .node-blog .node-title {
   margin-bottom: 0;
 }
-.field-name-field-blog-subtitle {
-  color: #A13562;
-  margin-bottom: 20px;
-}
 
 .headings {
   color: #A13562;
@@ -332,14 +293,6 @@ h2.node-title a:hover {
   margin-bottom: 10px;
 }
 
-.node-blog .field-name-title {
-  font-size: 35px;
-  line-height: 35px;
-}
-.node-blog .field-name-field-blog-subtitle {
-  font-size: 15px;
-  line-height: 18px;
-}
 .page-node .page-title {
   display: none;
 }
@@ -394,6 +347,7 @@ h2.node-title a:hover {
 /**
  * Search ----------------------------------------------------------------------
  */
+.views-summary-unformatted a span.count, 
 .facet-remove,
 .facet-count {
   font-size: 10px;
@@ -408,25 +362,39 @@ h2.node-title a:hover {
   text-align: center;
   border: 1px solid #D4D0CD;
 }
+.views-summary-unformatted a span.count {
+  float: left;
+}
+
+
+#left {
+  
+}
+
 .block.block-facetapi .block-content {
   padding: 0;
 }
-ul.facetapi-processed li {
+.block.block-facetapi ul li {
   border-bottom: 0;
   padding: 0;
   margin-bottom: 1px;
 }
-ul.facetapi-processed li a {
-  background-color: #E8E4E1;
+.views-summary-unformatted a,
+.block.block-facetapi ul li a {
   display: block;
-  padding: 5px 4px 7px 8px;
+  padding: 2px 2px 4px 8px;
   color: #777;
-  border: 1px solid #D4D0CD;
   border-radius: 3px; 
+  border: 1px solid transparent;
 }
-ul.facetapi-processed li a:hover {
-  background-color: #D4D0CD;
-  color: #333;
+.views-summary-unformatted a {
+  padding: 2px 2px;
+}
+
+.views-summary-unformatted a:hover,
+.block.block-facetapi ul li a:hover {
+  background-color: #E8E4E1;
+  border: 1px solid #D4D0CD;
 }
 .facet-label {
   font-size: 15px;
@@ -434,6 +402,10 @@ ul.facetapi-processed li a:hover {
   padding-right: 30px;
 }
 
+.views-summary-unformatted a span.link {
+  font-size: 15px;  
+  padding-left: 5px;
+}
 
 .node-recipe.view-mode-search_result {
   border: 1px solid #B3B29E;  
@@ -466,4 +438,45 @@ ul.facetapi-processed li a:hover {
 .page-recipes #left .block .block-title h2 {
   font-size: 20px;
   text-align: right;  
+}
+
+.field-content ul li {
+  list-style: circle;
+  margin-left: 20px;
+}
+
+
+h1.title {
+  font-size: 32px;
+  line-height: 32px;  
+  margin-bottom: 5px;
+}
+
+.field-name-field-recipe-subtitle,
+.field-name-field-blog-subtitle {
+  font-size: 14px;
+  line-height: 21px;
+  color: #A13562;
+  margin-bottom: 20px;
+}
+
+
+.block-paper {
+/*  background: url(images/bg-paper.jpg);*/
+}
+
+
+.node-blog.view-mode-list .group-left {
+  width: 38%
+}
+.node-blog.view-mode-list .group-right {
+  width: 62%
+}
+
+.node-blog.view-mode-list .field-name-post-date {
+  text-align: center;
+}
+
+.node-blog.view-mode-list .field-name-field-blog-subtitle {
+  margin-bottom: 10px;
 }

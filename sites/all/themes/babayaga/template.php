@@ -23,6 +23,16 @@ function babayaga_preprocess_page(&$vars) {
   
 }
 
+/**
+ * Preprocessor for theme('block').
+ */
+function babayaga_preprocess_block(&$vars) {
+  switch ($vars['block_html_id']) {
+    case 'block-views-recipes-block-2':
+      $vars['classes_array'][] = 'block-paper';
+      break;
+  }
+}
 
 /**
  * Preprocessor for theme('comment').
