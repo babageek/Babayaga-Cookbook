@@ -96,6 +96,14 @@ function babayaga_recipe_context_default_contexts() {
       ),
       'layout' => 'left_sidebar',
     ),
+    'theme_regions' => array(
+      'region_content' => 'size-80',
+      'region_featured' => '',
+      'region_left' => 'size-20',
+      'region_right' => '',
+      'region_help' => '',
+      'region_footer' => '',
+    ),
   );
   $context->condition_mode = 0;
 

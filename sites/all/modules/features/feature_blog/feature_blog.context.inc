@@ -17,14 +17,6 @@ function feature_blog_context_default_contexts() {
   $context->description = '';
   $context->tag = 'List of nodes';
   $context->conditions = array(
-    'node' => array(
-      'values' => array(
-        'blog' => 'blog',
-      ),
-      'options' => array(
-        'node_form' => '0',
-      ),
-    ),
     'views' => array(
       'values' => array(
         'blog:page_1' => 'blog:page_1',
@@ -44,6 +36,14 @@ function feature_blog_context_default_contexts() {
       'layout' => 'right_sidebar',
     ),
     'breadcrumb' => 'blog',
+    'theme_regions' => array(
+      'region_content' => 'size-70',
+      'region_featured' => '',
+      'region_left' => '',
+      'region_right' => 'size-30',
+      'region_help' => '',
+      'region_footer' => '',
+    ),
   );
   $context->condition_mode = 0;
 

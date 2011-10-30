@@ -30,22 +30,30 @@ function babayaga_site_context_default_contexts() {
           'module' => 'views',
           'delta' => 'blog-block_1',
           'region' => 'content',
-          'weight' => 0,
+          'weight' => '0',
         ),
         'views-recipes-block_1' => array(
           'module' => 'views',
           'delta' => 'recipes-block_1',
           'region' => 'right',
-          'weight' => 0,
+          'weight' => '0',
         ),
         'views-recipes-block_5' => array(
           'module' => 'views',
           'delta' => 'recipes-block_5',
           'region' => 'right',
-          'weight' => 1,
+          'weight' => '1',
         ),
       ),
       'layout' => 'right_sidebar',
+    ),
+    'theme_regions' => array(
+      'region_content' => 'size-60',
+      'region_featured' => '',
+      'region_left' => '',
+      'region_right' => 'size-40',
+      'region_help' => '',
+      'region_footer' => '',
     ),
   );
   $context->condition_mode = 0;
