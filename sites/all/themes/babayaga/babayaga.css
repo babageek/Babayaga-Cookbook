@@ -217,6 +217,7 @@ h2 {
 h2.node-title {
   font-family: "Garamond Premier Pro", "Garamond 3 LT Std", "EB Garamond", Georgia, serif;
 }
+.views-label,
 .field-content,
 .prose {
   font-family: Georgia, serif;
@@ -224,6 +225,12 @@ h2.node-title {
   line-height: 25px;
   color: #555;
   text-align: justify;
+}
+.views-label {
+  color: #333;
+  float: left;
+  margin-right: 5px;
+  font-weight: bold;
 }
 
 h2.node-title a,
@@ -479,4 +486,11 @@ h1.title {
 
 .node-blog.view-mode-list .field-name-field-blog-subtitle {
   margin-bottom: 10px;
+}
+
+.prose h2 {
+  font-weight: normal;
+  font-size: 21px;
+  line-height: 25px;
+  color: #463434;  
 }

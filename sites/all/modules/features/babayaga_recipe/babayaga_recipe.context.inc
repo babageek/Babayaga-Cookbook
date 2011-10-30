@@ -32,20 +32,20 @@ function babayaga_recipe_context_default_contexts() {
         'views-recipes-block_4' => array(
           'module' => 'views',
           'delta' => 'recipes-block_4',
-          'region' => 'content',
+          'region' => 'right',
           'weight' => '-10',
         ),
         'views-recipes-block_2' => array(
           'module' => 'views',
           'delta' => 'recipes-block_2',
           'region' => 'right',
-          'weight' => '-19',
+          'weight' => '-9',
         ),
         'views-recipes-block_3' => array(
           'module' => 'views',
           'delta' => 'recipes-block_3',
           'region' => 'right',
-          'weight' => '-18',
+          'weight' => '-8',
         ),
       ),
       'layout' => 'right_sidebar',
