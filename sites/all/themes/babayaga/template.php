@@ -21,6 +21,17 @@ function babayaga_preprocess_node(&$vars) {
  */
 function babayaga_preprocess_page(&$vars) {
   
+  $element = array();
+  $element['#tag'] = 'script';
+  $element['#attributes']['type'] = 'text/javascript';
+  $element['#value'] = 'try{Typekit.load();}catch(e){}';
+  drupal_add_html_head($element, 'typekit_js');  
+  
+  $element = array();
+  $element['#tag'] = 'script';
+  $element['#attributes']['type'] = 'text/javascript';
+  $element['#attributes']['src'] = 'http://use.typekit.com/ufg3fep.js';
+  drupal_add_html_head($element, 'typekit');
 }
 
 /**

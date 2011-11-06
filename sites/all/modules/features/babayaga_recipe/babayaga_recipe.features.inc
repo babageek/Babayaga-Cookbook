@@ -74,7 +74,7 @@ function babayaga_recipe_image_default_styles() {
         'name' => 'image_scale_and_crop',
         'data' => array(
           'width' => '320',
-          'height' => '194',
+          'height' => '192',
         ),
         'weight' => '1',
       ),
@@ -94,7 +94,7 @@ function babayaga_recipe_image_default_styles() {
         'module' => 'image',
         'name' => 'image_scale_and_crop',
         'data' => array(
-          'width' => '192',
+          'width' => '200',
           'height' => '150',
         ),
         'weight' => '1',
@@ -115,8 +115,8 @@ function babayaga_recipe_image_default_styles() {
         'module' => 'image',
         'name' => 'image_scale_and_crop',
         'data' => array(
-          'width' => '128',
-          'height' => '128',
+          'width' => '145',
+          'height' => '145',
         ),
         'weight' => '1',
       ),

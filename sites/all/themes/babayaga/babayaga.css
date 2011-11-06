@@ -23,9 +23,9 @@
 .size-15 { width: 14.99% }
 .size-10 { width: 9.99% }
 .size-5 { width: 4.99% }
-.position .inner { padding: 10px; }
-.position .inner-left { padding-right: 10px; }
-.position .inner-right { padding-left: 10px; }
+.position .inner { padding: 7px; }
+.position .inner-left { padding-right: 5px; }
+.position .inner-right { padding-left: 5px; }
 
 #page {
   min-height: 350px;
@@ -73,7 +73,7 @@ div.node-teaser {
 .block .block-content,
 .container-inline .fieldset-content,
 .fieldset-content {
-  padding: 10px 9px 9px;
+  padding: 0;
   background: transparent;
 }
 
@@ -113,7 +113,10 @@ table.dsq-global-toolbar-container {
   position: relative;
 }
 
-
+.prose img {
+  display: block;
+  margin: 0 auto;
+}
 
 /**
  * Babayaga CSS -------------------------------------------------------
@@ -171,8 +174,8 @@ ul.main-menu  li {
   padding: 5px 0px;
 }
 #navigation ul.links li a {
-  font-family: "Garamond Premier Pro", "Garamond 3 LT Std", "EB Garamond", Georgia, serif;
-  color: #222;
+  font-family: garamond-premier-pro-display-1, "Garamond 3 LT Std", "EB Garamond", Georgia, serif;
+  color: #463434;
   font-size: 24px;
   background: transparent url("images/sprites.png") 0 3px no-repeat;
 /*  border-right: 1px solid #ccc;*/
@@ -185,12 +188,23 @@ ul.main-menu  li {
 } 
 
 
-.field-content.picture img,
-.node img {
-  padding: 3px;
+.field-content.picture img {
+  padding: 5px;
   border: 1px solid #CCC;
   background: #FFF;
+  -webkit-box-shadow: 0 0 3px #ccc;
+  -moz-box-shadow: 0 0 3px #ccc;
+  border-radius: 3px;
 }
+.node img {
+  padding: 10px;
+  border: 1px solid #CCC;
+  background: white;
+  -webkit-box-shadow: 0 0 3px #ccc;
+  -moz-box-shadow: 0 0 3px #ccc;
+  border-radius: 3px;
+}
+
 
 .block {
 }
@@ -204,18 +218,17 @@ ul.main-menu  li {
 }
 
 .tabs {
-  position: relative;
+  position: absolute;
   right: 0px;
-  float: right;
 }
 h2 {
   font-weight: normal;
-  font-size: 21px;
-  line-height: 25px;
+  font-size: 25px;
+  line-height: 27px;
   color: #463434;
 }
 h2.node-title {
-  font-family: "Garamond Premier Pro", "Garamond 3 LT Std", "EB Garamond", Georgia, serif;
+  font-family: garamond-premier-pro-display-1, "Garamond 3 LT Std", "EB Garamond", Georgia, serif;
 }
 .views-label,
 .field-content,
@@ -258,10 +271,21 @@ h2.node-title a:hover {
   display: inline;
 }
 
+.node-blog.view-mode-list,
 .node-blog.node-teaser {
   background: transparent url("images/hr.png") center 100% no-repeat;
   padding-bottom: 55px;
 }
+.node-blog.view-mode-list {
+  padding-bottom: 40px;
+  margin-bottom: 25px;
+}
+.views-row-last .node-blog.view-mode-list,
+.views-row-last .node-blog.node-teaser {
+  background: none;
+  padding-bottom: 15px;
+}
+
 
 .node-links a {
   color: #9E6A83;
@@ -278,8 +302,8 @@ h2.node-title a:hover {
 .field-name-title a,
 .title a,
 .title {
-  font-family: "Garamond Premier Pro", "Garamond 3 LT Std", "EB Garamond", Georgia, serif;
-  color: #333; 
+  font-family: garamond-premier-pro-display-1, "Garamond 3 LT Std", "EB Garamond", Georgia, serif;
+  color: #463434; 
   font-weight: normal;
 }
 
@@ -305,22 +329,37 @@ h2.node-title a:hover {
 }
 #page-title .page-title {
   float: left;
-  padding: 15px 10px 15px 0px;
+  padding: 25px 10px 15px 0px;
   text-shadow: white 0px 1px 0px;
   -webkit-text-shadow: #fff 0px 1px 0px;
   letter-spacing: -1px;
   font-weight: normal;
-  font-size: 34px;  
-  line-height: 32px;
-  font-family: "Garamond Premier Pro", "Garamond 3 LT Std", "EB Garamond", Georgia, serif;
+  font-size: 30px;  
+  line-height: 30px;
+  font-family: garamond-premier-pro-display-1, "Garamond 3 LT Std", "EB Garamond", Georgia, serif;
   color: #463434;
+}
+
+#page-title.no-tabs {
+  text-align: center;
+}
+#page-title.no-tabs .page-title {
+  float: none;
+  display: block;
+  margin: 0 auto;
+}
+.w-left {
+  background: url(images/sprites.png) 0 -365px no-repeat;    
+  padding-left: 80px;
+}
+.w-right {
+  background: url(images/sprites.png) 100% -395px no-repeat;  
+  padding-right: 80px;
 }
 
 .block .view-id-recipes .view-mode-badge_medium {
 }
 .block .view-id-recipes .view-mode-badge_small {
-  width: 49%;
-  float: left;
 }
 .view-id-recipes .view-mode-badge_medium .field-name-title {
   font-size: 21px;
@@ -435,9 +474,6 @@ h2.node-title a:hover {
   line-height: 17px;
 }
 
-.page-recipes #left .inner {
-  padding: 0;
-}
 .page-recipes #left .block .block-title {
   margin: 0;
   padding: 5px;
@@ -451,7 +487,39 @@ h2.node-title a:hover {
   list-style: circle;
   margin-left: 20px;
 }
+.node-recipe.view-mode-search_result img,
+.node-recipe.view-mode-badge_medium img,
+.node-recipe.view-mode-badge_small img {
+  padding: 5px;
+  margin-bottom: 10px;
+}
+.node-recipe.view-mode-search_result,
+.node-recipe.view-mode-badge_medium {
+  padding-top: 5px;
+}
 
+
+.node-recipe.view-mode-badge_medium, 
+.node-recipe.view-mode-badge_small {
+  border: 1px solid #B3B29E;  
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-box-shadow: 0 0 5px #ccc;
+  -moz-box-shadow: 0 0 5px #ccc;
+  background: transparent url("images/bg-top.jpg") 0 -15px repeat-x;
+  text-align: center;
+}
+.node-recipe.view-mode-badge_small:hover {
+  background: #fff;  
+}
+.node-recipe.view-mode-badge_small h2 {
+  font-size: 19px;
+  line-height: 21px;
+}
+.node-recipe.view-mode-badge_small .field-name-field-recipe-subtitle {
+  font-size: 11px;
+  line-height: 17px;
+}
 
 h1.title {
   font-size: 32px;
@@ -490,10 +558,10 @@ h3.title a {
 
 
 .node-blog.view-mode-list .group-left {
-  width: 38%
+  width: 39%
 }
 .node-blog.view-mode-list .group-right {
-  width: 62%
+  width: 61%
 }
 
 .node-blog.view-mode-list .field-name-post-date {
@@ -511,10 +579,14 @@ h3.title a {
   color: #463434;  
 }
 
+#block-views-recipes-block-5 .block-content:hover .recipe-visible {
+  opacity: .5;
+}
+
 .recipe-container {
   position: relative;
   float: left;
-  width: 150px;
+  width: 155px;
 }
 .recipe-container .recipe-visible {
   display: block;
@@ -522,8 +594,8 @@ h3.title a {
 .recipe-container .recipe-hidden {
   display: none;
   position: absolute;
-  top: 0;
-  right: 0;
+  top: -10px;
+  right: -30px;
   width: 220px;
   background: #fff;
   z-index: 1000;
@@ -537,6 +609,7 @@ h3.title a {
 }
 .recipe-container:hover .recipe-hidden {
   display: block;
+  opacity: 1;
 }
 .recipe-container:hover .recipe-visible {
   display: hidden;
