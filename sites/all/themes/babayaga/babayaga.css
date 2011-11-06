@@ -702,8 +702,8 @@ h1 a:hover {
   margin-left: 5px;
 }
 .pager li,
-.pager li:first-child, .primary-tabs li:first-child,
-.pager li:last-child, .primary-tabs li:last-child {
+.pager li:first-child,
+.pager li:last-child {
   border-radius: 35px;
   -moz-border-radius: 35px;
   -webkit-border-radius: 35px;

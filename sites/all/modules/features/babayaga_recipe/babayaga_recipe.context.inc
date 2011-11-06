@@ -50,6 +50,11 @@ function babayaga_recipe_context_default_contexts() {
       ),
       'layout' => 'right_sidebar',
     ),
+    'menu' => 'recipes',
+    'theme' => array(
+      'title' => 'Recipes',
+      'subtitle' => '',
+    ),
   );
   $context->condition_mode = 0;
 

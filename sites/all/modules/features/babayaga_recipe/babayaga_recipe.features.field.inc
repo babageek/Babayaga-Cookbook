@@ -297,7 +297,7 @@ function babayaga_recipe_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => '2',
+          'weight' => '3',
         ),
         'search_result' => array(
           'label' => 'hidden',
@@ -392,7 +392,7 @@ function babayaga_recipe_field_default_fields() {
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => '8',
+          'weight' => '10',
         ),
         'search_result' => array(
           'label' => 'above',
@@ -470,7 +470,7 @@ function babayaga_recipe_field_default_fields() {
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => 0,
+          'weight' => '0',
         ),
         'badge_small' => array(
           'label' => 'above',
@@ -488,7 +488,7 @@ function babayaga_recipe_field_default_fields() {
           'label' => 'hidden',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => '9',
+          'weight' => '11',
         ),
         'search_result' => array(
           'label' => 'inline',
@@ -566,7 +566,7 @@ function babayaga_recipe_field_default_fields() {
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => 0,
+          'weight' => '0',
         ),
         'badge_small' => array(
           'label' => 'above',
@@ -584,7 +584,7 @@ function babayaga_recipe_field_default_fields() {
           'label' => 'hidden',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => '7',
+          'weight' => '9',
         ),
         'search_result' => array(
           'label' => 'inline',
@@ -673,7 +673,7 @@ function babayaga_recipe_field_default_fields() {
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => '10',
+          'weight' => '12',
         ),
         'search_result' => array(
           'label' => 'above',
@@ -759,7 +759,7 @@ function babayaga_recipe_field_default_fields() {
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => '15',
+          'weight' => '16',
         ),
         'search_result' => array(
           'label' => 'above',
@@ -855,7 +855,7 @@ function babayaga_recipe_field_default_fields() {
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => '13',
+          'weight' => '14',
         ),
         'search_result' => array(
           'label' => 'above',
@@ -942,10 +942,11 @@ function babayaga_recipe_field_default_fields() {
           'weight' => '7',
         ),
         'full' => array(
-          'label' => 'above',
+          'label' => 'inline',
+          'module' => 'text',
           'settings' => array(),
-          'type' => 'hidden',
-          'weight' => '12',
+          'type' => 'text_default',
+          'weight' => '2',
         ),
         'search_result' => array(
           'label' => 'above',
@@ -1044,7 +1045,7 @@ function babayaga_recipe_field_default_fields() {
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => '14',
+          'weight' => '15',
         ),
         'search_result' => array(
           'label' => 'hidden',
@@ -1254,7 +1255,7 @@ function babayaga_recipe_field_default_fields() {
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => '11',
+          'weight' => '13',
         ),
         'search_result' => array(
           'label' => 'above',

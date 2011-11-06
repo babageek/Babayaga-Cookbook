@@ -17,8 +17,13 @@ function feature_blog_ds_field_settings_info() {
   $ds_fieldsetting->bundle = 'blog';
   $ds_fieldsetting->view_mode = 'full';
   $ds_fieldsetting->settings = array(
+    'blog_icons' => array(
+      'weight' => '0',
+      'label' => 'hidden',
+      'format' => 'default',
+    ),
     'title' => array(
-      'weight' => '1',
+      'weight' => '2',
       'label' => 'hidden',
       'format' => 'default',
       'formatter_settings' => array(
@@ -28,7 +33,7 @@ function feature_blog_ds_field_settings_info() {
       ),
     ),
     'post_date' => array(
-      'weight' => '0',
+      'weight' => '1',
       'label' => 'hidden',
       'format' => 'ds_post_date_long',
     ),
@@ -145,13 +150,15 @@ function feature_blog_ds_layout_settings_info() {
     'hide_sidebars' => 0,
     'regions' => array(
       'ds_content' => array(
-        0 => 'post_date',
-        1 => 'title',
-        2 => 'field_blog_subtitle',
-        3 => 'body',
+        0 => 'blog_icons',
+        1 => 'post_date',
+        2 => 'title',
+        3 => 'field_blog_subtitle',
+        4 => 'body',
       ),
     ),
     'fields' => array(
+      'blog_icons' => 'ds_content',
       'post_date' => 'ds_content',
       'title' => 'ds_content',
       'field_blog_subtitle' => 'ds_content',

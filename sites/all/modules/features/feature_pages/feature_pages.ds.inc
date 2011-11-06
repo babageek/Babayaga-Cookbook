@@ -51,12 +51,10 @@ function feature_pages_ds_layout_settings_info() {
     'hide_sidebars' => 0,
     'regions' => array(
       'ds_content' => array(
-        0 => 'title',
-        1 => 'body',
+        0 => 'body',
       ),
     ),
     'fields' => array(
-      'title' => 'ds_content',
       'body' => 'ds_content',
     ),
     'classes' => array(),

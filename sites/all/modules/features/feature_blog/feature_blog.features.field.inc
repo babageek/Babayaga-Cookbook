@@ -69,7 +69,7 @@ function feature_blog_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => '3',
+          'weight' => '4',
         ),
         'list' => array(
           'label' => 'hidden',
@@ -164,7 +164,7 @@ function feature_blog_field_default_fields() {
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => '0',
+          'weight' => '8',
         ),
         'list' => array(
           'label' => 'hidden',
@@ -292,7 +292,7 @@ function feature_blog_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => '2',
+          'weight' => '3',
         ),
         'list' => array(
           'label' => 'hidden',
