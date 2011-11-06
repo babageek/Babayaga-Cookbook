@@ -11,10 +11,26 @@ function babayaga_preprocess_node(&$vars) {
 
   if ($vars['node']->type == 'blog') {
     $vars['layout'] = TRUE;
-    $vars['addthis']['#markup'] = babayaga_addthis($vars['node']);
+//    $vars['addthis']['#markup'] = babayaga_addthis($vars['node']);
     unset($vars['links']['node']);
+    $vars['blog_icons']['#markup'] = babayaga_blog_icons($vars);
+    
   }
 }
+
+function babayaga_blog_icons(&$vars) {
+  
+  $comments = 15;
+  
+  $output = '';
+  $output .= '<div class="blog-icons-container">';
+  $output .= '<div class="blog-icons blog-icon-comments">'. l($comments, '/') .'</div>';
+  $output .= '<div class="blog-icons blog-icon-twitter">'. l('', '/') .'</div>';
+  $output .= '</div>';
+  
+  return $output;
+}
+
 
 /**
  * Preprocessor for theme('page').
@@ -143,3 +159,5 @@ function babayaga_facetapi_link_active($variables) {
   $variables['text'] = '<div class="facet-remove">-</div>' . '<div class="facet-label">' . check_plain($variables['text']) .'</div>';
   return theme_link($variables);
 }
+
+

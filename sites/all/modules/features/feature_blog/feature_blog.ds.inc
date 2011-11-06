@@ -62,8 +62,18 @@ function feature_blog_ds_field_settings_info() {
   $ds_fieldsetting->bundle = 'blog';
   $ds_fieldsetting->view_mode = 'teaser';
   $ds_fieldsetting->settings = array(
-    'title' => array(
+    'blog_code' => array(
+      'weight' => '1',
+      'label' => 'hidden',
+      'format' => 'default',
+    ),
+    'blog_icons' => array(
       'weight' => '0',
+      'label' => 'hidden',
+      'format' => 'default',
+    ),
+    'title' => array(
+      'weight' => '3',
       'label' => 'hidden',
       'format' => 'default',
       'formatter_settings' => array(
@@ -73,12 +83,32 @@ function feature_blog_ds_field_settings_info() {
       ),
     ),
     'post_date' => array(
-      'weight' => '0',
+      'weight' => '2',
       'label' => 'hidden',
       'format' => 'ds_post_date_long',
     ),
   );
   $export['node|blog|teaser'] = $ds_fieldsetting;
+
+  return $export;
+}
+
+/**
+ * Implements hook_ds_custom_fields_info().
+ */
+function feature_blog_ds_custom_fields_info() {
+  $export = array();
+
+  $ds_field = new stdClass;
+  $ds_field->api_version = 1;
+  $ds_field->field = 'blog_icons';
+  $ds_field->label = 'Blog Icons';
+  $ds_field->field_type = 3;
+  $ds_field->entities = array(
+    'node' => 'node',
+  );
+  $ds_field->properties = array();
+  $export['blog_icons'] = $ds_field;
 
   return $export;
 }
@@ -176,13 +206,17 @@ function feature_blog_ds_layout_settings_info() {
     'hide_sidebars' => 0,
     'regions' => array(
       'ds_content' => array(
-        0 => 'post_date',
-        1 => 'title',
-        2 => 'field_blog_subtitle',
-        3 => 'body',
+        0 => 'blog_icons',
+        1 => 'blog_code',
+        2 => 'post_date',
+        3 => 'title',
+        4 => 'field_blog_subtitle',
+        5 => 'body',
       ),
     ),
     'fields' => array(
+      'blog_icons' => 'ds_content',
+      'blog_code' => 'ds_content',
       'post_date' => 'ds_content',
       'title' => 'ds_content',
       'field_blog_subtitle' => 'ds_content',

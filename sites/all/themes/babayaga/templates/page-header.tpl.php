@@ -16,7 +16,7 @@
   <?php endif; ?>
 </div></div>
 
-<div id='page-title' class='<?php if (!$primary_local_tasks) print 'no-tabs'; ?>'><div class='limiter clearfix'>
+<div id='page-title' class='no-tabs'><div class='limiter clearfix'>
   <div class='tabs clearfix'>
     <?php if ($primary_local_tasks): ?>
       <ul class='primary-tabs links clearfix'><?php print render($primary_local_tasks) ?></ul>
